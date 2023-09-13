@@ -1,0 +1,25 @@
+{% extends 'design/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Neck Patterns</h1>
+    <div class="row">
+        {% for neck_pattern in neck_patterns %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card">
+                <!-- You can display the neck pattern image here if available -->
+                <img src="{{ neck_pattern.image.url }}" class="card-img-top" alt="{{ neck_pattern.name }}"  width=200 height=200>
+                <h5 class="card-title" style="color: black;">{{ neck_pattern.name }}</h5>
+                <div class="card-body">
+                    
+                    <p class="card-text">
+                        Active
+                    </p>
+                    {% comment %} <a href="{% url 'neck_pattern_detail' neck_pattern.id %}" class="btn btn-primary">Details</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

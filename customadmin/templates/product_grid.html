@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+
+
+	{% block content %}
+	<div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Dress type</h1>
+                <p class="breadcrumbs"><span><a href= {% url 'admin_index' %}>Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Dress Type
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_fabric' %}" class="btn btn-primary"> Add Dress Type</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2 id="dress-types-heading">List of Dress Types</h2>
+            <ul id="dress-types-list">
+                {% for dress_type in dress_types %}
+                    <li>{{ dress_type.dress_type }}</li>
+                    <!-- Update Dress Type Button -->
+                        <a class="btn btn-primary btn-sm update-dress-type" href="#" data-dress-type-id="{{ dress_type.id }}">Update</a>
+
+                        <!-- Delete Dress Type Button -->
+                        <a class="btn btn-danger btn-sm delete-dress-type" href="#" data-dress-type-id="{{ dress_type.id }}">Delete</a>
+                {% empty %}
+                    <li id="empty-message">No Dress Types available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+	{% endblock %}
+
+	

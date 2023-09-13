@@ -1,0 +1,41 @@
+<!-- bottompattern_grid.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Bottom Patterns</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Bottom Patterns
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_bottom_pattern' %}" class="btn btn-primary">Add Bottom Pattern</a>
+            </div>
+        </div>
+
+        <div class="fabric-grid">
+            {% for pattern in bottom_patterns %}
+            <div class="fabric-grid-card">
+                <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="200" height="200" />
+                <h3>{{ pattern.name }}</h3>
+                <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
+                <p>Price: ${{ pattern.price }}</p>
+
+                <!-- Update Bottom Pattern Form -->
+                <form method="post" action="{% url 'update_bottom_pattern' pattern.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="bottom_pattern_id" value="{{ pattern.id }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No bottom patterns available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

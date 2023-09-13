@@ -1,0 +1,44 @@
+{% extends 'design/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Add your custom CSS here */
+    .make-dresses {
+        background-image: url('{% static "images/home1.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+        padding: 100px 0;
+    }
+
+    .make-dresses h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .make-dresses p {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        background-color: #007BFF;
+        border-color: #007BFF;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
+
+<div class="make-dresses">
+    <div class="container">
+        <h1>Make Your Dresses Here</h1>
+        <p>Create your unique style with our dress customization options.</p>
+        <a href="{% url "dress_type_selection" %}" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+</div>
+{% endblock %}

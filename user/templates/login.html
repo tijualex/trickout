@@ -1,0 +1,206 @@
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<style>
+		header {
+			background-color: #f5f5f5;
+		}
+		
+		nav {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 20px;
+		}
+		
+		.logo a {
+			font-size: 24px;
+			font-weight: bold;
+			text-decoration: none;
+			color: #333;
+		}
+	</style>
+<!--===============================================================================================-->
+</head>
+<body style="background-color: #666666;">
+	<header>
+        <nav>
+            <div class="logo">
+                <a href="#">trickOut</a>
+            </div>
+        </nav>
+    </header>
+	
+	<div class="d-lg-flex half">
+		<div class="bg order-1 order-md-2" style="background-image: url('{% static 'images/bg-login.jpg' %}');"></div>
+		<div class="contents order-2 order-md-1">
+	
+		  <div class="container">
+			<div class="row align-items-center justify-content-center">
+			  <div class="col-md-7">
+				<h3>Login to continue</h3>
+				<p class="mb-4"></p>
+				<p class="err_mes">{{ error_message }}</p>
+				<form action="" method="post">
+					{% csrf_token %}
+				  <div class="form-group first">
+					<input type="text" class="form-control" placeholder="your username" id="username" name="username">
+				</div>
+				  
+
+				  <div class="form-group last mb-3">
+					<input type="password" class="form-control" placeholder="Your Password" id="pass" name="pass">  
+				</div>
+				  
+
+			
+
+				  <div class="d-flex mb-5 align-items-center">
+					<span class="ml-auto">Don't have an account <a href="{% url 'signup' %}">signup?</a></span> 
+					</label>
+					<span class="ml-auto"><a href='password_reset' class="forgot-pass">forgot password?</a></span>
+					<span class="ml-auto"><a href="{% provider_login_url 'google'%}">google</a></span>
+				  </div>
+	
+				  <input type="submit" value="sign up" class="btn btn-block btn-primary">
+				  <br>
+
+				  <!-- Social Login -->
+				  <div class="icon-container">
+					<a href="{% provider_login_url 'google'%}"><span id="icon" class="fab fa-google" style="color: red"></span></a> <!-- Google icon placeholder -->
+					<!--<a href="#"><span id="icon" class="fab fa-facebook" style="color: blue"></span></a>  Facebook icon placeholder -->
+					<!--<a href="#"><span id="icon" class="fab fa-twitter" style="color: #1DA1F2"></span></a> Twitter icon placeholder -->
+					
+					
+				
+				</div>
+	
+				</form>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	
+		
+	  </div>
+	
+	
+
+	
+	
+	<!--===============================================================================================-->
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+	<script>
+		$(document).ready(function () {
+			$("#full_name").keyup(function () {
+				validateName("#full_name");
+			});
+		
+			$("#email").keyup(function () {
+				validateEmail("#email");
+			});
+		
+			$("#pass").keyup(function () {
+				validatePassword("#pass");
+			});
+		
+			$("#cpass").keyup(function () {
+				validateConfirmPassword("#cpass");
+			});
+		
+			// Valid name
+			function validateName(fieldId) {
+				var name = $(fieldId).val();
+				var lettersWithSpaces = /^[A-Za-z\s]+$/;
+				if (name.trim() === "") {
+					$("#fnspan").html("Enter the Name").css("color", "red");
+				} else if (!lettersWithSpaces.test(name)) {
+					$("#fnspan").html("Name field required only alphabet characters with spaces").css("color", "red");
+				} else {
+					$("#fnspan").html("");
+				}
+			}
+			
+			function validateEmail(fieldId) {
+				var email = $(fieldId).val(); // Corrected selector
+				var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				if (email === "") {
+					$("#emspan").html("Enter the Email Id").css("color", "red");
+				} else if (!filter.test(email)) {
+					$("#emspan").html("Use correct Email Id").css("color", "red");
+				} else {
+					$("#emspan").html("");
+				}
+			}
+			
+			function validatePassword(fieldId) {
+				var password = $(fieldId).val(); // Corrected selector
+				var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/;
+				if (password === "") {
+					$("#pspan").html("Enter the Password").css("color", "red");
+				} else if (!pwd_expression.test(password)) {
+					$("#pspan").html("Use correct Password Format").css("color", "red");
+				} else {
+					$("#pspan").html("");
+				}
+			}
+			
+			function validateConfirmPassword(fieldId) {
+				var password = $("#pass").val();
+				var confirmPassword = $(fieldId).val(); // Corrected selector
+				if (confirmPassword === "") {
+					// $("#cpspan").html("Enter the Confirm Password").css("color", "red");
+					alert("Please fill the confirm Password");
+				} else if (confirmPassword !== password) {
+					$("#cpspan").html("Password do not match").css("color", "red");
+				} else {
+					$("#cpspan").html("");
+				}
+			}
+			$("form").submit(function (event) {
+				// Perform your validation checks here
+				var isValid = true; // Assume the form is valid initially
+			
+				var username = $("#username").val();
+				if (username === "" ) {
+					isValid = false;
+					$("#unspan").html("username field should not be null").css("color", "red");
+				}
+				// Validate password
+				var password = $("#pass").val();
+				if (password === "" || !pwd_expression.test(password)) {
+					isValid = false;
+					$("#pspan").html("Invalid password").css("color", "red");
+				}
+
+				// Prevent form submission if not valid
+				if (!isValid) {
+					event.preventDefault();
+				}
+			});
+		});
+		
+	</script>
+
+</body>
+</html>

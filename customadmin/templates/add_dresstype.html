@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper breadcrumb-contacts">
+            <div>
+                <h1>Add Dress Type</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>Add Dress Type
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'list_dress_type' %}" class="btn btn-primary">All Dresses</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 offset-lg-2 col-lg-12">
+                <div class="ec-cat-list card card-default mb-24px">
+                    <div class="card-body">
+                        <div class="ec-cat-form">
+                            <h2>Add New Dress Type</h2>
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label for="dress_type">Dress Type:</label>
+                                <input type="text" id="dress_type" name="dress_type" required><br><br>
+
+                                <!-- Add an image upload field -->
+                                <label for="image">Image:</label>
+                                <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+                                <button type="submit" class="btn btn-primary">Add Dress Type</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Content -->
+</div> <!-- End Content Wrapper -->
+{% endblock %}

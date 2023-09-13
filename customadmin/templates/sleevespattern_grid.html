@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Your content for this page goes here -->
+
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Sleeves</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Sleeves
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_sleeves_pattern' %}" class="btn btn-primary"> Add Sleeves</a>
+            </div>
+        </div>
+
+        <div class="fabric-grid">
+            {% for pattern in sleeves_patterns %}
+            <div class="fabric-grid-card">
+                <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" />
+                <h3>{{ pattern.name }}</h3>
+                <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
+                <p>Price: ${{ pattern.price }}</p>
+            </div>
+            {% empty %}
+            <p>No sleeves patterns available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add JavaScript for sleeves pattern selection and highlighting -->
+<script>
+    $(document).ready(function () {
+        $('.fabric-grid-card').hover(function () {
+            // Mouse over
+            $(this).addClass('bg-primary text-white');
+        }, function () {
+            // Mouse out
+            $(this).removeClass('bg-primary text-white');
+        });
+
+        $('.fabric-grid-card').click(function () {
+            // Clicked
+            $('.fabric-grid-card').removeClass('selected'); // Deselect all
+            $(this).addClass('selected');
+
+            // Get the selected sleeves pattern ID
+            var sleevesPatternId = $(this).find('.update-sleeves-pattern').data('sleeves-pattern-id');
+            console.log('Selected Sleeves Pattern ID: ' + sleevesPatternId);
+        });
+    });
+</script>
+
+</div> <!-- End Content -->
+</div>
+{% endblock %}

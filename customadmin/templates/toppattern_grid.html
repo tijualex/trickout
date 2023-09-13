@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Your content for this page goes here -->
+
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Top Models</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Top Models
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_top_pattern' %}" class="btn btn-primary"> Add Top Models</a>
+            </div>
+        </div>
+
+        <div class="fabric-grid">
+            {% for top_pattern in top_patterns %}
+            <div class="fabric-grid-card">
+                <img src="{{ top_pattern.image.url }}" alt="{{ top_pattern.name }}" />
+                <h3>{{ top_pattern.name }}</h3>
+                <p>Price: ${{ top_pattern.price }}</p>
+                <p>Dress Type: {{ top_pattern.dress_type.dress_type }}</p>
+                <!-- Update Top Pattern Button -->
+                <a class="btn btn-primary btn-sm update-top-pattern" href="#"
+                    data-top-pattern-id="{{ top_pattern.id }}">Update</a>
+
+                <!-- Delete Top Pattern Button -->
+                <a class="btn btn-danger btn-sm delete-top-pattern" href="#"
+                    data-top-pattern-id="{{ top_pattern.id }}">Delete</a>
+
+            </div>
+            {% empty %}
+            <p>No top patterns available.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<!-- Add JavaScript for top pattern selection and highlighting -->
+<script>
+    <script>
+	
+        $(document).ready(function () {
+            const updateTopPatternForm = document.getElementById("update-top-pattern-form");
+        
+            updateTopPatternForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+        
+                // Collect the updated data from the form
+                const formData = new FormData(updateTopPatternForm);
+        
+                // Extract the top_pattern_id from the form or data attributes
+                const topPatternId = document.getElementById("top-pattern-id").value;
+        
+                // Send an AJAX request to the update URL
+                $.ajax({
+                    url: `/update_top_pattern/${topPatternId}`,
+                    method: "POST",
+                    data: {
+                        top_pattern_id: topPatternId,
+                        // Include other data you want to update (e.g., price, is_active)
+                    },
+                    success: function (data) {
+                        // Handle success (e.g., show a success message)
+                        console.log(data.message);
+                        // Optionally, you can reload the page or perform other actions here
+                    },
+                    error: function (error) {
+                        // Handle errors (e.g., display an error message)
+                        console.error("Error updating Top Pattern:", error);
+                    },
+                });
+            });
+        });
+        
+    </script>
+</script>
+
+</div> <!-- End Content -->
+</div>
+{% endblock %}

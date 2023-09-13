@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Measurements Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Person Measurements Form</h1>
+        <form method="post" action="{% url 'measurement' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="waist">Waist (in centimeters):</label>
+                        <input type="number" class="form-control" id="waist" name="waist" min="0" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="shoulder">Shoulder Width (in centimeters):</label>
+                        <input type="number" class="form-control" id="shoulder" name="shoulder" min="0" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="chest">Chest Circumference (in centimeters):</label>
+                        <input type="number" class="form-control" id="chest" name="chest" min="0" required>
+                    </div>
+                </div>
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        <label for="stomach">Stomach (in centimeters):</label>
+                        <input type="number" class="form-control" id="stomach" name="stomach" min="0" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        <label for="hips">Hips (in centimeters):</label>
+                        <input type="number" class="form-control" id="hips" name="hips" min="0" required>
+                    </div>
+                </div>
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select class="form-control" id="gender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+        </form>
+    </div>
+</body>
+</html>

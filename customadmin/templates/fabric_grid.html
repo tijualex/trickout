@@ -1,0 +1,43 @@
+{% extends 'design/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h1>Select a Fabric</h1>
+    <div class="row">
+        {% for fabric in fabrics %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card fabric-card">
+                <img src="{{ fabric.fabric_image.url }}" class="card-img-top" alt="{{ fabric.name }}" width="200" height="200">
+                <div class="card-body" data-id="{{ fabric.id }}">
+                    <h5 class="card-title" style="color: black;">{{ fabric.name }}</h5>
+                    <p class="card-text">Unit Price: ${{ fabric.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add JavaScript for fabric selection and highlighting -->
+<script>
+    $(document).ready(function () {
+        $('.fabric-card').hover(function () {
+            // Mouse over
+            $(this).addClass('bg-primary text-white');
+        }, function () {
+            // Mouse out
+            $(this).removeClass('bg-primary text-white');
+        });
+
+        $('.fabric-card').click(function () {
+            // Clicked
+            $('.fabric-card').removeClass('selected'); // Deselect all
+            $(this).addClass('selected');
+            
+            // Get the selected fabric ID
+            var fabricId = $(this).find('.card-body').data('id');
+            console.log('Selected Fabric ID: ' + fabricId);
+        });
+    });
+</script>
+{% endblock %}

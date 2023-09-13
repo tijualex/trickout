@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <!-- ... (your existing code) ... -->
+
+        <div class="fabricn-grid">
+            <div class="row">
+                {% for pattern in neck_patterns %}
+
+                <div class="fabric-card col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card">
+                        <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" class="card-img-top" />
+
+                        <!-- Add a data-id attribute to store the pattern ID -->
+                        <div class="card-body" data-id="{{ pattern.id }}">
+                            <h3>{{ pattern.name }}</h3>
+                            <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
+                            <p>Price: ${{ pattern.price }}</p>
+                            <!-- Update Neck Pattern Button -->
+                            <a class="btn btn-primary btn-sm update-neck-pattern" href="#" data-neck-pattern-id="{{ pattern.id }}">Update</a>
+
+                            <!-- Delete Neck Pattern Button -->
+                            <a class="btn btn-danger btn-sm delete-neck-pattern" href="#" data-neck-pattern-id="{{ pattern.id }}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add JavaScript for selection and highlighting -->
+<script>
+    $(document).ready(function () {
+        $('.fabric-card').hover(function () {
+            // Mouse over
+            $(this).addClass('bg-primary text-white');
+        }, function () {
+            // Mouse out
+            $(this).removeClass('bg-primary text-white');
+        });
+
+        $('.fabric-card').click(function () {
+            // Clicked
+            $('.fabric-card').removeClass('selected'); // Deselect all
+            $(this).addClass('selected');
+            
+            // Get the selected pattern ID
+            var patternId = $(this).find('.card-body').data('id');
+            console.log('Selected Pattern ID: ' + patternId);
+        });
+    });
+</script>
+
+{% endblock %}

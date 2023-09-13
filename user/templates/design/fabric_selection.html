@@ -1,0 +1,43 @@
+
+{% extends 'design/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Select a Fabric</h1>
+    <div class="row">
+        {% for fabric in fabrics %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card fabric-card">
+                <img src="{{ fabric.fabric_image.url }}" class="card-img-top fabric-image" alt="{{ fabric.name }}" width=200 height=200 data-fabric-id="{{ fabric.id }}">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: black;">{{ fabric.name }}</h5>
+                    <p class="card-text">Unit Price: ${{ fabric.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const fabricCards = document.querySelectorAll(".fabric-card");
+    fabricCards.forEach(card => {
+        card.addEventListener("mouseenter", function() {
+            this.classList.add("bg-primary", "text-white"); // Add Bootstrap classes for highlighting
+        });
+
+        card.addEventListener("mouseleave", function() {
+            this.classList.remove("bg-primary", "text-white"); // Remove highlighting on mouse leave
+        });
+
+        card.addEventListener("click", function() {
+            const fabricId = this.querySelector(".fabric-image").getAttribute("data-fabric-id");
+            window.location.href = `/select_fabric/${fabricId}/`; // Replace with your URL pattern
+        });
+    });
+});
+</script>
+{% endblock %}
+
