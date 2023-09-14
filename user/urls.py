@@ -32,30 +32,5 @@ urlpatterns = [
     
     # design
     
-    path('dress_type_selection/', views.dress_type_selection, name='dress_type_selection'),
-    path('fabric_selection/', views.fabric_selection, name='fabric_selection'),
-    
-    
-    # top pattern
-    path('top-pattern-selection/', views.top_pattern_selection, name='top_pattern_selection_all'),
-    path('dress-type/<str:dress_type_id>/top-pattern-selection/', views.top_pattern_for_dress_type, name='top_pattern_for_dress_type'),
-
-    
-    # neck pattern
-    path('neck-pattern-selection/', views.neck_pattern_selection, name='neck_pattern_selection_all'),
-    path('dress-type/<str:dress_type_id>/neck-pattern-selection/', views.neck_pattern_for_dress_type, name='neck_pattern_selection'),
-    
-    
-    #sleeves pattern
-    path('sleeves-pattern-selection/', views.sleeves_pattern_selection, name='sleeves_pattern_selection_all'),
-    path('dress-type/<str:dress_type_id>/sleeves-pattern-selection/', views.sleeves_pattern_for_dress_type, name='sleeves_pattern_selection'),
-
-
-    #top pattern
-    path('bottom-pattern-selection/', views.bottom_pattern_selection, name='bottom_pattern_selection_all'),
-    path('dress-type/<str:dress_type_id>/bottom-pattern-selection/', views.bottom_pattern_for_dress_type, name='bottom_pattern_selection'),
-    
-    
-    #dress detail view
-    path('dress/detail/<int:pk>/', views.DressDetailView.as_view(), name='dress_detail')
+    path('dress/<int:dress_type_id>/', views.dress_detail, name='dress_detail'),
 ]

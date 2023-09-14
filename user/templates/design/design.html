@@ -4,7 +4,7 @@
 {% block content %}
 <style>
     /* Add your custom CSS here */
-    .make-dresses {
+    .design-page {
         background-image: url('{% static "images/home1.jpg" %}');
         background-size: cover;
         background-position: center;
@@ -13,13 +13,13 @@
         padding: 100px 0;
     }
 
-    .make-dresses h1 {
+    .design-page h1 {
         font-size: 3rem;
         font-weight: bold;
         margin-bottom: 20px;
     }
 
-    .make-dresses p {
+    .design-page p {
         font-size: 1.5rem;
     }
 
@@ -32,13 +32,85 @@
         background-color: #0056b3;
         border-color: #0056b3;
     }
+
+    /* Custom style for dress type buttons */
+    /* Add your custom CSS here */
+    .design-page {
+        background-image: url('{% static "images/home1.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+        padding: 100px 0;
+    }
+
+    .design-page h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .design-page p {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        background-color: #007BFF;
+        border-color: #007BFF;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Custom style for dress type buttons */
+    .dress-type-btn {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        margin: 5px;
+        cursor: pointer;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .dress-type-btn:hover {
+        background-color: transparent; /* Remove hover effect */
+        text-decoration: underline;
+        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+    }
 </style>
 
-<div class="make-dresses">
+<div class="design-page">
     <div class="container">
-        <h1>Make Your Dresses Here</h1>
-        <p>Create your unique style with our dress customization options.</p>
-        <a href="{% url "dress_type_selection" %}" class="btn btn-primary btn-lg">Get Started</a>
+        <h1>What's on Your Mind?</h1>
+        <p>Let us know what you're planning to design, and we'll help you get started.</p>
+        <input type="hidden" id="selectedDressType" name="selectedDressType" value="">
+        <h2>Choose a Dress Type:</h2>
+
+        <!-- Display dress types from the database as buttons -->
+        <div class="row">
+            {% for dress_type in dress_types %}
+            <div class="col-md-4">
+                <button type="button" class="dress-type-btn" data-dress-type="{{ dress_type.id }}">{{ dress_type.dress_type }}</button>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
+
+<script>
+    // JavaScript to handle the dress type selection
+    const dressTypeButtons = document.querySelectorAll('.dress-type-btn');
+    const selectedDressTypeInput = document.getElementById('selectedDressType');
+
+    dressTypeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const dressTypeId = button.getAttribute('data-dress-type');
+            selectedDressTypeInput.value = dressTypeId;
+        });
+    });
+</script>
 {% endblock %}

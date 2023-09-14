@@ -85,8 +85,7 @@ def signup(request):
 
 
 
-def design(request):
-    return render(request,'design/design.html')
+
 
 def measurement(request):
     return render(request,'mesurement.html')
@@ -195,113 +194,24 @@ def profile(request):
 
 
 # design views
-def dress_type_selection(request):
+def design(request):
     dress_types = DressType.objects.all()  # Retrieve all dress types
 
     context = {
         'dress_types': dress_types,
     }
 
-    return render(request, 'design/dresstype_selection.html', context)
+    return render(request, 'design/design.html', context)
 
 
-
-
-def fabric_selection(request):
-    fabrics = Fabric.objects.filter(is_active=True)  # Fetch all active fabrics from the database
-    context = {'fabrics': fabrics}
-    return render(request, 'design/fabric_selection.html', context)
-
- 
-
-def top_pattern_selection(request, dress_type_id=None):
-    top_patterns = TopPattern.objects.all()
-
-    if dress_type_id:
-        # If a dress type is selected, filter top patterns by dress type
-        dress_type = get_object_or_404(DressType, pk=dress_type_id)
-        top_patterns = top_patterns.filter(dress_type=dress_type)
-
-    context = {
-        'top_patterns': top_patterns,
-    }
-
-    return render(request, 'design/toppattern_selection.html', context)
-
-def top_pattern_for_dress_type(request, dress_type_id):
-    dress_type = get_object_or_404(DressType, pk=dress_type_id)
-    top_patterns = TopPattern.objects.filter(dress_type=dress_type)
-
+def dress_detail(request, dress_type_id):
+    dress_type = get_object_or_404(DressType, id=dress_type_id)
     context = {
         'dress_type': dress_type,
-        'top_patterns': top_patterns,
     }
-
-    return render(request, 'design/toppattern_selection.html', context)
-
-
-def neck_pattern_selection(request):
-    neck_patterns = NeckPattern.objects.all()  # Retrieve all neck patterns
-
-    context = {
-        'neck_patterns': neck_patterns,
-    }
-
-    return render(request, 'design/neckpattern_selection.html', context)
-
-def neck_pattern_for_dress_type(request, dress_type_id):
-    dress_type = get_object_or_404(DressType, pk=dress_type_id)
-    neck_patterns = NeckPattern.objects.filter(dress_type=dress_type)
-
-    context = {
-        'dress_type': dress_type,
-        'neck_patterns': neck_patterns,
-    }
-
-    return render(request, 'design/neckpattern_selection.html', context)
-
-def sleeves_pattern_selection(request):
-    sleeves_patterns = SleevesPattern.objects.all()
-
-    context = {
-        'sleeves_patterns': sleeves_patterns,
-    }
-
-    return render(request, 'design/sleevespattern_selection.html', context)
-
-# View to display sleeves patterns filtered by dress type
-def sleeves_pattern_for_dress_type(request, dress_type_id):
-    dress_type = get_object_or_404(DressType, pk=dress_type_id)
-    sleeves_patterns = SleevesPattern.objects.filter(dress_type=dress_type)
-
-    context = {
-        'dress_type': dress_type,
-        'sleeves_patterns': sleeves_patterns,
-    }
-
-    return render(request, 'design/sleevespattern_selection.html', context)
+    return render(request, 'dress_detail.html', context)
 
 
-
-def bottom_pattern_selection(request):
-    bottom_patterns = BottomPattern.objects.all()
-
-    context = {
-        'bottom_patterns': bottom_patterns,
-    }
-
-    return render(request, 'design/bottompattern_selection.html', context)
-
-# View to display bottom  patterns filtered by dress type
-def bottom_pattern_for_dress_type(request, dress_type_id):
-    dress_type = get_object_or_404(DressType, pk=dress_type_id)
-    bottom_patterns = BottomPattern.objects.filter(dress_type=dress_type)
-
-    context = {
-        'dress_type': dress_type,
-        'bottom_patterns': bottom_patterns,
-    }
-    return render(request, 'design/bottompattern_selection.html', context)
 
 
 

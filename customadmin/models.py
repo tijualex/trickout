@@ -5,18 +5,21 @@ from user.models import User
 class DressType(models.Model):
     dress_type = models.CharField(max_length=255, primary_key=True)  # Custom primary key
     image = models.ImageField(upload_to='dresses/')
+    details = models.TextField(max_length=300, null=True)
     is_active = models.BooleanField(default=True)
+
     def soft_delete(self):
         self.is_active = False
         self.save()
-    
-    def __str__(self) :
+
+    def __str__(self):
         return self.dress_type
 
 class NeckPattern(models.Model):
     custom_id = models.AutoField(primary_key=True)  # Custom primary key
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='neck_patterns/')
+    details = models.TextField(max_length=300, null=True)
     dress_type = models.ForeignKey(DressType, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
@@ -31,6 +34,7 @@ class SleevesPattern(models.Model):
     custom_id = models.AutoField(primary_key=True)  # Custom primary key
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='sleeves_patterns/')
+    details = models.TextField(max_length=300, null=True)
     dress_type = models.ForeignKey(DressType, on_delete=models.CASCADE, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
@@ -45,6 +49,7 @@ class BottomPattern(models.Model):
     custom_id = models.AutoField(primary_key=True)  # Custom primary key
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='bottom_patterns/')
+    details = models.TextField(max_length=300, null=True)
     dress_type = models.ForeignKey(DressType, on_delete=models.CASCADE, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
@@ -59,6 +64,7 @@ class TopPattern(models.Model):
     custom_id = models.AutoField(primary_key=True)  # Custom primary key
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='top_patterns/')
+    details = models.TextField(max_length=300, null=True)
     dress_type = models.ForeignKey(DressType, on_delete=models.CASCADE, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
@@ -74,6 +80,7 @@ class Fabric(models.Model):
     custom_id = models.AutoField(primary_key=True)  # Custom primary key
     name = models.CharField(max_length=255)
     fabric_image = models.ImageField(upload_to='media/fabrics/')
+    details = models.TextField(max_length=300, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
     def soft_delete(self):
