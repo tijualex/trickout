@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Patterns and Dress Type</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            background-color: #6c757d; /* Ash color */
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px;
+        }
+
+        .navbar-logo img {
+            max-height: 40px;
+        }
+
+        .navbar-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar-links li {
+            margin-left: 20px;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
+
+        .user-icon {
+            font-size: 24px;
+            color: #6c757d; /* Ash color */
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #6c757d; /* Ash color */
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .confirm-button {
+            font-size: 20px;
+            background-color: #6c757d; /* Ash color */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: auto;
+            outline: none;
+            border: 2px solid transparent;
+        }
+
+        .confirm-button:hover {
+            background-color: #495057; /* Slightly darker ash color */
+        }
+
+        /* Box around the pattern displays */
+        .pattern-box {
+            border: 2px solid #6c757d; /* Ash color */
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+            text-align: left;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estimated Cost Field */
+        .estimated-cost {
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Pattern Container */
+        .pattern-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        /* Pattern Box */
+        .pattern-box {
+            width: calc(33.33% - 20px); /* Adjust as needed for spacing */
+        }
+
+        /* Labels for fields */
+        .field-label {
+            font-size: 16px;
+            color: #6c757d; /* Ash color */
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-logo">
+            <img src="logo.png" alt="Your Logo">
+        </div>
+        <i class="fas fa-user user-icon"></i>
+    </div>
+
+    <a class="directory-link" href="#" onclick="history.go(-1);">Back to Previous Page</a>
+
+    <label for="selectedDressType" class="field-label">Selected Dress Type:</label>
+<p id="selectedDressType">{{ selected_dress_type }}</p>
+
+<!-- Pattern Container with Label -->
+<label for="patternContainer" class="field-label">Selected Patterns:</label>
+<div class="pattern-container" id="patternContainer">
+    <!-- Display the selected Fabric Pattern -->
+    <div class="pattern-box" id="selectedFabricPattern">fabric:{{ selected_patterns.fabric }}</div>
+
+    <!-- Display the selected Neck Pattern -->
+    <div class="pattern-box" id="selectedNeckPattern">Neckpattern:{{ selected_patterns.neck }}</div>
+
+    <!-- Display the selected Top Pattern -->
+    <div class="pattern-box" id="selectedTopPattern">Toppattern:{{ selected_patterns.top }}</div>
+
+    <!-- Display the selected Sleeves Pattern -->
+    <div class="pattern-box" id="selectedSleevesPattern">sleevespattern:{{ selected_patterns.sleeves }}</div>
+
+    <!-- Display the selected Bottom Pattern -->
+    <div class="pattern-box" id="selectedBottomPattern">Bottompattern:{{ selected_patterns.bottom }}</div>
+</div>
+
+<!-- Estimated Cost Field with Label -->
+<label for="estimatedCost" class="field-label">Estimated Cost:</label>
+<div class="estimated-cost" id="estimatedCost">${{ total_price }}</div>
+
+<!-- Confirm Order Button -->
+<a href="{% url "measurement_sub" %}"
+<button class="confirm-button">Confirm Order</button>
+
+</body>
+</html>

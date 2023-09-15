@@ -1,0 +1,88 @@
+{% extends 'design/base.html' %}
+
+{% block content %}
+    <!-- Your content goes here -->
+    <div class="container">
+        <h1>Dress Details</h1>
+        <!-- Display the dress type name -->
+        <h2>{{ dress_type.dress_type }}</h2>
+
+        <!-- Center the dress type image -->
+        <div style="text-align: center;">
+            <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" width="300" height="300" style="margin: 0 auto;">
+        </div>
+
+        <p>Price: ${{ dress_type.price }}</p>
+
+        <!-- Add any other dress details you want to display -->
+
+        <!-- Display pattern details -->
+        <h3>Pattern Details</h3>
+        <div id="pattern-details">
+            <!-- Image -->
+            <img id="selected-pattern-image" src="" alt="Selected Pattern" width="200" height="200" style="margin: 0 auto;">
+            <!-- Pattern type -->
+            <p id="selected-pattern-type"><strong>Pattern Type:</strong> No pattern selected</p>
+            <!-- Price -->
+            <p id="selected-pattern-price"><strong>Price:</strong> $0.00</p>
+        </div>
+
+        <!-- Add a section for pattern details here -->
+        <h3>Pattern Options</h3>
+        <div class="pattern-options">
+            {% for pattern in pattern_options %}
+                <div class="image-container" data-pattern-id="{{ pattern.id }}">
+                    <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}">
+                    <p><strong>Pattern Type:</strong> {{ pattern.pattern_type }}</p>
+                    <p><strong>Price:</strong> ${{ pattern.price }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-8">
+            <!-- Dress styling area -->
+            <div class="content">
+                <!-- Your content here -->
+            </div>
+        </div>
+        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+            <a href="" class="btn btn-primary">Continue to Measurements</a>
+        </div>
+    </div>
+</body>
+
+<!-- Pass pattern data from Django context to JavaScript -->
+<script>
+    const patternDetails = document.getElementById('pattern-details');
+    const selectedPatternImage = document.getElementById('selected-pattern-image');
+    const selectedPatternType = document.getElementById('selected-pattern-type');
+    const selectedPatternPrice = document.getElementById('selected-pattern-price');
+    const patternOptions = document.querySelectorAll('.image-container');
+
+    // Replace 'patternData' with the actual pattern data from your Django context
+    const patternData = {{ pattern_data|safe }};
+
+    // Function to update pattern details
+    function updatePatternDetails(patternId) {
+        const selectedPattern = patternData.find(pattern => pattern.id === patternId);
+
+        if (selectedPattern) {
+            selectedPatternImage.src = selectedPattern.image_url;
+            selectedPatternType.innerHTML = `<strong>Pattern Type:</strong> ${selectedPattern.pattern_type}`;
+            selectedPatternPrice.innerHTML = `<strong>Price:</strong> $${selectedPattern.price.toFixed(2)}`;
+        } else {
+            selectedPatternImage.src = '';
+            selectedPatternType.innerHTML = '<strong>Pattern Type:</strong> No pattern selected';
+            selectedPatternPrice.innerHTML = '<strong>Price:</strong> $0.00';
+        }
+    }
+
+    // Add click event listeners to pattern options
+    patternOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const patternId = parseInt(option.getAttribute('data-pattern-id'));
+            updatePatternDetails(patternId);
+        });
+    });
+</script>
+</html>

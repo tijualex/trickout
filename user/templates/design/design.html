@@ -1,116 +1,132 @@
-{% extends 'design/base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... other meta tags and title ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dress Styling</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
+    
+    <style>
+        /* Your custom styles here */
+        .design-page {
+            background-image: url('{% static "images/home1.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 0;
+        }
 
-{% block content %}
-<style>
-    /* Add your custom CSS here */
-    .design-page {
-        background-image: url('{% static "images/home1.jpg" %}');
-        background-size: cover;
-        background-position: center;
-        color: white;
-        text-align: center;
-        padding: 100px 0;
-    }
+        .design-page h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
 
-    .design-page h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+        .design-page p {
+            font-size: 1.5rem;
+        }
 
-    .design-page p {
-        font-size: 1.5rem;
-    }
+        .btn-primary {
+            background-color: #007BFF;
+            border-color: #007BFF;
+        }
 
-    .btn-primary {
-        background-color: #007BFF;
-        border-color: #007BFF;
-    }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
 
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
+        .dress-type-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin: 5px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
 
-    /* Custom style for dress type buttons */
-    /* Add your custom CSS here */
-    .design-page {
-        background-image: url('{% static "images/home1.jpg" %}');
-        background-size: cover;
-        background-position: center;
-        color: white;
-        text-align: center;
-        padding: 100px 0;
-    }
+        .dress-type-btn:hover {
+            background-color: transparent; /* Remove hover effect */
+            text-decoration: underline;
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'logo.png' %}" alt="Your Logo" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <!-- Add more navbar items here as needed -->
+            </ul>
+        </div>
+        <div class="navbar-collapse justify-content-end">
+            <!-- Add user-related content here, such as user profile, login, etc. -->
+            <!-- Example: -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">User Profile</a>
+                </li>
+                <!-- Add more user-related items here as needed -->
+            </ul>
+        </div>
+    </nav>
 
-    .design-page h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+    <!-- Existing content -->
+    <div class="design-page">
+        <div class="container">
+            <h1>What's on Your Mind?</h1>
+            <p>Let us know what you're planning to design, and we'll help you get started.</p>
+            <input type="hidden" id="selectedDressType" name="selectedDressType" value="">
+            <h2>Choose a Dress Type:</h2>
 
-    .design-page p {
-        font-size: 1.5rem;
-    }
-
-    .btn-primary {
-        background-color: #007BFF;
-        border-color: #007BFF;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-
-    /* Custom style for dress type buttons */
-    .dress-type-btn {
-        background-color: transparent;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        margin: 5px;
-        cursor: pointer;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-    }
-
-    .dress-type-btn:hover {
-        background-color: transparent; /* Remove hover effect */
-        text-decoration: underline;
-        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-    }
-</style>
-
-<div class="design-page">
-    <div class="container">
-        <h1>What's on Your Mind?</h1>
-        <p>Let us know what you're planning to design, and we'll help you get started.</p>
-        <input type="hidden" id="selectedDressType" name="selectedDressType" value="">
-        <h2>Choose a Dress Type:</h2>
-
-        <!-- Display dress types from the database as buttons -->
-        <div class="row">
-            {% for dress_type in dress_types %}
-            <div class="col-md-4">
-                <button type="button" class="dress-type-btn" data-dress-type="{{ dress_type.id }}">{{ dress_type.dress_type }}</button>
+            <!-- Display dress types from the database as buttons -->
+            <div class="row">
+                {% for dress_type in dress_types %}
+                <div class="col-md-4">
+                    <button type="button" class="dress-type-btn" data-dress-type="{{ dress_type.dress_type }}">{{ dress_type.dress_type }}</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
-</div>
 
-<script>
-    // JavaScript to handle the dress type selection
-    const dressTypeButtons = document.querySelectorAll('.dress-type-btn');
-    const selectedDressTypeInput = document.getElementById('selectedDressType');
+    <!-- Custom JavaScript code -->
+    <script>
+        // JavaScript to handle the dress type selection
+        const dressTypeButtons = document.querySelectorAll('.dress-type-btn');
 
-    dressTypeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const dressTypeId = button.getAttribute('data-dress-type');
-            selectedDressTypeInput.value = dressTypeId;
+        dressTypeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const dressType = button.getAttribute('data-dress-type');
+                // Redirect to the dress_detail view with the selected dress type
+                window.location.href = `/dress_detail/${dressType}/`;
+            });
         });
-    });
-</script>
-{% endblock %}
+    </script>
+
+    <!-- Bootstrap scripts (jQuery, Popper.js, Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

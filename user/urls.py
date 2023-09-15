@@ -12,9 +12,7 @@ urlpatterns = [
     path('logout_view/', views.logout_view, name='logout_view'),
     path('design/', views.design, name='design'),
     
-    #mesurement
-    path('measurement/', views.measurement, name='measurement'),
-    path('measurement_sub/', views.measurement_sub, name='measurement_sub'),
+    
     path('check-username-exists/', views.check_username_exists, name='check-username-exists'),
     
     #forgot password
@@ -32,5 +30,14 @@ urlpatterns = [
     
     # design
     
-    path('dress/<int:dress_type_id>/', views.dress_detail, name='dress_detail'),
+    path('dress_detail/<str:dress_type>/', views.dress_detail, name='dress_detail'),
+    path('pattern/<int:pattern_id>/', views.pattern_details, name='pattern-details'),
+    path('confirm_design', views.confirm_design, name='confirm_design'),
+    path('display_selected_patterns/<str:selected_patterns>/<int:total_price>/', views.display_selected_patterns, name='display_selected_patterns'),
+
+    # mesurement
+    path('measurement_sub/', views.measurement_sub, name='measurement_sub'),
+
+
+
 ]

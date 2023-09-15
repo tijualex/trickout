@@ -87,8 +87,7 @@ def signup(request):
 
 
 
-def measurement(request):
-    return render(request,'mesurement.html')
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
@@ -128,8 +127,7 @@ def check_username_exists(request):
     return JsonResponse(data)
 
 
-
-@login_required
+@login_required(login_url='login_view')
 def measurement_sub(request):
     if request.method == 'POST':
         waist = request.POST['waist']
@@ -154,7 +152,7 @@ def measurement_sub(request):
         # Redirect to a success page or another appropriate action
         return redirect('index')
 
-    return render(request, 'measurement_form.html')
+    return render(request, 'design/measurement.html')
 
 
 @login_required
@@ -204,15 +202,107 @@ def design(request):
     return render(request, 'design/design.html', context)
 
 
-def dress_detail(request, dress_type_id):
-    dress_type = get_object_or_404(DressType, id=dress_type_id)
+
+
+def dress_detail(request, dress_type):
+    dress_type = get_object_or_404(DressType, dress_type=dress_type)
+    
+    # Retrieve options for each pattern type based on the selected dress type
+    fabric = Fabric.objects.all()
+    bottom_patterns = BottomPattern.objects.filter(dress_type=dress_type)
+    neck_patterns = NeckPattern.objects.filter(dress_type=dress_type)
+    top_patterns = TopPattern.objects.filter(dress_type=dress_type)
+    sleeves_patterns = SleevesPattern.objects.filter(dress_type=dress_type)
+
     context = {
         'dress_type': dress_type,
+        'neck_patterns': neck_patterns,
+        'bottom_patterns': bottom_patterns,
+        'top_patterns': top_patterns,
+        'sleeves_patterns': sleeves_patterns,
+        'fabric': fabric,
     }
-    return render(request, 'dress_detail.html', context)
+
+    return render(request, 'design/dress_detail.html', context)
+
+def pattern_details(request, pattern_id):
+    # Get the pattern option based on pattern_id
+    pattern_option = get_object_or_404(PatternOption, pk=pattern_id)
+
+    context = {
+        'pattern_option': pattern_option,
+    }
+
+    return render(request, 'design/pattern_details.html', context)
 
 
+# confirm design
 
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+import ast
+
+def confirm_design(request):
+    if request.method == 'POST':
+        # Retrieve the pattern IDs from the POST request
+        selected_fabric_pattern_str = request.POST.get('selectedFabricPattern')
+        selected_neck_pattern_str = request.POST.get('selectedNeckPattern')
+        selected_top_pattern_str = request.POST.get('selectedTopPattern')
+        selected_sleeves_pattern_str = request.POST.get('selectedSleevesPattern')
+        selected_bottom_pattern_str = request.POST.get('selectedBottomPattern')
+        
+
+        
+        
+        # Initialize a list to store selected pattern names
+        selected_patterns = []
+        
+        # Fetch the pattern names from the database and handle errors gracefully
+        def get_pattern_name(pattern_str, pattern_model):
+            try:
+                pattern_id = int(pattern_str)
+                selected_pattern = get_object_or_404(pattern_model, pk=pattern_id)
+                selected_patterns.append(selected_pattern.name)
+            except (ValueError, pattern_model.DoesNotExist):
+                selected_patterns.append('Pattern Not Found')
+        print(f"selected_neck_pattern: {selected_patterns}")
+        get_pattern_name(selected_fabric_pattern_str, Fabric)
+        get_pattern_name(selected_neck_pattern_str, NeckPattern)
+        get_pattern_name(selected_top_pattern_str, TopPattern)
+        get_pattern_name(selected_sleeves_pattern_str, SleevesPattern)
+        get_pattern_name(selected_bottom_pattern_str, BottomPattern)
+        
+        # Calculate the total price (you should have this logic implemented)
+        total_price = 100  # Replace with your actual calculation logic
+        
+        # Render the template with the selected pattern names and total price
+        return redirect('display_selected_patterns', selected_patterns=selected_patterns, total_price=total_price)
+    else:
+        # Handle the case when the request method is not POST (e.g., redirect or show an error)
+        return HttpResponse("Invalid Request")
+
+
+def display_selected_patterns(request, selected_patterns, total_price):
+    # Replace these with your actual data
+    selected_patterns_list = ast.literal_eval(selected_patterns)
+    
+    selected_patterns = {
+        'fabric': selected_patterns_list[0],
+        'neck': selected_patterns_list[1],
+        'top': selected_patterns_list[2],
+        'sleeves': selected_patterns_list[3],
+        'bottom': selected_patterns_list[4],
+    }
+    total_price = 100  # Replace with your actual calculation logic
+
+    context = {
+        
+        'selected_patterns': selected_patterns,
+        'total_price': total_price,
+    }
+
+    return render(request, 'design/confirm_design.html', context)
 
 
 

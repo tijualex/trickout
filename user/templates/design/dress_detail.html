@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'design/base.html' %}
 
 {% block content %}
     <!-- Your content goes here -->
@@ -7,25 +7,50 @@
         <!-- Display the dress type name -->
         <h2>{{ dress_type.dress_type }}</h2>
 
-        <!-- Display the dress type image -->
-        <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" width="300" height="300">
+        <!-- Center the dress type image -->
+        <div style="text-align: center;">
+            <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" width="300" height="300" style="margin: 0 auto;">
+        </div>
 
-        <!-- Display the dress type price -->
         <p>Price: ${{ dress_type.price }}</p>
 
         <!-- Add any other dress details you want to display -->
-
-        <div class="col-md-8">
-            <!-- Dress styling area -->
-            <div class="content">
-                <div class="image-container">
-                    <img src="dress.jpg" alt="Dress Image">
-                    <div class="price-label">$199.99</div>
-                </div>
-                <div class="continue-button">
-                    <button class="btn btn-primary">Continue to Measurements</button>
-                </div>
-            </div>
-        </div>
     </div>
+
+    
+</div>
+
+<script>
+    // Initialize an empty object to store selected pattern details
+    const selectedPatterns = {
+        dressType: null,
+        fabricId: null,
+        topPatternId: null,
+        bottomPatternId: null,
+        sleevesPatternId: null,
+        neckPatternId: null,
+    };
+
+    <script>
+        // JavaScript to handle bottom pattern selection
+        const bottomPatternOptions = document.querySelectorAll('.bottom-pattern-option');
+        // ... (your existing JavaScript for pattern selection) ...
+
+        // Function to update the selectedPatterns object and redirect to the confirm_design URL
+        function updateSelectedPatternsAndRedirect(category, patternId) {
+            selectedPatterns[category] = patternId;
+            const selectedPatternsJson = JSON.stringify(selectedPatterns);
+
+            // Redirect to the confirm_design URL with selected patterns as a query parameter
+            window.location.href = `/confirm_design/?selected_patterns=${selectedPatternsJson}`;
+        }
+
+        // Example: Add a click event listener to a pattern element for each category
+        const fabricElement = document.getElementById('your-fabric-element'); // Replace with your actual fabric element
+        fabricElement.addEventListener('click', () => {
+            const fabricId = fabricElement.getAttribute('data-pattern-id'); // Get the fabric ID from the element
+            updateSelectedPatternsAndRedirect('fabricId', fabricId); // Update the selectedPatterns object and redirect
+        });
+    </script>
+</script>
 {% endblock %}

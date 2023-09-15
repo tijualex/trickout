@@ -1,26 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <!-- ... other meta tags and title ... -->
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Add Bootstrap JavaScript and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- ... your custom styles ... -->
-    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
-
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dress Styling</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        /* styles.css */
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dress Styling</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Font Awesome CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
+        
+        <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -143,6 +138,11 @@
             font-size: 24px;
             font-weight: bold;
         }
+
+        /* Add a blue border to the selected pattern */
+        .selected {
+            border: 2px solid blue;
+        }
     </style>
 </head>
 <body>
@@ -157,103 +157,172 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 right-panel">
-
-                
-                
                 <!-- Right panel with options -->
                 <h2 style="font-size: 28px; color: #fff; background-color: #c7ccd2; padding: 10px 20px; font-family: 'Caveat', cursive;">Style</h2>
 
-
+                <!-- Your dress type details -->
+                <!-- Display the Fabric Pattern options -->
                 <div class="options" data-toggle="collapse" href="#fabricPatternOptions">
-                    <i class="fas fa-edit"></i> Fabric 
+                    <i class="fas fa-edit"></i> Fabric Pattern
                     <div id="fabricPatternOptions" class="collapse sub-options">
-                        <!-- Add sub-options for Fabric Pattern here -->
-                        <div class="image-container">
-                            <img src="fabric_pattern_1.jpg" alt="Fabric Pattern 1">
+                        {% for fabric in fabric %}
+                        <div class="image-container fabric-option" data-pattern-id="{{ fabric.custom_id }}">
+                            <img src="{{ fabric.image.url }}" alt="{{ fabric.name }}">
                         </div>
-                        <div class="image-container">
-                            <img src="fabric_pattern_2.jpg" alt="Fabric Pattern 2">
-                        </div>
-                        <!-- Add more sub-options as needed -->
+                        {% endfor %}
                     </div>
+                    <input type="hidden" id="selectedFabric" name="selectedFabric" value="">
                 </div>
+
+                <!-- Display the Neck Pattern options -->
                 <div class="options" data-toggle="collapse" href="#neckPatternOptions">
                     <i class="fas fa-edit"></i> Neck Pattern
                     <div id="neckPatternOptions" class="collapse sub-options">
-                        <div class="image-container">
-                            <img src="neck_pattern_1.jpg" alt="Neck Pattern 1">
+                        {% for pattern in neck_patterns %}
+                        <div class="image-container neck-pattern-option" data-pattern-id="{{ pattern.custom_id }}">
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}">
                         </div>
-                        <div class="image-container">
-                            <img src="neck_pattern_2.jpg" alt="Neck Pattern 2">
-                        </div>
-                        <div class="image-container">
-                            <img src="neck_pattern_3.jpg" alt="Neck Pattern 3">
-                        </div>
-                        <div class="image-container">
-                            <img src="neck_pattern_4.jpg" alt="Neck Pattern 4">
-                        </div>
+                        {% endfor %}
                     </div>
+                    <input type="hidden" id="selectedNeck" name="selectedNeck" value="">
                 </div>
-                <div class="options" data-toggle="collapse" href="#sleevesPatternOptions">
-                    <i class="fas fa-edit"></i> Sleeves Pattern
-                    <div id="sleevesPatternOptions" class="collapse sub-options">
-                        <!-- Add sub-options for Sleeves Pattern here -->
-                        <div class="image-container">
-                            <img src="sleeves_pattern_1.jpg" alt="Sleeves Pattern 1">
-                        </div>
-                        <div class="image-container">
-                            <img src="sleeves_pattern_2.jpg" alt="Sleeves Pattern 2">
-                        </div>
-                        <!-- Add more sub-options as needed -->
-                    </div>
-                </div>
-                
+
+                <!-- Display the Top Pattern options -->
                 <div class="options" data-toggle="collapse" href="#topPatternOptions">
                     <i class="fas fa-edit"></i> Top Pattern
                     <div id="topPatternOptions" class="collapse sub-options">
-                        <!-- Add sub-options for Top Pattern here -->
-                        <div class="image-container">
-                            <img src="top_pattern_1.jpg" alt="Top Pattern 1">
+                        {% for pattern in top_patterns %}
+                        <div class="image-container top-pattern-option" data-pattern-id="{{ pattern.custom_id }}">
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}">
                         </div>
-                        <div class="image-container">
-                            <img src="top_pattern_2.jpg" alt="Top Pattern 2">
-                        </div>
-                        <!-- Add more sub-options as needed -->
+                        {% endfor %}
                     </div>
+                    <input type="hidden" id="selectedTop" name="selectedTop" value="">
                 </div>
-                
+
+                <!-- Display the Sleeves Pattern options -->
+                <div class="options" data-toggle="collapse" href="#sleevesPatternOptions">
+                    <i class="fas fa-edit"></i> Sleeves Pattern
+                    <div id="sleevesPatternOptions" class="collapse sub-options">
+                        {% for pattern in sleeves_patterns %}
+                        <div class="image-container sleeves-pattern-option" data-pattern-id="{{ pattern.custom_id }}">
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" id="selectedSleeves" name="selectedSleeves" value="">
+                </div>
+
+                <!-- Display the Bottom Pattern options -->
                 <div class="options" data-toggle="collapse" href="#bottomPatternOptions">
                     <i class="fas fa-edit"></i> Bottom Pattern
                     <div id="bottomPatternOptions" class="collapse sub-options">
-                        <!-- Add sub-options for Bottom Pattern here -->
-                        <div class="image-container">
-                            <img src="bottom_pattern_1.jpg" alt="Bottom Pattern 1">
+                        {% for pattern in bottom_patterns %}
+                        <div class="image-container bottom-pattern-option" data-pattern-id="{{ pattern.custom_id }}">
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}">
                         </div>
-                        <div class="image-container">
-                            <img src="bottom_pattern_2.jpg" alt="Bottom Pattern 2">
-                        </div>
-                        <!-- Add more sub-options as needed -->
+                        {% endfor %}
                     </div>
+                    <input type="hidden" id="selectedBottom" name="selectedBottom" value="">
                 </div>
-                
-               
             </div>
+            
             <div class="col-md-8">
                 <!-- Dress styling area -->
-                {%block content%}{%endblock%}
+                {% block content %}{% endblock %}
             </div>
+            
+            <form id="patternForm" method="POST" action="{% url 'confirm_design' %}">
+                {% csrf_token %}
+                <!-- Hidden input fields to store pattern IDs -->
+                <input type="hidden" id="selectedFabricPattern" name="selectedFabricPattern" value="">
+                <input type="hidden" id="selectedNeckPattern" name="selectedNeckPattern" value="">
+                <input type="hidden" id="selectedTopPattern" name="selectedTopPattern" value="">
+                <input type="hidden" id="selectedSleevesPattern" name="selectedSleevesPattern" value="">
+                <input type="hidden" id="selectedBottomPattern" name="selectedBottomPattern" value="">
+                
+                <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+                    <button type="submit" class="btn btn-primary" id="next-button">Next</button>
+                </div>
+            </form>
         </div>
     </div>
-<!-- scripts -->
+    <!-- scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        function toggleSubOptions(option) {
-            const subOptions = option.querySelector('.sub-options');
-            subOptions.classList.toggle('active');
+        function initializePatternSelection(patternClass, hiddenInputId, selectedPatternId) {
+            const patternOptions = document.querySelectorAll(`.${patternClass}`);
+    
+            patternOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove the 'selected' class from all options
+                    patternOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+    
+                    // Add the 'selected' class to the clicked option
+                    option.classList.add('selected');
+    
+                    // Get the selected pattern's ID (custom_id)
+                    const patternId = option.getAttribute('data-pattern-id');
+
+                    console.log(patternId);
+    
+                    // Store the selected pattern ID in the hidden input field
+                    document.getElementById(hiddenInputId).value = patternId;
+                });
+            });
+    
+            // Find the default option based on the selectedPatternId
+            const defaultOption = [...patternOptions].find(option => option.getAttribute('data-pattern-id') === selectedPatternId);
+    
+            // Highlight the default option and set the initial pattern
+            if (defaultOption) {
+                defaultOption.classList.add('selected');
+    
+                // Get the selected pattern's ID (custom_id)
+                const patternId = defaultOption.getAttribute('data-pattern-id');
+    
+                // Store the selected pattern ID in the hidden input field
+                document.getElementById(hiddenInputId).value = patternId;
+            }
         }
+    
+        // Initialize pattern selections individually
+        initializePatternSelection('fabric-option', 'selectedFabric', '{{ selected_fabric_pattern }}');
+        initializePatternSelection('neck-pattern-option', 'selectedNeck', '{{ selected_neck_pattern }}');
+        initializePatternSelection('top-pattern-option', 'selectedTop', '{{ selected_top_pattern }}');
+        initializePatternSelection('sleeves-pattern-option', 'selectedSleeves', '{{ selected_sleeves_pattern }}');
+        initializePatternSelection('bottom-pattern-option', 'selectedBottom', '{{ selected_bottom_pattern }}');
+    
+        document.getElementById('next-button').addEventListener('click', () => {
+            // Collect selected pattern IDs
+            const selectedFabricPattern = document.getElementById('selectedFabric').value;
+            const selectedNeckPattern = document.getElementById('selectedNeck').value;
+            const selectedTopPattern = document.getElementById('selectedTop').value;
+            const selectedSleevesPattern = document.getElementById('selectedSleeves').value;
+            const selectedBottomPattern = document.getElementById('selectedBottom').value;
+            console.log(selectedFabricPattern);
+            console.log(selectedNeckPattern);
+            console.log(selectedTopPattern);
+            console.log(selectedBottomPattern);
+            console.log(selectedSleevesPattern);
+
+
+    
+            // Set these values as form inputs
+            document.getElementById('selectedFabricPattern').value = selectedFabricPattern;
+            document.getElementById('selectedNeckPattern').value = selectedNeckPattern;
+            document.getElementById('selectedTopPattern').value = selectedTopPattern;
+            document.getElementById('selectedSleevesPattern').value = selectedSleevesPattern;
+            document.getElementById('selectedBottomPattern').value = selectedBottomPattern;
+    
+            // Submit the form
+            document.getElementById('patternForm').submit();
+        });
     </script>
 </body>
 </html>
