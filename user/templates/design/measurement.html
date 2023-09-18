@@ -4,65 +4,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Person Measurements Form</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Measurement Submission</title>
+    <!-- Add your CSS links here, e.g., Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Person Measurements Form</h1>
-        <form method="post" action="{% url 'measurement_sub' %}">
+    <!-- Navigation bar -->
+    <!-- ... (Your navigation bar code remains unchanged) ... -->
+
+    <div class="container mt-5">
+        <h2>Submit Your Measurements</h2>
+        <form method="post" onsubmit="return validateForm()">
             {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="waist">Waist (in centimeters):</label>
-                        <input type="number" class="form-control" id="waist" name="waist" min="0" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="shoulder">Shoulder Width (in centimeters):</label>
-                        <input type="number" class="form-control" id="shoulder" name="shoulder" min="0" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="chest">Chest Circumference (in centimeters):</label>
-                        <input type="number" class="form-control" id="chest" name="chest" min="0" required>
-                    </div>
-                </div>
-                <div class="col-md-6"> 
-                    <div class="form-group">
-                        <label for="stomach">Stomach (in centimeters):</label>
-                        <input type="number" class="form-control" id="stomach" name="stomach" min="0" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6"> 
-                    <div class="form-group">
-                        <label for="hips">Hips (in centimeters):</label>
-                        <input type="number" class="form-control" id="hips" name="hips" min="0" required>
-                    </div>
-                </div>
-                <div class="col-md-6"> 
-                    <div class="form-group">
-                        <label for="gender">Gender:</label>
-                        <select class="form-control" id="gender" name="gender" required>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+            <div class="form-group">
+                <label for="shoulder">Shoulder:</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" class="form-control" id="shoulder" name="shoulder" required
+                           min="16" max="20"> <!-- Set minimum and maximum values -->
+                    <div class="input-group-append">
+                        <select class="form-control" id="shoulderUnit" name="shoulderUnit">
+                            <option value="inches">Inches</option>
+                            <option value="cm">Centimeters</option>
                         </select>
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="waist">Waist:</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" class="form-control" id="waist" name="waist" required
+                           min="16" max="20"> <!-- Set minimum and maximum values -->
+                    <div class="input-group-append">
+                        <select class="form-control" id="waistUnit" name="waistUnit">
+                            <option value="inches">Inches</option>
+                            <option value="cm">Centimeters</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="chest">Chest:</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" class="form-control" id="chest" name="chest" required
+                           min="16" max="20"> <!-- Set minimum and maximum values -->
+                    <div class="input-group-append">
+                        <select class="form-control" id="chestUnit" name="chestUnit">
+                            <option value="inches">Inches</option>
+                            <option value="cm">Centimeters</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat similar input groups for other measurements -->
+            <div class="form-group">
+                <label for="hip">Hip:</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" class="form-control" id="hip" name="hip" required
+                           min="16" max="20"> <!-- Set minimum and maximum values -->
+                    <div class="input-group-append">
+                        <select class="form-control" id="hipUnit" name="hipUnit">
+                            <option value="inches">Inches</option>
+                            <option value="cm">Centimeters</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inseam">Inseam length:</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" class="form-control" id="inseam" name="inseam" required
+                           min="15" max="20"> <!-- Set minimum and maximum values -->
+                    <div class="input-group-append">
+                        <select class="form-control" id="inseamUnit" name="inseamUnit">
+                            <option value="inches">Inches</option>
+                            <option value="cm">Centimeters</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- End of input groups for other measurements -->
             <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
     </div>
+
+    <!-- Add your JS scripts and Bootstrap/other JS libraries here if needed -->
+    <script>
+        function validateForm() {
+            // Validate your form here before submission
+            const shoulder = parseFloat(document.getElementById("shoulder").value);
+            const waist = parseFloat(document.getElementById("waist").value);
+            const chest = parseFloat(document.getElementById("chest").value);
+            const hip = parseFloat(document.getElementById("hip").value);
+            const inseam = parseFloat(document.getElementById("inseam").value);
+
+            // Validate each measurement
+            if (shoulder < 16 || shoulder > 24) {
+                alert("Shoulder measurement must be between 16 and 20 inches.");
+                return false;
+            }
+            if (waist < 20 || waist > 50) {
+                alert("Waist measurement must be between 16 and 20 inches.");
+                return false;
+            }
+            if (chest < 26 || chest > 50) {
+                alert("Chest measurement must be between 16 and 20 inches.");
+                return false;
+            }
+            if (hip < 20 || hip > 50) {
+                alert("Hip measurement must be between 16 and 20 inches.");
+                return false;
+            }
+            if (inseam < 15 || inseam > 25) {
+                alert("Inseam measurement must be between 15 and 20 inches.");
+                return false;
+            }
+
+            // If all measurements are valid, the form will be submitted
+            return true;
+        }
+    </script>
 </body>
 </html>

@@ -10,79 +10,79 @@
         <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
             <div>
                 <h1>All Top Models</h1>
-                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
                     <span><i class="mdi mdi-chevron-right"></i></span>All Top Models
                 </p>
             </div>
             <div>
-                <a href="{% url 'add_top_pattern' %}" class="btn btn-primary"> Add Top Models</a>
+                <a href="{% url 'add_top_pattern' %}" class="btn btn-primary"> Add Top Model</a>
             </div>
         </div>
 
-        <div class="fabric-grid">
-            {% for top_pattern in top_patterns %}
-            <div class="fabric-grid-card">
-                <img src="{{ top_pattern.image.url }}" alt="{{ top_pattern.name }}" />
-                <h3>{{ top_pattern.name }}</h3>
-                <p>Price: ${{ top_pattern.price }}</p>
-                <p>Dress Type: {{ top_pattern.dress_type.dress_type }}</p>
-                <!-- Update Top Pattern Button -->
-                <a class="btn btn-primary btn-sm update-top-pattern" href="#"
-                    data-top-pattern-id="{{ top_pattern.id }}">Update</a>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Dress Type</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for top_pattern in top_patterns %}
+                    <tr>
+                        <td>{{ top_pattern.custom_id }}</td>
+                        <td>{{ top_pattern.name }}</td>
+                        <td>
+                            <img src="{{ top_pattern.image.url }}" alt="{{ top_pattern.name }}" width="100" height="100">
+                        </td>
+                        <td>{{ top_pattern.dress_type.dress_type }}</td>
+                        <td>${{ top_pattern.price }}</td>
+                        <td>
+                            <!-- Update Top Pattern Button -->
+                            <a class="btn btn-primary btn-sm update-top-pattern" href="#" data-top-pattern-id="{{ top_pattern.id }}">Update</a>
 
-                <!-- Delete Top Pattern Button -->
-                <a class="btn btn-danger btn-sm delete-top-pattern" href="#"
-                    data-top-pattern-id="{{ top_pattern.id }}">Delete</a>
-
-            </div>
-            {% empty %}
-            <p>No top patterns available.</p>
-            {% endfor %}
+                            <!-- Delete Top Pattern Button -->
+                            <a class="btn btn-danger btn-sm delete-top-pattern" href="#" data-top-pattern-id="{{ top_pattern.id }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No top models available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
     </div>
 </div>
 
-<!-- Add JavaScript for top pattern selection and highlighting -->
+<!-- Add JavaScript for selection and highlighting -->
 <script>
-    <script>
-	
-        $(document).ready(function () {
-            const updateTopPatternForm = document.getElementById("update-top-pattern-form");
-        
-            updateTopPatternForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-        
-                // Collect the updated data from the form
-                const formData = new FormData(updateTopPatternForm);
-        
-                // Extract the top_pattern_id from the form or data attributes
-                const topPatternId = document.getElementById("top-pattern-id").value;
-        
-                // Send an AJAX request to the update URL
-                $.ajax({
-                    url: `/update_top_pattern/${topPatternId}`,
-                    method: "POST",
-                    data: {
-                        top_pattern_id: topPatternId,
-                        // Include other data you want to update (e.g., price, is_active)
-                    },
-                    success: function (data) {
-                        // Handle success (e.g., show a success message)
-                        console.log(data.message);
-                        // Optionally, you can reload the page or perform other actions here
-                    },
-                    error: function (error) {
-                        // Handle errors (e.g., display an error message)
-                        console.error("Error updating Top Pattern:", error);
-                    },
-                });
-            });
+    $(document).ready(function () {
+        $('.table tbody tr').hover(function () {
+            // Mouse over
+            $(this).addClass('bg-primary text-white');
+        }, function () {
+            // Mouse out
+            $(this).removeClass('bg-primary text-white');
         });
-        
-    </script>
+
+        $('.table tbody tr').click(function () {
+            // Clicked
+            $('.table tbody tr').removeClass('selected'); // Deselect all
+            $(this).addClass('selected');
+            
+            // Get the selected top pattern ID
+            var topPatternId = $(this).find('.update-top-pattern').data('top-pattern-id');
+            console.log('Selected Top Pattern ID: ' + topPatternId);
+        });
+    });
 </script>
 
-</div> <!-- End Content -->
-</div>
 {% endblock %}

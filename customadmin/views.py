@@ -4,7 +4,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import BottomPattern, Fabric, NeckPattern, DressType, SleevesPattern, TopPattern
+
+from user.models import PersonMeasurement
+from .models import BottomPattern, Designs, Fabric, NeckPattern, DressType, SleevesPattern, TopPattern
 
 
 def admin_index(request):
@@ -17,8 +19,6 @@ def admin_index(request):
 
 
 # neck pattern
-@login_required
-@csrf_exempt
 @login_required
 @csrf_exempt
 def add_neck_pattern(request):
@@ -320,6 +320,7 @@ def add_dress_type(request):
             # Extract form data from the request
             dress_type_name = request.POST['dress_type']
             image = request.FILES['image']  # Get the uploaded image file
+            dress_type_price = request.POST['price']
 
             # Check if a DressType with the same name already exists
             existing_dress_type = DressType.objects.filter(dress_type=dress_type_name).first()
@@ -327,7 +328,7 @@ def add_dress_type(request):
                 return JsonResponse({'message': 'DressType with the same name already exists'}, status=400)
 
             # Continue with saving the new DressType to the database
-            dress_type = DressType(dress_type=dress_type_name, image=image)
+            dress_type = DressType(dress_type=dress_type_name, image=image,price=dress_type_price)
             dress_type.save()
 
             # Redirect to the dress_type_grid URL upon successful addition
@@ -346,3 +347,39 @@ def list_dress_type(request):
 
 def list_product(request):
     return render(request, 'product_grid.html')
+
+
+
+
+
+# users design
+
+def users_design(request):
+    # Retrieve a list of Designs objects
+    designs = Designs.objects.all()
+
+    # Create a dictionary to store measurement_ids for each design
+    measurement_ids_dict = {}
+
+    # Retrieve measurement IDs for each design
+    for design in designs:
+        measurement_ids = PersonMeasurement.objects.filter(design=design).values_list('measurement_id', flat=True)
+        measurement_ids_dict[design.design_id] = measurement_ids
+
+    context = {
+        'designs': designs,
+        'measurement_ids_dict': measurement_ids_dict,
+    }
+
+    return render(request, 'users_design.html', context)
+
+
+def measurement_display(request, design_id):
+    # Retrieve the measurement object based on the design ID or handle 404 error
+    measurement = get_object_or_404(PersonMeasurement, design__design_id=design_id)
+
+    context = {
+        'measurement': measurement,
+    }
+
+    return render(request, 'mesurement_view.html', context)

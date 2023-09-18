@@ -142,7 +142,7 @@
     <a class="directory-link" href="#" onclick="history.go(-1);">Back to Previous Page</a>
 
     <label for="selectedDressType" class="field-label">Selected Dress Type:</label>
-<p id="selectedDressType">{{ selected_dress_type }}</p>
+<p id="selectedDressType">{{ selected_patterns.desstype }}</p>
 
 <!-- Pattern Container with Label -->
 <label for="patternContainer" class="field-label">Selected Patterns:</label>
@@ -168,8 +168,22 @@
 <div class="estimated-cost" id="estimatedCost">${{ total_price }}</div>
 
 <!-- Confirm Order Button -->
-<a href="{% url "measurement_sub" %}"
-<button class="confirm-button">Confirm Order</button>
+<!-- Add this hidden input field to store selected_pattern_id_dict -->
+<form method="post" action="{% url 'create_design' %}">
+    {% csrf_token %}
+    <!-- Add this hidden input field to store selected_pattern_id_dict -->
+    <input type="hidden" name="fabric_id" value="{{ selected_patterns_id.fabric_id }}">
+    <input type="hidden" name="neck_id" value="{{ selected_patterns_id.neck_id }}">
+    <input type="hidden" name="top_id" value="{{ selected_patterns_id.top_id }}">
+    <input type="hidden" name="sleeves_id" value="{{ selected_patterns_id.sleeves_id }}">
+    <input type="hidden" name="bottom_id" value="{{ selected_patterns_id.bottom_id }}">
+    <input type="hidden" name="desstype_id" value="{{ selected_patterns_id.desstype_id }}">
+
+    <button type="submit" class="confirm-button">Confirm Order</button>
+</form>
+
+
+</form>
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,15 +145,61 @@
             border: 2px solid blue;
         }
     </style>
+    
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <img src="logo.png" alt="Your Logo">
+    <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
+        <a href="index.html" class="navbar-brand" id="trickoutlogo" >
+            <img class="img-fluid" src="{% static 'images/8.png' %}" alt="Logo">
+            <a id="logoname" href="#">trickout </a>
+        </a>
+        <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto" style="text-decoration: none;
+            text-shadow: rgba(1, 1, 1, 0.25) 0px 14px 28px, rgba(1, 1, 1, 0.22) 0px 3px 3px;">
+                <a href="#" class="nav-item nav-link active">Home</a>
+                <a href="#" class="nav-item nav-link">About</a>
+                {% if user.is_authenticated %}
+                    <li class="dropdown user-menu">
+                        <button class="dropdown-toggle nav-link ec-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ user.profile_image.url }}" class="user-image" alt="User Image" />
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right ec-dropdown-menu">
+                            <!-- User image -->
+                            <li class="dropdown-header">
+                                <div class="d-inline-block">
+                                    <h5>{{ user.get_name }}</h5>
+                                    <p class="pt-2">{{ user.email }}</p>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="{% url 'profile' %}">
+                                    <i class="mdi mdi-account"></i> My Profile
+                                </a>
+                            </li>
+                            <li class="dropdown-footer">
+                                <a href="{% url 'logout_view' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                <!-- Render a login button or other content for non-authenticated users -->
+                <li>
+                    <a href="{% url 'login_view' %}" class="nav-item nav-link">Log In</a>
+                </li>
+                {% endif %}
+
+            
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+            </div>
+            <div class="border-start ps-4 d-none d-lg-block">
+                <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
+            </div>
         </div>
-        <ul class="navbar-links">
-            <li><a href="#">Home</a></li>
-        </ul>
     </nav>
     <div class="container-fluid">
         <div class="row">

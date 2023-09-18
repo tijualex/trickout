@@ -1,54 +1,97 @@
 {% extends 'base.html' %}
 {% load static %}
-{%block content %}
+{% block content %}
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper breadcrumb-contacts">
+            <div>
+                <h1>Add Top Pattern</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>Add Top Pattern</p>
+            </div>
+            <div>
+                <a href="{% url 'list_top_pattern' %}" class="btn btn-primary">All Top Patterns</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 offset-lg-2 col-lg-12">
+                <div class="ec-cat-list card card-default mb-24px">
+                    <div class="card-body">
+                        <div class="ec-cat-form">
+                            <h2>Add New Top Pattern</h2>
+                            <form method="post" enctype="multipart/form-data" id="add-top-pattern-form">
+                                {% csrf_token %}
+                                <label for="name">Pattern Name:</label>
+                                <input type="text" id="name" name="name" required><br>
+                            
+                                <label for="image">Pattern Image:</label>
+                                <input type="file" id="image" name="image" accept="image/jpeg,image/png" required><br>
+                            
+                                <label for="dressType">Dress Type:</label>
+                                <select id="dressType" name="dressType" required>
+                                    {% for dress_type in dress_types %}
+                                    <option value="{{ dress_type.pk }}">{{ dress_type.dress_type }}</option>
+                                    {% endfor %}
+                                </select><br>
+                            
+                                <label for="price">Price:</label>
+                                <input type="number" id="price" name="price" step="0.01" min="11" required><br><br>
 
-			<!-- CONTENT WRAPPER -->
-			<div class="ec-content-wrapper">
-				<div class="content">
-					<div class="breadcrumb-wrapper breadcrumb-contacts">
-						<div>
-							<h1>Add Top Pattern</h1>
-							<p class="breadcrumbs"><span><a href={% url 'admin_index' %}>Home</a></span>
-								<span><i class="mdi mdi-chevron-right"></i></span>Add Top Pattern
-							</p>
-						</div>
-						<div>
-							<a href={% url 'list_top_pattern'%} class="btn btn-primary">All Top Patterns</a>
-						</div>
+                                <p class="error-message" id="error-message"></p>
 
-					</div>
-					<div class="row">
-						<div class="col-xl-8 offset-lg-2 col-lg-12">
-							<div class="ec-cat-list card card-default mb-24px">
-								<div class="card-body">
-									<div class="ec-cat-form">
-                                        <h2>Add New Top Pattern</h2>
-                                        <form method="post" enctype="multipart/form-data" id="add-bottom-pattern-form">
-                                            {% csrf_token %}
-                                            <label for="name">Pattern Name:</label>
-                                            <input type="text" id="name" name="name" required><br>
-                                        
-                                            <label for="image">Pattern Image:</label>
-                                            <input type="file" id="image" name="image" accept="image/*" required><br>
-                                        
-                                            <label for="dressType">Dress Type:</label>
-                                            <select id="dressType" name="dressType" required>
-                                                {% for dress_type in dress_types %}
-                                                <option value="{{ dress_type.pk }}">{{ dress_type.dress_type }}</option>
-                                                {% endfor %}
-                                            </select><br>
-                                        
-                                            <label for="price">Price:</label>
-                                            <input type="number" id="price" name="price" step="0.01" min="0" required><br><br>
-                                        
-                                            <button type="submit" class="btn btn-primary">Add Bottom Pattern</button>
-                                            <div id="json-response"></div>
-                                        </form>
+                                <button type="submit" class="btn btn-primary">Add Top Pattern</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Content -->
+</div> <!-- End Content Wrapper -->
 
-									</div>
-								</div>
-							</div>
-						</div>
-					</div> <!-- End Content -->
-				</div> <!-- End Content Wrapper -->
-{%endblock%}
+<script>
+    // JavaScript validation function
+    function validateForm() {
+        var name = document.getElementById("name").value;
+        var image = document.getElementById("image").value;
+        var dressType = document.getElementById("dressType").value;
+        var price = parseFloat(document.getElementById("price").value);
+
+        var errorMessage = "";
+
+        // Check if the price is greater than or equal to 11
+        if (price < 11) {
+            errorMessage = "Price must be greater than or equal to 11.";
+        }
+
+        // Check if the name is empty
+        if (name.trim() === "") {
+            errorMessage += " Pattern Name is required.";
+        }
+
+        // Check if an image is selected
+        if (image.trim() === "") {
+            errorMessage += " Pattern Image is required.";
+        }
+
+        // Check if a Dress Type is selected
+        if (dressType === "") {
+            errorMessage += " Dress Type is required.";
+        }
+
+        // Display error message if there are validation errors
+        if (errorMessage !== "") {
+            document.getElementById("error-message").innerHTML = errorMessage;
+            return false;
+        }
+
+        return true;
+    }
+
+    // Attach the validation function to the form's submit event
+    document.getElementById("add-top-pattern-form").onsubmit = function () {
+        return validateForm();
+    };
+</script>
+{% endblock %}

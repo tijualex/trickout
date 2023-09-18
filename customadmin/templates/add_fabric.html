@@ -5,43 +5,84 @@
 {% block content %}
 <!-- CONTENT WRAPPER -->
 <div class="ec-content-wrapper">
-	<div class="content">
-		<div class="breadcrumb-wrapper breadcrumb-contacts">
-			<div>
-				<h1>Add fabric</h1>
-				<p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
-					<span><i class="mdi mdi-chevron-right"></i></span>Add fabric</p>
-			</div>
-			<div>
-				<a href="{% url 'fabric_grid' %}" class="btn btn-primary">All fabrics</a>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xl-8 offset-lg-2 col-lg-12">
-				<div class="ec-cat-list card card-default mb-24px">
-					<div class="card-body">
-						<div class="ec-cat-form">
-							<h2>Add New Fabric</h2>
-							<form method="post" enctype="multipart/form-data">
-								{% csrf_token %}
-								<label for="name">Fabric Name:</label>
-								<input type="text" id="name" name="name" required><br>
+    <div class="content">
+        <div class="breadcrumb-wrapper breadcrumb-contacts">
+            <div>
+                <h1>Add fabric</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>Add fabric</p>
+            </div>
+            <div>
+                <a href="{% url 'fabric_grid' %}" class="btn btn-primary">All fabrics</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 offset-lg-2 col-lg-12">
+                <div class="ec-cat-list card card-default mb-24px">
+                    <div class="card-body">
+                        <div class="ec-cat-form">
+                            <h2>Add New Fabric</h2>
+                            <form method="post" enctype="multipart/form-data" id="fabricForm">
+                                {% csrf_token %}
+                                <label for="name">Fabric Name:</label>
+                                <input type="text" id="name" name="name" required><br>
 
-								<label for="fabric_image">Fabric Image:</label>
-								<input type="file" id="fabric_image" name="fabric_image" accept="image/*" required><br>
+                                <label for="fabric_image">Fabric Image:</label>
+                                <input type="file" id="fabric_image" name="fabric_image" accept="image/jpeg,image/png" required><br>
 
-								<label for="price">Price:</label>
-								<input type="number" id="price" name="price" step="0.01" min="0" required><br><br>
+                                <label for="price">Price:</label>
+                                <input type="number" id="price" name="price" step="0.01" min="11" required><br><br>
 
-								<button type="submit" class="btn btn-primary">Add Fabric</button>
-								<div id="json-response"></div>
-							</form>
+                                <p class="error-message" id="error-message"></p>
 
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> <!-- End Content -->
+                                <button type="submit" class="btn btn-primary">Add Fabric</button>
+                                <div id="json-response"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Content -->
 </div> <!-- End Content Wrapper -->
+
+<script>
+    // JavaScript validation function
+    function validateForm() {
+        var name = document.getElementById("name").value;
+        var fabricImage = document.getElementById("fabric_image").value;
+        var price = parseFloat(document.getElementById("price").value);
+
+        var errorMessage = "";
+
+        // Check if the price is greater than or equal to 11
+        if (price < 11) {
+            errorMessage = "Price must be greater than or equal to 11.";
+        }
+
+        // Check if the fabric name is empty
+        if (name.trim() === "") {
+            errorMessage += " Fabric Name is required.";
+        }
+
+        // Check if a fabric image is selected
+        if (fabricImage.trim() === "") {
+            errorMessage += " Fabric Image is required.";
+        }
+
+        // Display error message if there are validation errors
+        if (errorMessage !== "") {
+            document.getElementById("error-message").innerHTML = errorMessage;
+            return false;
+        }
+
+        return true;
+    }
+
+    // Attach the validation function to the form's submit event
+    document.getElementById("fabricForm").onsubmit = function () {
+        return validateForm();
+    };
+</script>
+
 {% endblock %}

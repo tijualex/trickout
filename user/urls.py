@@ -31,12 +31,12 @@ urlpatterns = [
     # design
     
     path('dress_detail/<str:dress_type>/', views.dress_detail, name='dress_detail'),
-    path('pattern/<int:pattern_id>/', views.pattern_details, name='pattern-details'),
     path('confirm_design', views.confirm_design, name='confirm_design'),
-    path('display_selected_patterns/<str:selected_patterns>/<int:total_price>/', views.display_selected_patterns, name='display_selected_patterns'),
+    path('display_selected_patterns/<str:selected_patterns>/<str:selected_pattern_id>/<int:total_price>/', views.display_selected_patterns, name='display_selected_patterns'),
+    path('create_design/', views.create_design, name='create_design'),
 
     # mesurement
-    path('measurement_sub/', views.measurement_sub, name='measurement_sub'),
+    path('measurement/<int:design_id>/', views.measurement_view, name='measurement_view'),
 
 
 

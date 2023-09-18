@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper breadcrumb-contacts">
+            <div>
+                <h1>Measurement Details</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span>/</span>
+                    <span><a href="{% url 'users_design' %}">Users Design</a></span>
+                    <span>/</span>
+                    <span>Measurement Details</span>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 offset-lg-2 col-lg-12">
+                <div class="ec-cat-list card card-default mb-24px">
+                    <div class="card-body">
+                        <div class="measurement-table">
+                            <h2>Measurements</h2>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Measurement Type</th>
+                                        <th>Measurement Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Waist</td>
+                                        <td>{{ measurement.waist }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shoulder</td>
+                                        <td>{{ measurement.shoulder }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chest</td>
+                                        <td>{{ measurement.chest }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hips</td>
+                                        <td>{{ measurement.hips }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inseam Length</td>
+                                        <td>{{ measurement.inseam_length }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="{% url 'users_design' %}" class="btn btn-primary">Back to Designs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Content -->
+</div> <!-- End Content Wrapper -->
+{% endblock %}

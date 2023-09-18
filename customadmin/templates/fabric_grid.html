@@ -1,43 +1,63 @@
-{% extends 'design/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <h1>Select a Fabric</h1>
-    <div class="row">
-        {% for fabric in fabrics %}
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-            <div class="card fabric-card">
-                <img src="{{ fabric.fabric_image.url }}" class="card-img-top" alt="{{ fabric.name }}" width="200" height="200">
-                <div class="card-body" data-id="{{ fabric.id }}">
-                    <h5 class="card-title" style="color: black;">{{ fabric.name }}</h5>
-                    <p class="card-text">Unit Price: ${{ fabric.price }}</p>
-                </div>
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Bottom Patterns</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Fabric
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_fabric' %}" class="btn btn-primary">Add Fabric</a>
             </div>
         </div>
-        {% endfor %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fabric in fabrics %}
+                    <tr data-toggle="modal" data-target="#fabricModal{{ fabric.id }}">
+                        <td><img src="{{ fabric.fabric_image.url }}" alt="{{ fabric.name }}" width="50"></td>
+                        <td>{{ fabric.name }}</td>
+                        <td>${{ fabric.price }}</td>
+                    </tr>
+
+                    <!-- Fabric Modal -->
+                    <div class="modal fade" id="fabricModal{{ fabric.id }}" tabindex="-1" role="dialog" aria-labelledby="fabricModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="fabricModalLabel">{{ fabric.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <img src="{{ fabric.fabric_image.url }}" alt="{{ fabric.name }}" width="100%">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No fabrics available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<!-- Add JavaScript for fabric selection and highlighting -->
-<script>
-    $(document).ready(function () {
-        $('.fabric-card').hover(function () {
-            // Mouse over
-            $(this).addClass('bg-primary text-white');
-        }, function () {
-            // Mouse out
-            $(this).removeClass('bg-primary text-white');
-        });
-
-        $('.fabric-card').click(function () {
-            // Clicked
-            $('.fabric-card').removeClass('selected'); // Deselect all
-            $(this).addClass('selected');
-            
-            // Get the selected fabric ID
-            var fabricId = $(this).find('.card-body').data('id');
-            console.log('Selected Fabric ID: ' + fabricId);
-        });
-    });
-</script>
 {% endblock %}

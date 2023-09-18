@@ -32,7 +32,9 @@ urlpatterns = [
     path('list_sleeves_pattern/', views.list_sleeves_pattern, name='list_sleeves_pattern'),
     
     
-    path('list_product/', views.list_product, name='list_product'),
+    # designs view
+    path('users_design/', views.users_design, name='users_design'),
+    path('measurement_display/<int:design_id>/', views.measurement_display, name='measurement_display'),
     
     
 ]

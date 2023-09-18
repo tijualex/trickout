@@ -1,40 +1,65 @@
-<!-- bottompattern_grid.html -->
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 <div class="ec-content-wrapper">
     <div class="content">
         <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
             <div>
-                <h1>All Bottom Patterns</h1>
-                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
-                    <span><i class="mdi mdi-chevron-right"></i></span>All Bottom Patterns
+                <h1>All Dress Types</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Dress Types
                 </p>
             </div>
             <div>
-                <a href="{% url 'add_bottom_pattern' %}" class="btn btn-primary">Add Bottom Pattern</a>
+                <a href="{% url 'add_dress_type' %}" class="btn btn-primary">Add Dress Type</a>
             </div>
         </div>
-
-        <div class="fabric-grid">
-            {% for pattern in bottom_patterns %}
-            <div class="fabric-grid-card">
-                <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="200" height="200" />
-                <h3>{{ pattern.name }}</h3>
-                <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
-                <p>Price: ${{ pattern.price }}</p>
-
-                <!-- Update Bottom Pattern Form -->
-                <form method="post" action="{% url 'update_bottom_pattern' pattern.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="bottom_pattern_id" value="{{ pattern.id }}">
-                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                </form>
-            </div>
-            {% empty %}
-            <p>No bottom patterns available.</p>
-            {% endfor %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Dress Type</th>
+                        <th>Image</th>
+                        <th>Details</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dress_type in dress_types %}
+                        <tr>
+                            <td>
+                                <a href="#" data-toggle="modal" data-target="#dressTypeImageModal{{ dress_type.id }}">
+                                    {{ dress_type.dress_type }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#" data-toggle="modal" data-target="#dressTypeImageModal{{ dress_type.id }}">
+                                    <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" width="100" height="100">
+                                </a>
+                            </td>
+                            <td>{{ dress_type.details }}</td>
+                            <td>${{ dress_type.price }}</td>
+                        </tr>
+                        <!-- Dress Type Image Modal -->
+                        <div class="modal fade" id="dressTypeImageModal{{ dress_type.id }}" tabindex="-1" role="dialog" aria-labelledby="dressTypeImageModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="dressTypeImageModalLabel">{{ dress_type.dress_type }} Image</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

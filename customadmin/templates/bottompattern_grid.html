@@ -17,27 +17,34 @@
             </div>
         </div>
 
-        <<div class="fabric-grid">
-            <div class="row">
+        <!-- Display Bottom Patterns in a table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Pattern Name</th>
+                    <th>Dress Type</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for pattern in bottom_patterns %}
-                <div class="col-md-4">
-                    <div class="fabric-grid-card">
-                        <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="200" height="200" />
-                        <h3>{{ pattern.name }}</h3>
-                        <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
-                        <p>Price: ${{ pattern.price }}</p>
-                        
+                <tr>
+                    <td>{{ pattern.name }}</td>
+                    <td>{{ pattern.dress_type.dress_type }}</td>
+                    <td>${{ pattern.price }}</td>
+                    <td>
                         <!-- Update Bottom Pattern Button -->
                         <a class="btn btn-primary text-white update-product" href="#" data-pattern-id="{{ pattern.custom_id }}">Update</a>
-                    </div>
-                </div>
+                    </td>
+                </tr>
                 {% empty %}
-                <p>No bottom patterns available.</p>
+                <tr>
+                    <td colspan="4">No bottom patterns available.</td>
+                </tr>
                 {% endfor %}
-            </div>
-        </div>
-        
-        </div>
+            </tbody>
+        </table>
         
     </div>
 </div>
@@ -81,6 +88,7 @@
 </div>
 
 <script>
+    // JavaScript code for handling updates and popups
     $(document).ready(function () {
         // Add an event listener for the update buttons
         $(".update-product").click(function () {
@@ -116,69 +124,9 @@
                 },
             });
         }
-  
 
-        const updateButtons = document.querySelectorAll('.update-product');
-        const productFormPopupupdate = document.getElementById('update-bottom-pattern-form');
-        const cancelupdateButton = document.getElementById('cancelupdateButton');
-
-            
-
-        updateButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                productFormPopupupdate.style.display = 'block';
-                const productId = button.getAttribute('data-product-id');
-                document.getElementById('product-id').value = productId;
-                //fetchBottomPatternData(productId);
-            });
-        });
-
-
-        console.log("Script is running");
-
-        const updateProductForm = document.getElementById("update-bottom-pattern-form");
-        updateProductForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-        
-            // Log all form elements and their values
-            console.log("Form Elements:");
-            const formElements = updateProductForm.elements;
-            for (let i = 0; i < formElements.length; i++) {
-                const element = formElements[i];
-                console.log(`${element.name}: ${element.value}`);
-            }
-
-
-            // Collect the updated data from the form
-            const formData = new FormData(updateProductForm);
-            console.log("Form Data:", formData);
-
-            // Extract the product_id from the form or data attributes
-            const productId = document.getElementById("bottom-pattern-id").value;
-
-            console.log("Form submitted");
-            // Send an AJAX request to the update URL
-            $.ajax({
-                url: `/update_bottom_pattern/${productId}/`,
-                method: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    // Handle success (e.g., show a success message)
-                    console.log(data.message);// Replace with the correct URL
-                    window.location.href = "/list_bottom_pattern/"; // 
-                },
-                error: function (error) {
-                    // Handle errors (e.g., display an error message)
-                    console.error("Error updating product:", error);
-                },
-            });
-            
-        });
+        // Rest of your JavaScript code here...
     });
 </script>
 
 {% endblock %}
-
-

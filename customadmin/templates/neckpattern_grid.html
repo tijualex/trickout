@@ -1,35 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
+<!-- Your content for this page goes here -->
+
 <!-- CONTENT WRAPPER -->
 <div class="ec-content-wrapper">
     <div class="content">
-        <!-- ... (your existing code) ... -->
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Neck Patterns</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Neck Patterns
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_neck_pattern' %}" class="btn btn-primary">Add Neck Pattern</a>
+            </div>
+        </div>
 
-        <div class="fabricn-grid">
-            <div class="row">
-                {% for pattern in neck_patterns %}
-
-                <div class="fabric-card col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card">
-                        <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" class="card-img-top" />
-
-                        <!-- Add a data-id attribute to store the pattern ID -->
-                        <div class="card-body" data-id="{{ pattern.id }}">
-                            <h3>{{ pattern.name }}</h3>
-                            <p>Dress Type: {{ pattern.dress_type.dress_type }}</p>
-                            <p>Price: ${{ pattern.price }}</p>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Dress Type</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pattern in neck_patterns %}
+                    <tr>
+                        <td>{{ pattern.id }}</td>
+                        <td>{{ pattern.name }}</td>
+                        <td>
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="100" height="100">
+                        </td>
+                        <td>{{ pattern.dress_type.dress_type }}</td>
+                        <td>${{ pattern.price }}</td>
+                        <td>
                             <!-- Update Neck Pattern Button -->
                             <a class="btn btn-primary btn-sm update-neck-pattern" href="#" data-neck-pattern-id="{{ pattern.id }}">Update</a>
 
                             <!-- Delete Neck Pattern Button -->
                             <a class="btn btn-warning btn-sm delete-neck-pattern" href="#" data-neck-pattern-id="{{ pattern.id }}">Delete</a>
-                        </div>
-                    </div>
-                </div>
-
-                {% endfor %}
-            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No neck patterns available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -38,7 +65,7 @@
 <!-- Add JavaScript for selection and highlighting -->
 <script>
     $(document).ready(function () {
-        $('.fabric-card').hover(function () {
+        $('.table tbody tr').hover(function () {
             // Mouse over
             $(this).addClass('bg-primary text-white');
         }, function () {
@@ -46,14 +73,14 @@
             $(this).removeClass('bg-primary text-white');
         });
 
-        $('.fabric-card').click(function () {
+        $('.table tbody tr').click(function () {
             // Clicked
-            $('.fabric-card').removeClass('selected'); // Deselect all
+            $('.table tbody tr').removeClass('selected'); // Deselect all
             $(this).addClass('selected');
             
             // Get the selected pattern ID
-            var patternId = $(this).find('.card-body').data('id');
-            console.log('Selected Pattern ID: ' + patternId);
+            var patternId = $(this).find('.update-neck-pattern').data('neck-pattern-id');
+            console.log('Selected Neck Pattern ID: ' + patternId);
         });
     });
 </script>

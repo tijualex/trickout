@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from customadmin.models import Designs
+
+from trickout import settings
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, name=None):
@@ -66,14 +69,22 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.name
 
+from django.contrib.auth.models import User
+from django.db import models
+
+
+
 class PersonMeasurement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,default=1)
-    waist = models.PositiveIntegerField()
-    shoulder = models.PositiveIntegerField()
-    chest = models.PositiveIntegerField()
-    stomach = models.PositiveIntegerField()
-    hips = models.PositiveIntegerField()
-    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
+    measurement_id=models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    waist = models.DecimalField(max_digits=5, decimal_places=2)  # Use DecimalField for measurements
+    shoulder = models.DecimalField(max_digits=5, decimal_places=2)
+    chest = models.DecimalField(max_digits=5, decimal_places=2)
+    hips = models.DecimalField(max_digits=5, decimal_places=2)
+    inseam_length = models.DecimalField(max_digits=5, decimal_places=2,default=19.00)
+    design = models.ForeignKey(Designs, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.username}'s Measurements"
+        return f"{self.design.design_id}'s Measurements"
+    
+    
