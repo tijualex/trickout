@@ -299,6 +299,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+
     <script>
         function initializePatternSelection(patternClass, hiddenInputId, selectedPatternId) {
             const patternOptions = document.querySelectorAll(`.${patternClass}`);
@@ -337,6 +338,8 @@
                 document.getElementById(hiddenInputId).value = patternId;
             }
         }
+
+        
     
         // Initialize pattern selections individually
         initializePatternSelection('fabric-option', 'selectedFabric', '{{ selected_fabric_pattern }}');
@@ -366,6 +369,8 @@
             document.getElementById('selectedTopPattern').value = selectedTopPattern;
             document.getElementById('selectedSleevesPattern').value = selectedSleevesPattern;
             document.getElementById('selectedBottomPattern').value = selectedBottomPattern;
+
+            
     
             // Submit the form
             document.getElementById('patternForm').submit();

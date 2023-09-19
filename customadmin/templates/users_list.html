@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="ec-content-wrapper">
+    <div class="content">
+        <h1>All Users</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>
+                        <a href="{% url 'show_user_designs' user.id %}" class="btn btn-primary">User Designs</a>
+                        <a href="{% url 'show_user_orders' user.id %}" class="btn btn-primary">User Orders</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No users available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

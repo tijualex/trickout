@@ -1,11 +1,12 @@
 # # views.py
 
+import decimal
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from user.models import PersonMeasurement
+from user.models import CustomUserManager, PersonMeasurement, User
 from .models import BottomPattern, Designs, Fabric, NeckPattern, DressType, SleevesPattern, TopPattern
 
 
@@ -63,6 +64,55 @@ def list_neck_pattern(request):
     neck_patterns = NeckPattern.objects.all()
     return render(request, 'neckpattern_grid.html', {'neck_patterns': neck_patterns})
 
+
+def get_neck_pattern_details(request, pattern_id):
+    try:
+        pattern = get_object_or_404(NeckPattern, custom_id=pattern_id)
+        pattern_data = {
+            'name': pattern.name,
+            'image_url': pattern.image.url,
+            'details': pattern.details,
+            'dress_type': pattern.dress_type.dress_type,  # Assuming DressType has a 'name' field
+            'price': str(pattern.price),  # Convert DecimalField to string
+            'is_active': pattern.is_active,
+        }
+        return JsonResponse(pattern_data)
+    except NeckPattern.DoesNotExist:
+        return JsonResponse({'error': 'Pattern not found'}, status=404)
+    
+from decimal import Decimal
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+def update_neck_pattern(request, pattern_id):
+    if request.method == 'POST':
+        pattern = get_object_or_404(NeckPattern, custom_id=pattern_id)
+        
+        # Update price and is_active
+        price = request.POST.get('priceupdate', '0.00')
+        print(f"Received price: {price}")  # Debugging: Print received price
+        price_decimal = Decimal(price)
+        is_active = request.POST.get('is-active-update', False)
+        
+        # Convert is_active to a Python boolean
+        is_active = is_active == 'on'
+        print(f"Received is_active: {is_active}")  # Debugging: Print received is_active
+        
+        pattern.price = price_decimal
+        pattern.is_active = is_active
+        
+        # Update image if provided
+        if 'neckPatternImageupdate' in request.FILES:
+            print("Image file provided.")  # Debugging: Print if image file provided
+            pattern.image = request.FILES['neckPatternImageupdate']
+        
+        pattern.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+
+
     
     
     
@@ -115,34 +165,57 @@ from django.http import JsonResponse
 from .models import BottomPattern
 
 @login_required
-def update_bottom_pattern(request, bottom_pattern_id):
+def get_bottom_pattern_details(request, pattern_id):
+    try:
+        pattern = BottomPattern.objects.get(custom_id=pattern_id)
+        pattern_data = {
+            'name': pattern.name,
+            'image_url': pattern.image.url,
+            'details': pattern.details,
+            'dress_type': pattern.dress_type.dress_type,  # Assuming DressType has a 'name' field
+            'price': str(pattern.price),  # Convert DecimalField to string
+            'is_active': pattern.is_active,
+        }
+        return JsonResponse(pattern_data)
+    except BottomPattern.DoesNotExist:
+        return JsonResponse({'error': 'Pattern not found'}, status=404)
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from decimal import Decimal
+
+from decimal import Decimal
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import BottomPattern
+
+def update_bottom_pattern(request, pattern_id):
     if request.method == 'POST':
-        # Get the bottom pattern instance based on the bottom pattern ID
-        bottom_pattern = get_object_or_404(BottomPattern, custom_id=bottom_pattern_id)
-
-        # Process the form data
-        bottom_pattern.price = request.POST.get('priceupdate')
-
-        # Set the is_active field directly to a boolean value
-        bottom_pattern.is_active = request.POST.get('is-active-update') == 'on'
-
-        # Check if a new bottom pattern image is provided
-        if request.FILES.get('bottomPatternImageupdate'):
-            bottom_pattern.image = request.FILES['bottomPatternImageupdate']
-
-        # Save the updated bottom pattern
-        bottom_pattern.save()
-
-        # Return a JSON response indicating success or redirect to a different URL
-        return redirect('list_bottom_pattern')
-
-    # Handle GET requests or other HTTP methods
-    return JsonResponse({'message': 'Invalid request method'}, status=400)
-
-
-
-
-
+        pattern = get_object_or_404(BottomPattern, custom_id=pattern_id)
+        
+        # Update price and is_active
+        price = request.POST.get('priceupdate', '0.00')
+        print(f"Received price: {price}")  # Debugging: Print received price
+        price_decimal = Decimal(price)
+        is_active = request.POST.get('is-active-update', False)
+        
+        # Convert is_active to a Python boolean
+        is_active = is_active == 'on'
+        print(f"Received is_active: {is_active}")  # Debugging: Print received is_active
+        
+        pattern.price = price_decimal
+        pattern.is_active = is_active
+        
+        # Update image if provided
+        if 'bottomPatternImageupdate' in request.FILES:
+            print("Image file provided.")  # Debugging: Print if image file provided
+            pattern.image = request.FILES['bottomPatternImageupdate']
+        
+        pattern.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 
 # top pattern
@@ -188,35 +261,46 @@ def list_top_pattern(request):
     top_patterns = TopPattern.objects.all()
     return render(request, 'toppattern_grid.html', {'top_patterns': top_patterns})
 
+def get_top_pattern_details(request, pattern_id):
+    try:
+        pattern = get_object_or_404(TopPattern, custom_id=pattern_id)
+        pattern_data = {
+            'name': pattern.name,
+            'image_url': pattern.image.url,
+            'price': str(pattern.price),  # Convert DecimalField to string
+            'is_active': pattern.is_active,
+        }
+        return JsonResponse(pattern_data)
+    except TopPattern.DoesNotExist:
+        return JsonResponse({'error': 'Pattern not found'}, status=404)
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import TopPattern
 
-def update_top_pattern(request, top_pattern_id):
-    top_pattern = get_object_or_404(TopPattern, pk=top_pattern_id)
-
+def update_top_pattern(request, pattern_id):
     if request.method == 'POST':
-        # Handle form submission here
-        price = request.POST.get('price', top_pattern.price)
-        is_active = request.POST.get('is_active', top_pattern.is_active)
+        pattern = get_object_or_404(TopPattern, custom_id=pattern_id)
 
-        # Handle image file upload if needed
-        if 'image' in request.FILES:
-            image = request.FILES['image']
-            top_pattern.image = image
+        # Update price and is_active
+        price = request.POST.get('priceupdate', '0.00')
+        print(f"Received price: {price}")  # Debugging: Print received price
+        price_decimal = Decimal(price)
+        is_active = request.POST.get('is-active-update', False)
 
-        # Update the top pattern fields
-        top_pattern.price = price
-        top_pattern.is_active = is_active
+        # Convert is_active to a Python boolean
+        is_active = is_active == 'on'
+        print(f"Received is_active: {is_active}")  # Debugging: Print received is_active
 
-        # Save the updated pattern
-        top_pattern.save()
+        pattern.price = price_decimal
+        pattern.is_active = is_active
 
-        # Optionally, you can return a success message as JSON
-        return JsonResponse({'message': 'Top Pattern updated successfully'})
+        # Update image if provided
+        if 'topPatternImageupdate' in request.FILES:
+            print("Image file provided.")  # Debugging: Print if image file provided
+            pattern.image = request.FILES['topPatternImageupdate']
 
-    # Render the update form for top patterns
-    return render(request, 'update_top_pattern.html', {'top_pattern': top_pattern})
+        pattern.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 
 
@@ -266,6 +350,45 @@ def list_sleeves_pattern(request):
     return render(request, 'sleevespattern_grid.html', {'sleeves_patterns': sleeves_patterns})
 
 
+def get_sleeves_pattern_details(request, pattern_id):
+    try:
+        pattern = get_object_or_404(SleevesPattern, custom_id=pattern_id)
+        pattern_data = {
+            'name': pattern.name,
+            'image_url': pattern.image.url,
+            'details': pattern.details,
+            'dress_type': pattern.dress_type.dress_type,  # Assuming DressType has a 'name' field
+            'price': str(pattern.price),  # Convert DecimalField to string
+            'is_active': pattern.is_active,
+        }
+        return JsonResponse(pattern_data)
+    except SleevesPattern.DoesNotExist:
+        return JsonResponse({'error': 'Pattern not found'}, status=404)
+
+def update_sleeves_pattern(request, pattern_id):
+    try:
+        pattern = get_object_or_404(SleevesPattern, custom_id=pattern_id)
+
+        # Update price and is_active
+        price = request.POST.get('priceupdate', '0.00')
+        price_decimal = Decimal(price)
+        is_active = request.POST.get('is-active-update', False)
+
+        # Convert is_active to a Python boolean
+        is_active = is_active == 'on'
+
+        pattern.price = price_decimal
+        pattern.is_active = is_active
+
+        # Update image if provided
+        if 'sleevesPatternImageupdate' in request.FILES:
+            pattern.image = request.FILES['sleevesPatternImageupdate']
+
+        pattern.save()
+        return JsonResponse({'success': True})
+    except SleevesPattern.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Pattern not found'}, status=404)
+
 
 # fabric
 @login_required
@@ -308,6 +431,42 @@ def soft_delete_fabric(request, fabric_id):
         return JsonResponse({'message': 'Fabric deleted successfully'})
     except Fabric.DoesNotExist:
         return JsonResponse({'error': 'Fabric not found'}, status=404)
+
+
+def get_fabric_details(request, fabric_id):
+    fabric = get_object_or_404(Fabric, custom_id=fabric_id)
+    fabric_data = {
+        'name': fabric.name,
+        'details': fabric.details,
+        'price': float(fabric.price),
+        'is_active': fabric.is_active,
+        'image_url': fabric.fabric_image.url,
+    }
+    return JsonResponse(fabric_data)
+
+@csrf_exempt  # Add this decorator to handle POST requests without CSRF token
+def update_fabric(request, fabric_id):
+    if request.method == 'POST':
+        fabric = get_object_or_404(Fabric, custom_id=fabric_id)
+        
+        # Get the updated details from the POST request
+        details = request.POST.get('detailsupdate')
+        price = request.POST.get('priceupdate')
+        is_active = request.POST.get('is-active-update')
+        
+        # Perform validation and update the fabric instance
+        try:
+            price = float(price)
+            fabric.details = details
+            fabric.price = price
+            fabric.is_active = is_active == 'on'
+            fabric.save()
+            return JsonResponse({'success': True})
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Invalid price'})
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 
 
 # dress type
@@ -383,3 +542,16 @@ def measurement_display(request, design_id):
     }
 
     return render(request, 'mesurement_view.html', context)
+
+
+
+
+# # users
+# from django.contrib.auth.decorators import login_required
+# from django.shortcuts import render
+# from user.models import User  # Import your custom User model
+
+# @login_required
+# def list_users(request):
+#     users = User.objects.all()
+#     return render(request, "userslist", {"users": users})

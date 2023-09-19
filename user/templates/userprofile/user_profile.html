@@ -121,5 +121,57 @@
     <div class="col-md-8">
         <!-- Other content related to user profile -->
     </div>
+
+
 </div>
+<!-- Add this script inside your HTML body or in an external JavaScript file -->
+<script>
+    // Function to validate the user profile update form
+    function validateProfileForm() {
+        const name = document.getElementById("cardelement").value.trim();
+        const email = document.getElementById("cardelement").value.trim();
+        const phone_number = document.getElementById("cardelement").value.trim();
+        const address = document.getElementById("cardelement").value.trim();
+        const profile_pic = document.getElementById("cardelement").value.trim();
+
+        // Validate the Full Name field (not empty)
+        if (name === "") {
+            alert("Please enter your Full Name.");
+            return false;
+        }
+
+        // Validate the Email field (not empty and a valid email format)
+        if (email === "") {
+            alert("Please enter your Email.");
+            return false;
+        }
+
+        // Validate the Phone Number field (not empty)
+        if (phone_number === "") {
+            alert("Please enter your Phone Number.");
+            return false;
+        }
+
+        // Validate the Address field (not empty)
+        if (address === "") {
+            alert("Please enter your Address.");
+            return false;
+        }
+
+        // Validate the Profile Picture field (optional, if required)
+        if (profile_pic === "") {
+            alert("Please upload a Profile Picture.");
+            return false;
+        }
+
+        // All fields are valid, allow form submission
+        return true;
+    }
+
+    // Add the 'onsubmit' attribute to your form to trigger validation
+    document.getElementById("your-form-id").onsubmit = function () {
+        return validateProfileForm();
+    };
+</script>
+
 </body>

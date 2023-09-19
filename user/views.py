@@ -26,6 +26,10 @@ from django.contrib import messages
 User = get_user_model()
 
 def login_view(request):
+    if request.user.is_authenticated:
+        # User is already authenticated, redirect to 'index'
+        return redirect('index')
+    
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['pass']

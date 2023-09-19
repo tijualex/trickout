@@ -14,6 +14,8 @@
     <!-- Navigation bar -->
     <!-- ... (Your navigation bar code remains unchanged) ... -->
 
+    
+
     <div class="container mt-5">
         <h2>Submit Your Measurements</h2>
         <form method="post" onsubmit="return validateForm()">
@@ -100,23 +102,23 @@
             const inseam = parseFloat(document.getElementById("inseam").value);
 
             // Validate each measurement
-            if (shoulder < 16 || shoulder > 24) {
+            if (shoulder < 16 || shoulder > 20) {
                 alert("Shoulder measurement must be between 16 and 20 inches.");
                 return false;
             }
-            if (waist < 20 || waist > 50) {
+            if (waist < 16 || waist > 20) {
                 alert("Waist measurement must be between 16 and 20 inches.");
                 return false;
             }
-            if (chest < 26 || chest > 50) {
+            if (chest < 16 || chest > 20) {
                 alert("Chest measurement must be between 16 and 20 inches.");
                 return false;
             }
-            if (hip < 20 || hip > 50) {
+            if (hip < 16 || hip > 20) {
                 alert("Hip measurement must be between 16 and 20 inches.");
                 return false;
             }
-            if (inseam < 15 || inseam > 25) {
+            if (inseam < 15 || inseam > 20NANN) {
                 alert("Inseam measurement must be between 15 and 20 inches.");
                 return false;
             }
