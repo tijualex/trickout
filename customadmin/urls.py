@@ -47,13 +47,14 @@ urlpatterns = [
     
     # designs view
     path('users_design/', views.users_design, name='users_design'),
-    path('measurement_display/<int:design_id>/', views.measurement_display, name='measurement_display'),
+    path('measurement_display/<int:measurement_id>/', views.measurement_display, name='measurement_display'),
+    path('show_user_designs/<int:user_id>/', views.show_user_designs, name='show_user_designs'),
     
     
     
     
     
-    
-    # users details
-    # path('list-users/', views.list_users, name='list_users'),
+        # users details
+    path('list-users/', views.list_users, name='list_users'),
+    # path('show-user-designs/<int:user_id>/', views.show_user_designs, name='show_user_designs'),
 ]

@@ -74,12 +74,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="inseam">Inseam length:</label>
+                <label for="Inseam">Inseam length:</label>
                 <div class="input-group">
-                    <input type="number" step="0.1" class="form-control" id="inseam" name="inseam" required
+                    <input type="number" step="0.1" class="form-control" id="Inseam" name="Inseam" required
                            min="15" max="20"> <!-- Set minimum and maximum values -->
                     <div class="input-group-append">
-                        <select class="form-control" id="inseamUnit" name="inseamUnit">
+                        <select class="form-control" id="InseamUnit" name="InseamUnit">
                             <option value="inches">Inches</option>
                             <option value="cm">Centimeters</option>
                         </select>
@@ -101,31 +101,51 @@
             const hip = parseFloat(document.getElementById("hip").value);
             const inseam = parseFloat(document.getElementById("inseam").value);
 
-            // Validate each measurement
-            if (shoulder < 16 || shoulder > 20) {
-                alert("Shoulder measurement must be between 16 and 20 inches.");
-                return false;
+            /function validateForm() {
+                // Retrieve the measurement values
+                const shoulder = parseFloat(document.getElementById("shoulder").value);
+                const waist = parseFloat(document.getElementById("waist").value);
+                const chest = parseFloat(document.getElementById("chest").value);
+                const hip = parseFloat(document.getElementById("hip").value);
+                const inseam = parseFloat(document.getElementById("Inseam").value);
+            
+                // Define the valid measurement ranges
+                const minShoulder = 15;
+                const maxShoulder = 25;
+                const minWaist = 10;
+                const maxWaist = 50;
+                const minChest = 10;
+                const maxChest = 50;
+                const minHip = 10;
+                const maxHip = 50;
+                const minInseam = 15;
+                const maxInseam = 115; // Updated the upper limit to 115 inches
+            
+                // Validate each measurement
+                if (shoulder < minShoulder || shoulder > maxShoulder) {
+                    alert("Shoulder measurement must be between " + minShoulder + " and " + maxShoulder + " inches.");
+                    return false;
+                }
+                if (waist < minWaist || waist > maxWaist) {
+                    alert("Waist measurement must be between " + minWaist + " and " + maxWaist + " inches.");
+                    return false;
+                }
+                if (chest < minChest || chest > maxChest) {
+                    alert("Chest measurement must be between " + minChest + " and " + maxChest + " inches.");
+                    return false;
+                }
+                if (hip < minHip || hip > maxHip) {
+                    alert("Hip measurement must be between " + minHip + " and " + maxHip + " inches.");
+                    return false;
+                }
+                if (inseam < minInseam || inseam > maxInseam) {
+                    alert("Inseam measurement must be between " + minInseam + " and " + maxInseam + " inches.");
+                    return false;
+                }
+            
+                // If all measurements are valid, the form will be submitted
+                return true;
             }
-            if (waist < 16 || waist > 20) {
-                alert("Waist measurement must be between 16 and 20 inches.");
-                return false;
-            }
-            if (chest < 16 || chest > 20) {
-                alert("Chest measurement must be between 16 and 20 inches.");
-                return false;
-            }
-            if (hip < 16 || hip > 20) {
-                alert("Hip measurement must be between 16 and 20 inches.");
-                return false;
-            }
-            if (inseam < 15 || inseam > 20NANN) {
-                alert("Inseam measurement must be between 15 and 20 inches.");
-                return false;
-            }
-
-            // If all measurements are valid, the form will be submitted
-            return true;
-        }
     </script>
 </body>
 </html>

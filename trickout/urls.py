@@ -26,6 +26,9 @@ urlpatterns = [
     path('', include('user.urls')),
     path('', include('customadmin.urls')),
     
+    path('accounts/', include('allauth.urls')),
+    
+    
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

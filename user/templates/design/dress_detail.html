@@ -12,26 +12,26 @@
             <img src="{{ dress_type.image.url }}" alt="{{ dress_type.dress_type }}" width="300" height="300" style="margin: 0 auto;">
         </div>
 
+        <!-- Display the dress type description -->
+        <p>Description: {{ dress_type.description }}</p>
+
+        <!-- Display the dress type price -->
         <p>Price: ${{ dress_type.price }}</p>
 
         <!-- Add any other dress details you want to display -->
     </div>
 
-    
-</div>
-
-<script>
-    // Initialize an empty object to store selected pattern details
-    const selectedPatterns = {
-        dressType: null,
-        fabricId: null,
-        topPatternId: null,
-        bottomPatternId: null,
-        sleevesPatternId: null,
-        neckPatternId: null,
-    };
-
     <script>
+        // Initialize an empty object to store selected pattern details
+        const selectedPatterns = {
+            dressType: null,
+            fabricId: null,
+            topPatternId: null,
+            bottomPatternId: null,
+            sleevesPatternId: null,
+            neckPatternId: null,
+        };
+
         // JavaScript to handle bottom pattern selection
         const bottomPatternOptions = document.querySelectorAll('.bottom-pattern-option');
         // ... (your existing JavaScript for pattern selection) ...
@@ -52,5 +52,5 @@
             updateSelectedPatternsAndRedirect('fabricId', fabricId); // Update the selectedPatterns object and redirect
         });
     </script>
-</script>
+</div>
 {% endblock %}

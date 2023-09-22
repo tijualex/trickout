@@ -1,62 +1,8 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
+from datetime import timezone
+from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 from customadmin.models import Designs
-
-from trickout import settings
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, name=None):
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email, name=name)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-    
-    def __str__(self) :
-        return self.user
-
-    def create_superuser(self, username, email, password=None, name=None):
-        user = self.create_user(username, email, password, name)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
-
-class User(AbstractUser, PermissionsMixin):
-    username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(unique=True)
-    name = models.CharField(max_length=100, default='jane')
-    # Remove the user_id field from here
-    password = models.CharField(max_length=128)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        help_text='The groups this user belongs to.',
-        related_name='custom_user_set',
-        related_query_name='user',
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        related_name='custom_user_set',
-        related_query_name='user',
-    )
-
-    objects = CustomUserManager()
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'name']
-
-    def __str__(self):
-        return self.username
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -68,23 +14,88 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.name
-
-from django.contrib.auth.models import User
-from django.db import models
-
-
+    
+    
+    
+    
+    
+    
+# users actions
 
 class PersonMeasurement(models.Model):
-    measurement_id=models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    waist = models.DecimalField(max_digits=5, decimal_places=2)  # Use DecimalField for measurements
+    measurement_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    waist = models.DecimalField(max_digits=5, decimal_places=2)
     shoulder = models.DecimalField(max_digits=5, decimal_places=2)
     chest = models.DecimalField(max_digits=5, decimal_places=2)
     hips = models.DecimalField(max_digits=5, decimal_places=2)
-    inseam_length = models.DecimalField(max_digits=5, decimal_places=2,default=19.00)
+    inseam_length = models.DecimalField(max_digits=5, decimal_places=2, default=19.00)
     design = models.ForeignKey(Designs, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.design.design_id}'s Measurements"
     
+class ShippingAddress(models.Model):
+    address_id= models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipient_name = models.CharField(max_length=255)
+    street_address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Shipping Address for {self.user.username}"
     
+
+
+
+class Order(models.Model):
+    order_id= models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    design = models.ForeignKey(Designs, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    ORDER_STATUS_CHOICES = (
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+    )
+    order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='processing')
+    payment_status = models.BooleanField(default=False)  # Payment status field
+
+    # Add this method to activate the order
+    def activate_order(self):
+        self.payment_status = True
+        self.save()
+
+    def __str__(self):
+        return f"Order #{self.id} by {self.user.username}"
+    
+    
+    
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+from decimal import Decimal
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    payment_id = models.CharField(max_length=255, unique=True)
+    payment_date = models.DateTimeField(default=timezone.now)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    order_status = models.CharField(max_length=20, choices=Order.ORDER_STATUS_CHOICES, default='processing')
+
+    def __str__(self):
+        return f"Payment for Order #{self.order.id} by {self.user.username}"
+
+@receiver(post_save, sender=Payment)
+def update_order_status(sender, instance, **kwargs):
+    # Update the order's status when a payment is saved
+    instance.order.order_status = instance.order_status
+    instance.order.save()

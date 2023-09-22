@@ -100,7 +100,8 @@ class Designs(models.Model):
     bottom_pattern = models.ForeignKey(BottomPattern, on_delete=models.CASCADE, default=1, related_name='bottom_pattern')
     top_pattern = models.ForeignKey(TopPattern, on_delete=models.CASCADE, related_name='top_pattern')
     fabric1 = models.ForeignKey(Fabric, on_delete=models.CASCADE, null=True, blank=True, related_name='fabric1')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)
     
-    def __int__(self) :
-        return self.design_id
+    def __str__(self):
+        return f"Design {self.design_id} by {self.user.username}"

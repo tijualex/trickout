@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selected Patterns and Dress Type</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    
+    <!-- Include Bootstrap CSS (Assuming you have it locally) -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,34 +35,9 @@
             max-height: 40px;
         }
 
-        .navbar-links {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .navbar-links li {
-            margin-left: 20px;
-        }
-
-        .navbar-links a {
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .navbar-links a:hover {
-            text-decoration: underline;
-        }
-
         .user-icon {
             font-size: 24px;
             color: #6c757d; /* Ash color */
-        }
-
-        h1 {
-            color: #333;
-            margin-top: 20px;
         }
 
         h2 {
@@ -84,7 +62,6 @@
             transition: background-color 0.3s;
             margin-top: auto;
             outline: none;
-            border: 2px solid transparent;
         }
 
         .confirm-button:hover {
@@ -121,69 +98,94 @@
         .pattern-box {
             width: calc(33.33% - 20px); /* Adjust as needed for spacing */
         }
-
-        /* Labels for fields */
-        .field-label {
-            font-size: 16px;
-            color: #6c757d; /* Ash color */
-            margin-top: 10px;
-            text-align: left;
-        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-logo">
-            <img src="logo.png" alt="Your Logo">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'your-logo.png' %}" alt="Your Logo">
+            </a>
+            <i class="fas fa-user user-icon text-light"></i>
         </div>
-        <i class="fas fa-user user-icon"></i>
+    </nav>
+
+    <div class="container mt-4">
+        <a class="directory-link" href="#" onclick="history.go(-1);">Back to Previous Page</a>
+
+        <h2 class="mt-4">Selected Dress Type:</h2>
+        <p id="selectedDressType">{{ selected_patterns.dresstype }}</p>
+
+        <h2 class="mt-4">Selected Patterns:</h2>
+        <div class="row">
+            <!-- Display the selected Fabric Pattern -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'patterns/' %}{{ selected_patterns_id.fabric_id }}.jpg" class="card-img-top" alt="Fabric Pattern">
+                    <div class="card-body">
+                        <p class="card-text">Fabric: {{ selected_patterns.fabric }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display the selected Neck Pattern -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'media/neck_patterns/' %}{{ selected_patterns_id.neck_id }}.jpg" class="card-img-top" alt="Neck Pattern">
+                    <div class="card-body">
+                        <p class="card-text">Neckpattern: {{ selected_patterns.neck }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display the selected Top Pattern -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'top_patterns/' %}{{ selected_patterns_id.top_id.url }}.jpg" class="card-img-top" alt="Top Pattern">
+                    <div class="card-body">
+                        <p class="card-text">Toppattern: {{ selected_patterns.top }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display the selected Sleeves Pattern -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'sleeves_patterns/' %}{{ selected_patterns_id.sleeves_id }}.jpg" class="card-img-top" alt="Sleeves Pattern">
+                    <div class="card-body">
+                        <p class="card-text">Sleevespattern: {{ selected_patterns.sleeves }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display the selected Bottom Pattern -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'bottom_patterns/' %}{{ selected_patterns_id.bottom_id.uri }}.jpg" class="card-img-top" alt="Bottom Pattern">
+                    <div class="card-body">
+                        <p class="card-text">Bottompattern: {{ selected_patterns.bottom }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="mt-4">Estimated Cost:</h2>
+        <div class="estimated-cost" id="estimatedCost">${{ total_price }}</div>
+
+        <form method="post" action="{% url 'create_design' %}">
+            {% csrf_token %}
+            <input type="hidden" name="fabric_id" value="{{ selected_patterns_id.fabric_id }}">
+            <input type="hidden" name="neck_id" value="{{ selected_patterns_id.neck_id }}">
+            <input type="hidden" name="top_id" value="{{ selected_patterns_id.top_id }}">
+            <input type="hidden" name="sleeves_id" value="{{ selected_patterns_id.sleeves_id }}">
+            <input type="hidden" name="bottom_id" value="{{ selected_patterns_id.bottom_id }}">
+            <input type="hidden" name="desstype_id" value="{{ selected_patterns_id.dresstype }}">
+            <input type="hidden" name="desstype_id" value="${{ total_price }}">
+            <button type="submit" class="btn btn-primary mt-4">Confirm Order</button>
+        </form>
     </div>
 
-    <a class="directory-link" href="#" onclick="history.go(-1);">Back to Previous Page</a>
-
-    <label for="selectedDressType" class="field-label">Selected Dress Type:</label>
-<p id="selectedDressType">{{ selected_patterns.desstype }}</p>
-
-<!-- Pattern Container with Label -->
-<label for="patternContainer" class="field-label">Selected Patterns:</label>
-<div class="pattern-container" id="patternContainer">
-    <!-- Display the selected Fabric Pattern -->
-    <div class="pattern-box" id="selectedFabricPattern">fabric:{{ selected_patterns.fabric }}</div>
-
-    <!-- Display the selected Neck Pattern -->
-    <div class="pattern-box" id="selectedNeckPattern">Neckpattern:{{ selected_patterns.neck }}</div>
-
-    <!-- Display the selected Top Pattern -->
-    <div class="pattern-box" id="selectedTopPattern">Toppattern:{{ selected_patterns.top }}</div>
-
-    <!-- Display the selected Sleeves Pattern -->
-    <div class="pattern-box" id="selectedSleevesPattern">sleevespattern:{{ selected_patterns.sleeves }}</div>
-
-    <!-- Display the selected Bottom Pattern -->
-    <div class="pattern-box" id="selectedBottomPattern">Bottompattern:{{ selected_patterns.bottom }}</div>
-</div>
-
-<!-- Estimated Cost Field with Label -->
-<label for="estimatedCost" class="field-label">Estimated Cost:</label>
-<div class="estimated-cost" id="estimatedCost">${{ total_price }}</div>
-
-<!-- Confirm Order Button -->
-<!-- Add this hidden input field to store selected_pattern_id_dict -->
-<form method="post" action="{% url 'create_design' %}">
-    {% csrf_token %}
-    <!-- Add this hidden input field to store selected_pattern_id_dict -->
-    <input type="hidden" name="fabric_id" value="{{ selected_patterns_id.fabric_id }}">
-    <input type="hidden" name="neck_id" value="{{ selected_patterns_id.neck_id }}">
-    <input type="hidden" name="top_id" value="{{ selected_patterns_id.top_id }}">
-    <input type="hidden" name="sleeves_id" value="{{ selected_patterns_id.sleeves_id }}">
-    <input type="hidden" name="bottom_id" value="{{ selected_patterns_id.bottom_id }}">
-    <input type="hidden" name="desstype_id" value="{{ selected_patterns_id.desstype_id }}">
-
-    <button type="submit" class="confirm-button">Confirm Order</button>
-</form>
-
-
-</form>
-
+    <!-- Include Bootstrap JS (Assuming you have it locally) -->
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 </html>

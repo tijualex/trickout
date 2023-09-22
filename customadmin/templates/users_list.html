@@ -1,3 +1,5 @@
+<!-- users_list.html -->
+
 {% extends 'base.html' %}
 {% block content %}
 <div class="ec-content-wrapper">
@@ -9,27 +11,43 @@
                     <th>ID</th>
                     <th>Username</th>
                     <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Name</th>
+                    <th>Profile Pic</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
+                {% if not user.is_staff %} {# Check if the user is not an admin #}
                 <tr>
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.userprofile.name }}</td>
                     <td>
-                        <a href="{% url 'show_user_designs' user.id %}" class="btn btn-primary">User Designs</a>
-                        <a href="{% url 'show_user_orders' user.id %}" class="btn btn-primary">User Orders</a>
+                        {% if user.userprofile.profile_pic %}
+                            <img src="{{ user.userprofile.profile_pic.url }}" alt="Profile Pic" width="50">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>{{ user.userprofile.phone_number }}</td>
+                    <td>{{ user.userprofile.address }}</td>
+                    <td>
+                        {% if user.userprofile.designs.exists %}
+                            <a href="{% url 'show_user_designs' user.id %}" class="btn btn-primary">User Designs</a>
+                        {% else %}
+                            <button class="btn btn-primary" disabled>User Designs</button>
+                        {% endif %}
+                        {% comment %} <a href="{% url 'show_user_orders' user.id %}" class="btn btn-primary">User Orders</a> {% endcomment %}
                     </td>
                 </tr>
+                {% endif %}
                 {% empty %}
                 <tr>
-                    <td colspan="6">No users available.</td>
+                    <td colspan="8">No users available.</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -37,3 +55,5 @@
     </div>
 </div>
 {% endblock %}
+
+3+

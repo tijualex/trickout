@@ -1,12 +1,11 @@
 # # views.py
 
-import decimal
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from user.models import CustomUserManager, PersonMeasurement, User
+from user.models import PersonMeasurement, User, UserProfile
 from .models import BottomPattern, Designs, Fabric, NeckPattern, DressType, SleevesPattern, TopPattern
 
 
@@ -513,45 +512,49 @@ def list_product(request):
 
 # users design
 
+from .models import Designs  # Import your models here
+
 def users_design(request):
-    # Retrieve a list of Designs objects
+    # Retrieve a list of Design objects
     designs = Designs.objects.all()
-
-    # Create a dictionary to store measurement_ids for each design
-    measurement_ids_dict = {}
-
-    # Retrieve measurement IDs for each design
-    for design in designs:
-        measurement_ids = PersonMeasurement.objects.filter(design=design).values_list('measurement_id', flat=True)
-        measurement_ids_dict[design.design_id] = measurement_ids
 
     context = {
         'designs': designs,
-        'measurement_ids_dict': measurement_ids_dict,
     }
 
     return render(request, 'users_design.html', context)
 
+def measurement_display(request, measurement_id):
+    # Retrieve the design object based on the design ID
 
-def measurement_display(request, design_id):
-    # Retrieve the measurement object based on the design ID or handle 404 error
-    measurement = get_object_or_404(PersonMeasurement, design__design_id=design_id)
+    # Retrieve measurement objects associated with the design
+    measurement_objects = PersonMeasurement.objects.filter(measurement_id=measurement_id)
 
     context = {
-        'measurement': measurement,
+        'measurement_objects': measurement_objects,
     }
 
-    return render(request, 'mesurement_view.html', context)
+    return render(request, 'measurement_view.html', context)
 
+# users
 
+# users
+@login_required
+def list_users(request):
+    users = User.objects.all()
+    # Fetch all users from the User model
+    return render(request, "users_list.html", {"users": users})
 
+def show_user_designs(request, user_id):
+    # Retrieve the user's profile based on the user_id or handle 404 error
+    user_profile = get_object_or_404(UserProfile, user_id=user_id)
 
-# # users
-# from django.contrib.auth.decorators import login_required
-# from django.shortcuts import render
-# from user.models import User  # Import your custom User model
+    # Retrieve the designs associated with the user's profile
+    designs = Designs.objects.filter(user=user_profile.user)
 
-# @login_required
-# def list_users(request):
-#     users = User.objects.all()
-#     return render(request, "userslist", {"users": users})
+    context = {
+        'user_profile': user_profile,
+        'designs': designs,
+    }
+
+    return render(request, 'show_user_designs.html', context)

@@ -1,43 +1,44 @@
+<!-- show_user_designs.html -->
+
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container">
-        <h1>Users' Designs</h1>
-        <table class="table">
+<div class="ec-content-wrapper">
+    <div class="content">
+        <h1>Designs for {{ user_profile.user.username }}</h1>
+        {% if designs %}
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Design ID</th>
-                    <th>User</th>
                     <th>Dress Type</th>
                     <th>Neck Pattern</th>
                     <th>Sleeves Pattern</th>
                     <th>Bottom Pattern</th>
                     <th>Top Pattern</th>
                     <th>Fabric</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for design in designs %}
                 <tr>
                     <td>{{ design.design_id }}</td>
-                    <td>{{ design.user_profile.user.username }}</td>
                     <td>{{ design.dress_type }}</td>
                     <td>{{ design.neck_pattern }}</td>
                     <td>{{ design.sleeves_pattern }}</td>
                     <td>{{ design.bottom_pattern }}</td>
                     <td>{{ design.top_pattern }}</td>
                     <td>{{ design.fabric1 }}</td>
-                    <td>
-                    {% if design.personmeasurement_set.exists %}
-                        <a href="{% url 'measurement_display' design.personmeasurement_set.first.measurement_id %}" class="btn btn-primary btn-sm">View Measurement</a>
-                    {% else %}
-                        No Measurement
-                    {% endif %}
-                    </td>
                 </tr>
-            {% endfor %}
-            
+                {% empty %}
+                <tr>
+                    <td colspan="7">No designs available for this user.</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>No designs available for this user.</p>
+        {% endif %}
     </div>
+</div>
 {% endblock %}
