@@ -98,7 +98,7 @@ class Designs(models.Model):
     neck_pattern = models.ForeignKey(NeckPattern, on_delete=models.CASCADE, default=1, related_name='neck_pattern')
     sleeves_pattern = models.ForeignKey(SleevesPattern, on_delete=models.CASCADE, default=1, related_name='sleeves_pattern')
     bottom_pattern = models.ForeignKey(BottomPattern, on_delete=models.CASCADE, default=1, related_name='bottom_pattern')
-    top_pattern = models.ForeignKey(TopPattern, on_delete=models.CASCADE, related_name='top_pattern')
+    top_pattern = models.ForeignKey(TopPattern, on_delete=models.CASCADE, default=1, related_name='top_pattern')
     fabric1 = models.ForeignKey(Fabric, on_delete=models.CASCADE, null=True, blank=True, related_name='fabric1')
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField(default=True)

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import PersonMeasurement, UserProfile 
+from .models import Order, PersonMeasurement, ShippingAddress, UserProfile 
 from customadmin.models import BottomPattern, Designs, DressType, NeckPattern, SleevesPattern
 from customadmin.models import Fabric, TopPattern  # Import your Fabric model
  
@@ -412,6 +412,70 @@ def display_selected_patterns(request, selected_patterns, selected_pattern_id, t
 
 import json
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.conf import settings
+
+
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Designs, ShippingAddress, Order
+
+def order_shipping(request):
+    if request.method == 'POST':
+        # Extract data from the form
+        recipient_name = request.POST.get('recipient_name')
+        street_address = request.POST.get('street_address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        postal_code = request.POST.get('postal_code')
+        country = request.POST.get('country')
+        design_id = request.POST.get('design')
+        user_id = request.POST.get('user')
+        
+        # Get the design price from the Designs model
+        design = Designs.objects.get(pk=design_id)
+        design_price = design.price
+        
+        # Calculate the total price based on the design price
+        total_price = design_price  # You can perform additional calculations if needed
+        
+        # Create ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user_id=user_id,
+            recipient_name=recipient_name,
+            street_address=street_address,
+            city=city,
+            state=state,
+            postal_code=postal_code,
+            country=country
+        )
+        
+        # Create Order instance with the calculated total_price
+        order = Order.objects.create(
+            user_id=user_id,
+            design=design,
+            total_price=total_price  # Assign the calculated total_price to the order
+        )
+        
+        # Activate the order (you can define the 'activate_order' method in your model)
+        order.activate_order()
+        
+        # Redirect to a success page or perform other actions
+        return redirect('success_page')  # Replace 'success_page' with the actual success page URL
+
+    else:
+        # Handle GET request or other cases
+        return render(request, 'your_template.html')  # Replace 'your_template.html' with your template
+
+
+
+
+
 def create_design(request):
     if request.method == 'POST':
         # Retrieve the selected patterns and dress type from the form data
@@ -420,8 +484,8 @@ def create_design(request):
         top_id = request.POST.get('top_id')
         sleeves_id = request.POST.get('sleeves_id')
         bottom_id = request.POST.get('bottom_id')
-        dresstype = request.POST.get('desstype_id')
-        price =request.POST.get('total_price')
+        dresstype_id = request.POST.get('dresstype_id')  # corrected field name
+        total_price = request.POST.get('total_price')    # corrected field name
 
         # Get instances of the pattern models using the IDs
         try:
@@ -430,9 +494,8 @@ def create_design(request):
             top_pattern = get_object_or_404(TopPattern, pk=top_id)
             sleeves_pattern = get_object_or_404(SleevesPattern, pk=sleeves_id)
             bottom_pattern = get_object_or_404(BottomPattern, pk=bottom_id)
-            dresstype = get_object_or_404(DressType, pk=dresstype)
+            dresstype = get_object_or_404(DressType, pk=dresstype_id)
             
-
             # Assuming you have the necessary data to create a Designs object
             user = request.user  # Get the current user
 
@@ -446,7 +509,7 @@ def create_design(request):
                     bottom_pattern=bottom_pattern,
                     top_pattern=top_pattern,
                     fabric1=fabric_pattern,
-                    price= price,
+                    price=total_price,  # corrected field name
                 )
                 design.save()
 
@@ -462,12 +525,8 @@ def create_design(request):
     else:
         # Handle the case when the request method is not POST (e.g., redirect or show an error)
         return HttpResponse("Invalid Request")
-    
 
-    
-    
-    
-# order
+
 
 def order_confirmation_view(request, design_id):
     try:
@@ -487,3 +546,6 @@ def order_confirmation_view(request, design_id):
 
     except Designs.DoesNotExist:
         return HttpResponse("Design not found")
+
+
+    

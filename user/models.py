@@ -71,7 +71,7 @@ class Order(models.Model):
         self.save()
 
     def __str__(self):
-        return f"Order #{self.id} by {self.user.username}"
+        return f"Order #{self.order_id} by {self.user.username}"
     
     
     
@@ -86,13 +86,13 @@ from django.utils.translation import gettext_lazy as _
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment_id = models.CharField(max_length=255, unique=True)
+    payment_id = models.AutoField(primary_key=True)
     payment_date = models.DateTimeField(default=timezone.now)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     order_status = models.CharField(max_length=20, choices=Order.ORDER_STATUS_CHOICES, default='processing')
 
     def __str__(self):
-        return f"Payment for Order #{self.order.id} by {self.user.username}"
+        return f"Payment for Order #{self.order.order_id} by {self.user.username}"
 
 @receiver(post_save, sender=Payment)
 def update_order_status(sender, instance, **kwargs):

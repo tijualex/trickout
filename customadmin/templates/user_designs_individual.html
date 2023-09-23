@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper breadcrumb-contacts">
+            <div>
+                <h1>User Designs</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span>/</span>
+                    <span>User Designs</span>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 offset-lg-2 col-lg-12">
+                <div class="ec-cat-list card card-default mb-24px">
+                    <div class="card-body">
+                        <h2>User: {{ user.username }}</h2>
+                        <h3>Designs:</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Design ID</th>
+                                    <th>Dress Type</th>
+                                    <th>Neck Pattern</th>
+                                    <th>Sleeves Pattern</th>
+                                    <th>Bottom Pattern</th>
+                                    <th>Top Pattern</th>
+                                    <th>Fabric</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for design in user.designs_set.all %}
+                                    <tr>
+                                        <td>{{ design.design_id }}</td>
+                                        <td>{{ design.dress_type }}</td>
+                                        <td>{{ design.neck_pattern }}</td>
+                                        <td>{{ design.sleeves_pattern }}</td>
+                                        <td>{{ design.bottom_pattern }}</td>
+                                        <td>{{ design.top_pattern }}</td>
+                                        <td>{{ design.fabric1 }}</td>
+                                        <td>
+                                            {% if design.personmeasurement_set.exists %}
+                                                <a href="{% url 'measurement_display' design.personmeasurement_set.first.measurement_id %}" class="btn btn-primary btn-sm">View Measurement</a>
+                                            {% else %}
+                                                No Measurement
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="8">No designs found for this user.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{% url 'users_design' %}" class="btn btn-primary">Back to Users</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Content -->
+</div> <!-- End Content Wrapper -->
+{% endblock %}

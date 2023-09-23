@@ -1,6 +1,8 @@
 # user/urls.py
 from django.urls import include, path
 from . import views
+from user.views import create_design
+
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -33,14 +35,14 @@ urlpatterns = [
     path('dress_detail/<str:dress_type>/', views.dress_detail, name='dress_detail'),
     path('confirm_design', views.confirm_design, name='confirm_design'),
     path('display_selected_patterns/<str:selected_patterns>/<str:selected_pattern_id>/<str:total_price>/', views.display_selected_patterns, name='display_selected_patterns'),
-    path('create_design', views.create_design, name='create_design'),
-    
+    path('create_design/', views.create_design, name='create_design'),    
     # mesurement
     path('measurement/<int:design_id>/', views.measurement_view, name='measurement_view'),
     
     
     #order
     path('order_confirmation_view/<int:design_id>', views.order_confirmation_view, name='order_confirmation_view'),
+    path('order_shipping/', views.order_shipping, name='order_shipping'),
 
 
 

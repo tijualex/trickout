@@ -503,9 +503,6 @@ def list_dress_type(request):
     dress_types = DressType.objects.all()
     return render(request, 'dresstype_grid.html', {'dress_types': dress_types})
 
-def list_product(request):
-    return render(request, 'product_grid.html')
-
 
 
 
@@ -525,16 +522,19 @@ def users_design(request):
     return render(request, 'users_design.html', context)
 
 def measurement_display(request, measurement_id):
-    # Retrieve the design object based on the design ID
-
-    # Retrieve measurement objects associated with the design
-    measurement_objects = PersonMeasurement.objects.filter(measurement_id=measurement_id)
+    # Retrieve the design object based on the measurement ID
+    try:
+        measurement = PersonMeasurement.objects.get(pk=measurement_id)
+    except PersonMeasurement.DoesNotExist:
+        # Handle the case when the measurement does not exist
+        measurement = None
 
     context = {
-        'measurement_objects': measurement_objects,
+        'measurement': measurement,
     }
 
     return render(request, 'measurement_view.html', context)
+
 
 # users
 
@@ -558,3 +558,24 @@ def show_user_designs(request, user_id):
     }
 
     return render(request, 'show_user_designs.html', context)
+
+
+
+def show_user_designs(request, user_id):
+    try:
+        # Retrieve the user object based on the user_id
+        user = User.objects.get(pk=user_id)
+
+        # Retrieve the designs associated with the user
+        user_designs = Designs.objects.filter(user=user)
+
+        context = {
+            'user': user,
+            'user_designs': user_designs,
+        }
+
+        return render(request, 'user_designs_individual.html', context)
+
+    except User.DoesNotExist:
+        # Handle the case when the user does not exist
+        return render(request, 'user_not_found.html')

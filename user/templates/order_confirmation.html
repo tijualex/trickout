@@ -15,57 +15,44 @@
 
     <div class="container mt-5">
         <h2>Order and Shipping Address Form</h2>
-        <form method="post" action="">
+        <form method="post" action="order_shipping">
             {% csrf_token %}
             
             <!-- Shipping Address Section -->
             <h3>Shipping Address</h3>
             <div class="form-group">
-            <!-- Street Address -->
-        <div class="form-group">
-            <label for="street_address">Street Address:</label>
-            <input type="text" class="form-control" id="street_address" name="street_address" required>
-            <small class="text-danger" id="street_address_error" style="display: none;">Street Address is required.</small>
-        </div>
-
-        <!-- City -->
-        <div class="form-group">
-            <label for="city">City:</label>
-            <input type="text" class="form-control" id="city" name="city" required>
-            <small class="text-danger" id="city_error" style="display: none;">City is required.</small>
-        </div>
-
-        <!-- State -->
-        <div class="form-group">
-            <label for="state">State:</label>
-            <input type="text" class="form-control" id="state" name="state" required>
-            <small class="text-danger" id="state_error" style="display: none;">State is required.</small>
-        </div>
-
-        <!-- Postal Code -->
-        <div class="form-group">
-            <label for="postal_code">Postal Code:</label>
-            <input type="text" class="form-control" id="postal_code" name="postal_code" required>
-            <small class="text-danger" id="postal_code_error" style="display: none;">Postal Code is required.</small>
-        </div>
-
-        <!-- Country -->
-        <div class="form-group">
-            <label for="country">Country:</label>
-            <input type="text" class="form-control" id="country" name="country" required>
-            <small class="text-danger" id="country_error" style="display: none;">Country is required.</small>
-        </div>
-
-
+                <label for="recipient_name">Recipient Name:</label>
+                <input type="text" class="form-control" id="recipient_name" name="recipient_name" required>
+            </div>
+            <div class="form-group">
+                <label for="street_address">Street Address:</label>
+                <input type="text" class="form-control" id="street_address" name="street_address" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" class="form-control" id="state" name="state" required>
+            </div>
+            <div class="form-group">
+                <label for="postal_code">Postal Code:</label>
+                <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+            </div>
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" class="form-control" id="country" name="country" required>
+            </div>
+        
             <!-- Order Section -->
             <h3>Order Details</h3>
             <!-- Automatically set the design and user based on the authenticated user -->
             <input type="hidden" name="design" value="{{ request.user.profile.design.id }}">
             <input type="hidden" name="user" value="{{ request.user.id }}">
-            
             <div class="form-group">
                 <label for="total_price">Total Price:</label>
-                <input type="number" step="0.01" class="form-control" id="total_price" name="total_price" required>
+                <input type="number" step="0.01" class="form-control" id="total_price" name="total_price" value="{{ request.user.id }}">
             </div>
             <!-- Hide the "Order Status" field -->
             <input type="hidden" name="order_status" value="processing">
@@ -75,10 +62,10 @@
             
             <!-- Payment Status (Hidden Field) -->
             <input type="hidden" name="payment_status" value="False">
-
+        
             <button type="submit" class="btn btn-primary">Submit Order</button>
         </form>
-    </div>
+            </div>
 
     <!-- Add your JS scripts and Bootstrap/other JS libraries here if needed -->
 </body>
