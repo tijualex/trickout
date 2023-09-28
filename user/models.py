@@ -39,6 +39,7 @@ class ShippingAddress(models.Model):
     address_id= models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient_name = models.CharField(max_length=255)
+    address_line1=models.CharField(max_length=255,)
     street_address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
@@ -57,6 +58,7 @@ class Order(models.Model):
     design = models.ForeignKey(Designs, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_address=models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, default= 1)
     ORDER_STATUS_CHOICES = (
         ('processing', 'Processing'),
         ('shipped', 'Shipped'),

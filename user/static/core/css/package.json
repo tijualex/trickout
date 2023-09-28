@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "colorjoe": "^4.1.1",
-    "express": "^4.18.1",
-    "nodemon": "^2.0.18"
-  }
-}

@@ -2,115 +2,299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selected Patterns and Dress Type</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <title>trickout</title>
     
-    <!-- Include Bootstrap CSS (Assuming you have it locally) -->
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{% static 'core/assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'core/assets/css/templatemo-sixteen.css' %}">
+    <link rel="stylesheet" href="{% static 'core/assets/css/owl.css' %}">
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+        /* Style for the dropdown menu */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu {
+            background-color: #fff; /* Background color of the dropdown menu */
+            border: 1px solid #ccc; /* Border around the dropdown menu */
+            border-radius: 5px; /* Rounded corners for the dropdown menu */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Box shadow for the dropdown menu */
+            padding: 10px; /* Padding inside the dropdown menu */
+        }
+        
+        .dropdown-header {
+            font-weight: bold; /* Bold font for the header in the dropdown menu */
+        }
+        
+        /* Style for the links in the dropdown menu */
+        .dropdown-menu a {
+            color: #333; /* Text color of dropdown menu links */
+            text-decoration: none; /* Remove underline from links */
+        }
+        
+        .dropdown-menu a:hover {
+            color: #007bff; /* Text color of links on hover */
+        }
+        
+        /* Style for the footer link in the dropdown menu */
+        .dropdown-footer a {
+            color: #d9534f; /* Text color for logout link */
+        }
+        
+        /* Style for the user image */
+        .user-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        /* Custom styles for the banner */
+        .banner-container {
+            position: relative;
+        }
+        
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            padding: 20px;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .navbar {
-            background-color: #6c757d; /* Ash color */
             color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 10px 20px;
         }
-
-        .navbar-logo img {
-            max-height: 40px;
+        
+        .banner-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
-
-        .user-icon {
-            font-size: 24px;
-            color: #6c757d; /* Ash color */
-        }
-
-        h2 {
-            font-size: 24px;
-            color: #6c757d; /* Ash color */
-            margin-top: 20px;
-        }
-
-        p {
+        
+        .banner-text {
             font-size: 18px;
-            color: #333;
         }
-
-        .confirm-button {
-            font-size: 20px;
-            background-color: #6c757d; /* Ash color */
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: auto;
-            outline: none;
-        }
-
-        .confirm-button:hover {
-            background-color: #495057; /* Slightly darker ash color */
-        }
-
-        /* Box around the pattern displays */
-        .pattern-box {
-            border: 2px solid #6c757d; /* Ash color */
-            padding: 10px;
-            margin: 10px;
+        
+        .banner-button {
             display: inline-block;
-            text-align: left;
-            border-radius: 10px;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Estimated Cost Field */
-        .estimated-cost {
-            font-size: 20px;
             color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
             margin-top: 20px;
         }
-
-        /* Pattern Container */
-        .pattern-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        /* Pattern Box */
-        .pattern-box {
-            width: calc(33.33% - 20px); /* Adjust as needed for spacing */
-        }
+        .navbar-logo {
+          width: 100px; /* Adjust the width as needed */
+          height: auto; /* Maintain the aspect ratio */
+          margin-right: 15px; /* Add margin for spacing */
+      }
+      /* Style for the dress-type buttons */
+      .dress-type-btn {
+          color: #fff; /* White color for text */
+          background-color: #FFA500; /* Orange background color */
+          border-color: #FFA500; /* Border color */
+          border: 2px solid #FFA500; /* Border style */
+          border-radius: 5px; /* Rounded corners */
+          padding: 10px 20px; /* Padding for the buttons */
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      .dress-type-btn:hover {
+          background-color: #fff; /* Background color on hover */
+          color: #FFA500; /* Text color on hover */
+          border: 2px solid #FFA500;
+      }
+      
+            
     </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="{% static 'your-logo.png' %}" alt="Your Logo">
-            </a>
-            <i class="fas fa-user user-icon text-light"></i>
-        </div>
-    </nav>
+    <title>Dress Styling</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
+    
+    <style>
 
-    <div class="container mt-4">
+    .content {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .left-panel {
+        background-color: #EAEAEA;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .right-panel {
+        background-color: #F4F4F4;
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .options i {
+        margin-right: 10px;
+    }
+
+    .sub-options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .sub-options.active {
+        display: block;
+    }
+
+    .continue-button {
+        text-align: center;
+        margin-top: auto;
+    }
+
+    .continue-button button {
+        font-size: 20px;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .continue-button button:hover {
+        background-color: #0056b3;
+    }
+
+    .image-container {
+        max-width: 80px; /* Adjust the width as needed */
+        margin: 5px; /* Add some spacing between sub-options */
+    }
+
+    .image-container img {
+        max-width: 100%;
+    }
+
+    .price-label {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 5px;
+        text-align: center;
+        margin: auto;
+        width: 50%;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Add a blue border to the selected pattern */
+    .selected {
+        border: 2px solid blue;
+    }
+    .content-container {
+        margin-top: 10%;
+        position: relative; /* Ensure it's a positioned element */
+        z-index: 1; /* Set a higher z-index to overlay the navbar */
+    }
+
+</style>
+
+<link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="">
+      <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="{%url 'index'%}">
+          <img src="{% static 'images/8.png' %}" alt="Logo"alt="Logo" class="navbar-logo">
+       </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav ms-auto">
+        <a href="#" class="nav-item nav-link active">Home</a>
+        <a href="#" class="nav-item nav-link">About</a>
+
+        <!-- Check if the user is authenticated -->
+        {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if user.userprofile.profile_pic %}
+                    <img src="{{ user.userprofile.profile_pic.url }}" class="user-image rounded-circle" alt="User Image" />
+                {% else %}
+                    <!-- Provide a default image or placeholder if the user doesn't have a profile picture -->
+                    <img src="{% static 'path_to_default_image.png' %}" class="user-image rounded-circle" alt="User Image" />
+                {% endif %}
+            </a>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <!-- User image -->
+                    <li class="dropdown-header">
+                        <div class="d-inline-block">
+                            <h5>{{ user.get_name }}</h5>
+                            <p class="pt-2">{{ user.email }}</p>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="{% url 'profile' %}">
+                            <i class="mdi mdi-account"></i> My Profile
+                        </a>
+                    </li>
+                    <li class="dropdown-footer">
+                        <a href="{% url 'logout_view' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+                    </li>
+                </ul>
+            </li>
+        {% else %}
+        <!-- Render a login button or other content for non-authenticated users -->
+        <li>
+            <a href="{% url 'login_view' %}" class="nav-item nav-link">Log In</a>
+        </li>
+        {% endif %}
+        
+        <a href="contact.html" class="nav-item nav-link">Contact</a>
+    </div>
+  </div>
+            <div class="border-start ps-4 d-none d-lg-block">
+                <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container mt-4 content-container">
+        <br><br><br><br>
+
         <a class="directory-link" href="#" onclick="history.go(-1);">Back to Previous Page</a>
 
         <h2 class="mt-4">Selected Dress Type:</h2>
@@ -121,7 +305,7 @@
             <!-- Display the selected Fabric Pattern -->
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{% static 'patterns/' %}{{ selected_patterns_id.fabric_id }}.jpg" class="card-img-top" alt="Fabric Pattern">
+                    <img src="{{ MEDIA_URL }}media/fabrics/{{ selected_patterns_id.fabric_id }}.jpg" class="card-img-top" alt="Fabric Pattern">
                     <div class="card-body">
                         <p class="card-text">Fabric: {{ selected_patterns.fabric }}</p>
                     </div>
@@ -131,7 +315,9 @@
             <!-- Display the selected Neck Pattern -->
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{% static 'media/neck_patterns/' %}{{ selected_patterns_id.neck_id }}.jpg" class="card-img-top" alt="Neck Pattern">
+                    <div class="image-container top-pattern-option" data-pattern-id="{{ selected_neck.custom_id }}">
+                        <img src="{{ neck_pattern.image.url }}" alt="{{ neck_pattern.name }}">
+                    </div>
                     <div class="card-body">
                         <p class="card-text">Neckpattern: {{ selected_patterns.neck }}</p>
                     </div>
@@ -161,7 +347,7 @@
             <!-- Display the selected Bottom Pattern -->
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{% static 'bottom_patterns/' %}{{ selected_patterns_id.bottom_id.uri }}.jpg" class="card-img-top" alt="Bottom Pattern">
+                    <img src="{% static 'bottom_patterns/' %}{{ selected_patterns_id.bottom_id.image.uri }}.jpg" class="card-img-top" alt="Bottom Pattern">
                     <div class="card-body">
                         <p class="card-text">Bottompattern: {{ selected_patterns.bottom }}</p>
                     </div>
@@ -186,7 +372,119 @@
         
     </div>
 
-    <!-- Include Bootstrap JS (Assuming you have it locally) -->
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-</body>
+</div>
+            
+
+</div>
+</div>
+<footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="inner-content">
+            <p>Copyright &copy; 2020 Sixteen Clothing Co., Ltd.
+          
+          - Design: <a rel="nofollow noopener" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Bootstrap core JavaScript -->
+  
+  <script src="{% static "core/vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "core/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+
+  <!-- Additional Scripts -->
+  <script src={% static "core/assets/js/custom.js" %}></script>
+  <script src={% static "core/assets/js/owl.js" %}></script>
+  <script src={% static "core/assets/js/slick.js" %}></script>
+  <script src={% static "core/assets/js/isotope.js" %}></script>
+  <script src={% static "core/assets/js/accordions.js" %}></script>
+
+
+
+<script>
+function initializePatternSelection(patternClass, hiddenInputId, selectedPatternId) {
+const patternOptions = document.querySelectorAll(`.${patternClass}`);
+
+patternOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        // Remove the 'selected' class from all options
+        patternOptions.forEach(opt => {
+            opt.classList.remove('selected');
+        });
+
+        // Add the 'selected' class to the clicked option
+        option.classList.add('selected');
+
+        // Get the selected pattern's ID (custom_id)
+        const patternId = option.getAttribute('data-pattern-id');
+
+        console.log(patternId);
+
+        // Store the selected pattern ID in the hidden input field
+        document.getElementById(hiddenInputId).value = patternId;
+    });
+});
+
+// Find the default option based on the selectedPatternId
+const defaultOption = [...patternOptions].find(option => option.getAttribute('data-pattern-id') === selectedPatternId);
+
+// Highlight the default option and set the initial pattern
+if (defaultOption) {
+    defaultOption.classList.add('selected');
+
+    // Get the selected pattern's ID (custom_id)
+    const patternId = defaultOption.getAttribute('data-pattern-id');
+
+    // Store the selected pattern ID in the hidden input field
+    document.getElementById(hiddenInputId).value = patternId;
+}
+}
+
+
+
+// Initialize pattern selections individually
+initializePatternSelection('fabric-option', 'selectedFabric', '{{ selected_fabric_pattern }}');
+initializePatternSelection('neck-pattern-option', 'selectedNeck', '{{ selected_neck_pattern }}');
+initializePatternSelection('top-pattern-option', 'selectedTop', '{{ selected_top_pattern }}');
+initializePatternSelection('sleeves-pattern-option', 'selectedSleeves', '{{ selected_sleeves_pattern }}');
+initializePatternSelection('bottom-pattern-option', 'selectedBottom', '{{ selected_bottom_pattern }}');
+
+document.getElementById('next-button').addEventListener('click', () => {
+// Collect selected pattern IDs
+const selectedFabricPattern = document.getElementById('selectedFabric').value;
+const selectedNeckPattern = document.getElementById('selectedNeck').value;
+const selectedTopPattern = document.getElementById('selectedTop').value;
+const selectedSleevesPattern = document.getElementById('selectedSleeves').value;
+const selectedBottomPattern = document.getElementById('selectedBottom').value;
+console.log(selectedFabricPattern);
+console.log(selectedNeckPattern);
+console.log(selectedTopPattern);
+console.log(selectedBottomPattern);
+console.log(selectedSleevesPattern);
+
+
+
+// Set these values as form inputs
+document.getElementById('selectedFabricPattern').value = selectedFabricPattern;
+document.getElementById('selectedNeckPattern').value = selectedNeckPattern;
+document.getElementById('selectedTopPattern').value = selectedTopPattern;
+document.getElementById('selectedSleevesPattern').value = selectedSleevesPattern;
+document.getElementById('selectedBottomPattern').value = selectedBottomPattern;
+
+
+
+// Submit the form
+document.getElementById('patternForm').submit();
+});
+</script>
+
+
+  </body>
+
 </html>

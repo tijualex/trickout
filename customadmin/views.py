@@ -579,3 +579,30 @@ def show_user_designs(request, user_id):
     except User.DoesNotExist:
         # Handle the case when the user does not exist
         return render(request, 'user_not_found.html')
+
+
+from  user.models import Order
+#orders
+def order_list(request):
+    orders = Order.objects.select_related('design').all()
+    return render(request, 'order_list.html', {'orders': orders})
+
+
+# views.py
+from django.http import JsonResponse
+from user.models import Order
+
+def update_order_status(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        new_status = request.POST.get('new_status')
+
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.order_status = new_status
+            order.save()
+            return JsonResponse({'success': True, 'new_status': new_status})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Order not found'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request'})

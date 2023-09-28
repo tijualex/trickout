@@ -2,130 +2,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... other meta tags and title ... -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dress Styling</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <title>trickout</title>
     
-    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{% static 'core/assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'core/assets/css/templatemo-sixteen.css' %}">
+    <link rel="stylesheet" href="{% static 'core/assets/css/owl.css' %}">
     
     <style>
-        /* Your custom styles here */
-        .design-page {
-            background-image: url('{% static "images/home1.jpg" %}');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 100px 0;
+        /* Style for the dropdown menu */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
         }
-
-        .design-page h1 {
-            font-size: 3rem;
-            font-weight: bold;
+        
+        .dropdown-menu {
+            background-color: #fff; /* Background color of the dropdown menu */
+            border: 1px solid #ccc; /* Border around the dropdown menu */
+            border-radius: 5px; /* Rounded corners for the dropdown menu */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Box shadow for the dropdown menu */
+            padding: 10px; /* Padding inside the dropdown menu */
+        }
+        
+        .dropdown-header {
+            font-weight: bold; /* Bold font for the header in the dropdown menu */
+        }
+        
+        /* Style for the links in the dropdown menu */
+        .dropdown-menu a {
+            color: #333; /* Text color of dropdown menu links */
+            text-decoration: none; /* Remove underline from links */
+        }
+        
+        .dropdown-menu a:hover {
+            color: #007bff; /* Text color of links on hover */
+        }
+        
+        /* Style for the footer link in the dropdown menu */
+        .dropdown-footer a {
+            color: #d9534f; /* Text color for logout link */
+        }
+        
+        /* Style for the user image */
+        .user-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        /* Custom styles for the banner */
+        .banner-container {
+            position: relative;
+        }
+        
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+        }
+        
+        .banner-title {
+            font-size: 36px;
+            font-weight: 700;
             margin-bottom: 20px;
         }
-
-        .design-page p {
-            font-size: 1.5rem;
+        
+        .banner-text {
+            font-size: 18px;
         }
-
-        .btn-primary {
-            background-color: #007BFF;
-            border-color: #007BFF;
+        
+        .banner-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
         }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .dress-type-btn {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            margin: 5px;
-            cursor: pointer;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .dress-type-btn:hover {
-            background-color: transparent; /* Remove hover effect */
-            text-decoration: underline;
-            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-        }
+        .navbar-logo {
+          width: 100px; /* Adjust the width as needed */
+          height: auto; /* Maintain the aspect ratio */
+          margin-right: 15px; /* Add margin for spacing */
+      }
+      /* Style for the dress-type buttons */
+      .dress-type-btn {
+          color: #fff; /* White color for text */
+          background-color: #FFA500; /* Orange background color */
+          border-color: #FFA500; /* Border color */
+          border: 2px solid #FFA500; /* Border style */
+          border-radius: 5px; /* Rounded corners */
+          padding: 10px 20px; /* Padding for the buttons */
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      .dress-type-btn:hover {
+          background-color: #fff; /* Background color on hover */
+          color: #FFA500; /* Text color on hover */
+          border: 2px solid #FFA500;
+      }
+      
+            
     </style>
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
-        <a href="index.html" class="navbar-brand" id="trickoutlogo" >
-            <img class="img-fluid" src="{% static 'images/8.png' %}" alt="Logo">
-            <a id="logoname" href="#">trickout </a>
-        </a>
-        <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <!-- Header -->
+    <header class="">
+      <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="{%url 'index'%}">
+          <img src="{% static 'images/8.png' %}" alt="Logo"alt="Logo" class="navbar-logo">
+       </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto" style="text-decoration: none;
-            text-shadow: rgba(1, 1, 1, 0.25) 0px 14px 28px, rgba(1, 1, 1, 0.22) 0px 3px 3px;">
-                <a href="#" class="nav-item nav-link active">Home</a>
-                <a href="#" class="nav-item nav-link">About</a>
-                {% if user.is_authenticated %}
-                    <li class="dropdown user-menu">
-                        <button class="dropdown-toggle nav-link ec-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ user.profile_image.url }}" class="user-image" alt="User Image" />
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right ec-dropdown-menu">
-                            <!-- User image -->
-                            <li class="dropdown-header">
-                                <div class="d-inline-block">
-                                    <h5>{{ user.get_name }}</h5>
-                                    <p class="pt-2">{{ user.email }}</p>
-                                </div>
-                            </li>
-                            <li>
-                                <a href="{% url 'profile' %}">
-                                    <i class="mdi mdi-account"></i> My Profile
-                                </a>
-                            </li>
-                            <li class="dropdown-footer">
-                                <a href="{% url 'logout_view' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
-                            </li>
-                        </ul>
-                    </li>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav ms-auto">
+        <a href="#" class="nav-item nav-link active">Home</a>
+        <a href="#" class="nav-item nav-link">About</a>
+
+        <!-- Check if the user is authenticated -->
+        {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if user.userprofile.profile_pic %}
+                    <img src="{{ user.userprofile.profile_pic.url }}" class="user-image rounded-circle" alt="User Image" />
                 {% else %}
-                <!-- Render a login button or other content for non-authenticated users -->
-                <li>
-                    <a href="{% url 'login_view' %}" class="nav-item nav-link">Log In</a>
-                </li>
+                    <!-- Provide a default image or placeholder if the user doesn't have a profile picture -->
+                    <img src="{% static 'path_to_default_image.png' %}" class="user-image rounded-circle" alt="User Image" />
                 {% endif %}
-
-            
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+            </a>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <!-- User image -->
+                    <li class="dropdown-header">
+                        <div class="d-inline-block">
+                            <h5>{{ user.get_name }}</h5>
+                            <p class="pt-2">{{ user.email }}</p>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="{% url 'profile' %}">
+                            <i class="mdi mdi-account"></i> My Profile
+                        </a>
+                    </li>
+                    <li class="dropdown-footer">
+                        <a href="{% url 'logout_view' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+                    </li>
+                </ul>
+            </li>
+        {% else %}
+        <!-- Render a login button or other content for non-authenticated users -->
+        <li>
+            <a href="{% url 'login_view' %}" class="nav-item nav-link">Log In</a>
+        </li>
+        {% endif %}
+        
+        <a href="contact.html" class="nav-item nav-link">Contact</a>
+    </div>
+  </div>
+            <div class="border-start ps-4 d-none d-lg-block">
+                <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
             </div>
-
         </div>
-    </nav>
+        </div>
+      </nav>
+    </header>
 
-    <!-- Existing content -->
-    <div class="design-page">
-        <div class="container">
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <section class="banner-container">
+        <img src="{% static 'images/home1.jpg' %}" class="banner-image" alt="Banner Image">
+        <div class="banner-content">
             <h1>What's on Your Mind?</h1>
             <p>Let us know what you're planning to design, and we'll help you get started.</p>
             <input type="hidden" id="selectedDressType" name="selectedDressType" value="">
             <h2>Choose a Dress Type:</h2>
-
+    
             <!-- Display dress types from the database as buttons -->
             <div class="row">
                 {% for dress_type in dress_types %}
@@ -135,7 +204,40 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+    </section>
+   
+<!-- Carousel End -->
+    <!-- Banner Ends Here -->
+
+    
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="inner-content">
+              <p>Copyright &copy; 2020 Sixteen Clothing Co., Ltd.
+            
+            - Design: <a rel="nofollow noopener" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript -->
+    
+    <script src="{% static "core/vendor/jquery/jquery.min.js" %}"></script>
+    <script src="{% static "core/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+
+    <!-- Additional Scripts -->
+    <script src={% static "core/assets/js/custom.js" %}></script>
+    <script src={% static "core/assets/js/owl.js" %}></script>
+    <script src={% static "core/assets/js/slick.js" %}></script>
+    <script src={% static "core/assets/js/isotope.js" %}></script>
+    <script src={% static "core/assets/js/accordions.js" %}></script>
+
 
     <!-- Custom JavaScript code -->
     <script>
@@ -151,9 +253,7 @@
         });
     </script>
 
-    <!-- Bootstrap scripts (jQuery, Popper.js, Bootstrap JS) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+
+  </body>
+
 </html>

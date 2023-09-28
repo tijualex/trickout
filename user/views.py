@@ -1,6 +1,6 @@
 from decimal import Decimal
 from urllib.parse import quote, unquote
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -354,6 +354,7 @@ def confirm_design(request):
             total_price = 0  # Set a default value in case of errors
             
             
+            
         selected_patterns_str = ','.join(selected_patterns)
         selected_pattern_id_str = ','.join(map(str, selected_pattern_id))
         total_price_str = str(total_price)    
@@ -367,6 +368,7 @@ def confirm_design(request):
     else:
         # Handle the case when the request method is not POST (e.g., redirect or show an error)
         return HttpResponse("Invalid Request")
+    
 
 
 
@@ -384,8 +386,8 @@ def display_selected_patterns(request, selected_patterns, selected_pattern_id, t
     # Create dictionaries for selected patterns and pattern IDs
     selected_patterns_dict = {
         'fabric': selected_patterns_list[0],
-        'neck': selected_patterns_list[1],
-        'top': selected_patterns_list[2],
+        'neck': selected_patterns_list[2],
+        'top': selected_patterns_list[1],
         'sleeves': selected_patterns_list[3],
         'bottom': selected_patterns_list[4],
         'dresstype':selected_patterns_list[5]
@@ -420,57 +422,6 @@ from django.http import HttpResponse
 from django.conf import settings
 
 
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Designs, ShippingAddress, Order
-
-def order_shipping(request):
-    if request.method == 'POST':
-        # Extract data from the form
-        recipient_name = request.POST.get('recipient_name')
-        street_address = request.POST.get('street_address')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        postal_code = request.POST.get('postal_code')
-        country = request.POST.get('country')
-        design_id = request.POST.get('design')
-        user_id = request.POST.get('user')
-        
-        # Get the design price from the Designs model
-        design = Designs.objects.get(pk=design_id)
-        design_price = design.price
-        
-        # Calculate the total price based on the design price
-        total_price = design_price  # You can perform additional calculations if needed
-        
-        # Create ShippingAddress instance
-        shipping_address = ShippingAddress.objects.create(
-            user_id=user_id,
-            recipient_name=recipient_name,
-            street_address=street_address,
-            city=city,
-            state=state,
-            postal_code=postal_code,
-            country=country
-        )
-        
-        # Create Order instance with the calculated total_price
-        order = Order.objects.create(
-            user_id=user_id,
-            design=design,
-            total_price=total_price  # Assign the calculated total_price to the order
-        )
-        
-        # Activate the order (you can define the 'activate_order' method in your model)
-        order.activate_order()
-        
-        # Redirect to a success page or perform other actions
-        return redirect('success_page')  # Replace 'success_page' with the actual success page URL
-
-    else:
-        # Handle GET request or other cases
-        return render(request, 'your_template.html')  # Replace 'your_template.html' with your template
 
 
 
@@ -548,4 +499,180 @@ def order_confirmation_view(request, design_id):
         return HttpResponse("Design not found")
 
 
-    
+from .models import Designs, ShippingAddress, Order
+from django.shortcuts import render, redirect, HttpResponse
+from .models import Designs, Order, ShippingAddress
+
+# order_shipping
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Designs, ShippingAddress, Order
+
+def order_shipping(request):
+    if request.method == 'POST':
+        # Extract data from the form
+        recipient_name = request.POST.get('recipient_name')
+        address = request.POST.get('address')
+        street_address = request.POST.get('street_address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        postal_code = request.POST.get('postal_code')
+        country = request.POST.get('country')
+        design_id = request.POST.get('design')
+        
+        # Get the design price from the Designs model
+        try:
+            design = Designs.objects.get(pk=design_id)
+        except Designs.DoesNotExist:
+            # Handle the case where the design with the given ID does not exist
+            # You might want to display an error message or redirect to an error page.
+            return HttpResponse("Design not found")
+
+        # Calculate the total price based on the design price
+        total_price = design.price  # You can perform additional calculations if needed
+        
+        # Get the user ID
+        user_id = request.user.id
+
+        # Create ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user_id=user_id,
+            recipient_name=recipient_name,
+            address_line1=address,
+            street_address=street_address,
+            city=city,
+            state=state,
+            postal_code=postal_code,
+            country=country
+        )
+        shipping_address.save()
+
+        # Create Order instance with the calculated total_price
+        order = Order.objects.create(
+            user_id=user_id,
+            design=design,
+            total_price=total_price  # Assign the calculated total_price to the order
+        )
+        
+        # Redirect to the 'payment_confirm' view with the order ID
+        return redirect('payment_confirm', order_id=order.order_id)
+
+    else:
+        # Handle GET request or other cases
+        return render(request, 'error.html')
+
+# payment
+
+import razorpay
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from .models import Order, Payment
+from django.contrib.auth.decorators import login_required
+
+# Initialize Razorpay client with API Keys
+import razorpay
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from .models import Order, Payment
+from django.contrib.auth.decorators import login_required
+
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+
+# Function to create and display the payment page
+@login_required
+def payment_confirm(request, order_id):
+    # Retrieve the order based on the order_id
+    order = get_object_or_404(Order, order_id=order_id)
+
+    # Check if the order is already paid
+    if order.payment_status:
+        return render(request, 'payment_already_paid.html')
+
+    # Get the total_price from the order
+    total_price = order.total_price
+
+    # Razorpay integration code goes here
+    currency = 'INR'
+    amount = int(total_price * 100)  # Convert total_price to paisa (assuming price is in rupees)
+
+    # Create a Razorpay Order
+    razorpay_order = razorpay_client.order.create(
+        dict(amount=amount, currency=currency, payment_capture='0')
+    )
+
+    # Extract the order id of the newly created order
+    razorpay_order_id = razorpay_order['id']
+
+    # Define the callback URL
+    callback_url = '/paymenthandler/'  # Update this URL to your actual payment handler
+
+    # Pass these details to the frontend
+    context = {
+        'total_price': total_price,
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_merchant_key': settings.RAZORPAY_API_KEY,  # Use API Key, not Key ID
+        'razorpay_amount': amount,
+        'currency': currency,
+        'callback_url': callback_url,
+    }
+
+    return render(request, 'payment.html', context)
+
+
+# Function to handle Razorpay payment response
+@csrf_exempt
+def paymenthandler(request):
+    # Only accept POST request.
+    if request.method == "POST":
+        try:
+            # Get the required parameters from the POST request.
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+
+            # Verify the payment signature.
+            result = razorpay_client.utility.verify_payment_signature(
+                params_dict)
+
+            if result is not None:
+                # If signature verification fails.
+                return render(request, 'paymentfail.html')
+
+            # Signature verification succeeded, proceed to capture payment.
+            order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+            amount = int(order.total_price * 100)  # Convert total_price to paisa
+
+            try:
+                # Capture the payment
+                razorpay_client.payment.capture(payment_id, amount)
+
+                # Create a Payment record in your database
+                user = request.user
+                payment = Payment(user=user, order=order, payment_id=payment_id, amount=amount)
+                payment.save()
+
+                # Update the order's payment status
+                order.payment_status = True
+                order.save()
+
+                # Render a success page on successful capture of payment
+                return render(request, 'paymentsuccess.html')
+            except Exception as e:
+                # If there is an error while capturing payment.
+                return render(request, 'paymentfail.html')
+        except Exception as e:
+            # If we don't find the required parameters in POST data
+            return HttpResponseBadRequest()
+    else:
+        # If other than POST request is made.
+        return HttpResponseBadRequest()

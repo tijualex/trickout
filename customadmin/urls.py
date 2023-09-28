@@ -52,6 +52,10 @@ urlpatterns = [
     
     
     
+    # orders
+    path('order_list/', views.order_list, name='order_list'),
+    path('update_order_status/', views.update_order_status, name='update_order_status'),
+    
     
     
         # users details

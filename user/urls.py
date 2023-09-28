@@ -46,11 +46,9 @@ urlpatterns = [
 
 
 
-
-
-
-
-
+    # payment
+    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+    path('payment_confirm/<int:order_id>', views.payment_confirm, name='payment_confirm'),
 
 
 ]

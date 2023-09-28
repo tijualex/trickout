@@ -1,88 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
-{%block content%}
-			<!-- CONTENT WRAPPER -->
-			<div class="ec-content-wrapper">
-				<div class="content">
-					<!-- Top Statistics -->
-					<div class="row">
-						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
-							<div class="card card-mini dash-card card-1">
-								<div class="card-body">
-									<h2 class="mb-1">1,503</h2>
-									<p>Daily Signups</p>
-									<span class="mdi mdi-account-arrow-left"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
-							<div class="card card-mini dash-card card-2">
-								<div class="card-body">
-									<h2 class="mb-1">79,503</h2>
-									<p>Daily Visitors</p>
-									<span class="mdi mdi-account-clock"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
-							<div class="card card-mini dash-card card-3">
-								<div class="card-body">
-									<h2 class="mb-1">15,503</h2>
-									<p>Daily Order</p>
-									<span class="mdi mdi-package-variant"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
-							<div class="card card-mini dash-card card-4">
-								<div class="card-body">
-									<h2 class="mb-1">$98,503</h2>
-									<p>Daily Revenue</p>
-									<span class="mdi mdi-currency-usd"></span>
-								</div>
-							</div>
-						</div>
-					</div> 
-
-					<div class="row">
-						<div class="col-xl-8 col-md-12 p-b-15">
-							<!-- Sales Graph -->
-							- <div id="user-acquisition" class="card card-default">
-								<div class="card-header">
-									<h2>Sales Report</h2>
-								</div>
-								<div class="card-body">
-									<div class="tab-content pt-4" id="salesReport">
-										<div class="tab-pane fade show active" id="source-medium" role="tabpanel">
-											<div class="mb-6" style="max-height:247px">
-												<canvas id="linechart"></canvas>
-												<div id="acqLegend" class="customLegend mb-2"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div> 
-
-
-						<div class="col-xl-4 col-md-12 p-b-15">
-							<!-- Doughnut Chart -->
-							<!-- <div class="card card-default">
-								<div class="card-header justify-content-center">
-									<h2>Orders Overview</h2>
-								</div>
-								<div class="card-body">
-									<canvas id="polar"></canvas>
-								</div>
-								<a href="#" class="pb-5 d-block text-center text-muted"><i
-										class="mdi mdi-download mr-2"></i> Download overall report</a>
-								
-							</div> -->
-						</div>
+{% block content %}
+    <!-- CONTENT WRAPPER -->
+    <div class="ec-content-wrapper">
+        <div class="content">
+            <!-- Orders and Users Grid -->
+            <div class="row">
+                <div class="col-xl-6 col-md-12 p-b-15">
+                    <div class="card" style="background-color: white;">
+                        <div class="card-header bg-orange">
+                            <h2 class="text-white">Orders</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>User</th>
+                                            <!-- Add more order-related columns here -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Loop through orders and display them here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="{% url 'order_list' %}" class="btn btn-success mt-3">View All Orders</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-md-12 p-b-15">
+                    <div class="card" style="background-color: white;">
+                        <div class="card-header bg-orange">
+                            <h2 class="text-white">Users</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Name</th>
+                                            <!-- Add more user-related columns here -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Loop through users and display them here -->
+                                    </tbody>
+                                </table>
+                            </div>
+							<a href="{% url 'list_users' %}" class="btn btn-success mt-3">View All users</a>
+                        </div>
 					</div>
-
-
-				</div> <!-- End Content -->
-			</div> <!-- End Content Wrapper -->
-
-{%endblock%}
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Content -->
+    </div> <!-- End Content Wrapper -->
+{% endblock %}
