@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+.
+{% block content %}
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Bottom Patterns</h1>
+                <p class="breadcrumbs"><span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Bottom Patterns
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_bottom_pattern' %}" class="btn btn-primary">Add Bottom Pattern</a>
+            </div>
+        </div>
+
+        <!-- Display Bottom Patterns in a table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Pattern Name</th>
+                    <th>Dress Type</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pattern in bottom_patterns %}
+                <tr>
+                    <td>{{ pattern.name }}</td>
+                    <td>{{ pattern.dress_type.dress_type }}</td>
+                    <td>${{ pattern.price }}</td>
+                    <td>
+                        <!-- Display the pattern image -->
+                        <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" style="max-width: 100px; max-height: 100px;">
+                    </td>
+                    <td>
+                        <!-- Update Bottom Pattern Button -->
+                        <a class="btn btn-primary text-white update-product" href="#" data-pattern-id="{{ pattern.custom_id }}" data-pattern-name="{{ pattern.name }}">Update</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No bottom patterns available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Update Bottom Pattern Popup -->
+<div id="bottomPatternFormPopupupdate" class="popup">
+    <h2 class="mb-4">Update Bottom Pattern</h2>
+    <form method="post" enctype="multipart/form-data" id="update-bottom-pattern-form">
+        {% csrf_token %}
+        
+        <!-- Non-editable Pattern ID and Name -->
+        <div class="form-group">
+            <label for="bottom-pattern-id">Pattern ID:</label>
+            <input type="text" id="bottom-pattern-id" name="bottom-pattern-id" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label for="bottom-pattern-name">Pattern Name:</label>
+            <input type="text" id="bottom-pattern-name" name="bottom-pattern-name" readonly>
+        </div>
+        
+        <!-- Bottom Pattern Image -->
+        <div class="form-group">
+            <div id="imagePreviewupdate" class="mt-3 text-center">
+                <img id="previewImageupdate" src="" alt="Image Preview" class="rounded-circle" style="max-width: 150px; max-height: 150px;">
+            </div>
+            <label for="bottomPatternImageupdate">Update Bottom Pattern Image:</label>
+            <input type="file" id="bottomPatternImageupdate" name="bottomPatternImageupdate" class="form-control-file">
+        </div>
+        
+        <!-- Editable Price -->
+        <div class="form-group">
+            <label for="priceupdate">Price:</label>
+            <input type="number" id="priceupdate" name="priceupdate" class="form-control">
+        </div>
+        
+        <!-- Editable Is Active Checkbox -->
+        <div class="form-check">
+            <input type="checkbox" name="is-active-update" id="is-active-update" class="form-check-input">
+            <label for="is-active-update" class="form-check-label">Is Active</label>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="form-group">
+            <input type="submit" value="Update" class="btn btn-primary">
+            <button type="button" id="cancelUpdateButton" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // JavaScript code for handling updates and popups
+    $(document).ready(function () {
+        // Add an event listener for the update buttons
+        $(".update-product").click(function () {
+            const patternId = $(this).data("pattern-id");
+            const patternName = $(this).data("pattern-name");
+            document.getElementById('bottom-pattern-id').value = patternId;
+            document.getElementById('bottom-pattern-name').value = patternName;
+            fetchBottomPatternData(patternId);
+            $("#bottom-pattern-name").prop("readonly", true); // Make pattern name non-editable
+            $("#bottomPatternFormPopupupdate").show(); // Show the update form popup
+        });
+
+        // Add an event listener for the cancel button
+        $("#cancelUpdateButton").click(function () {
+            $("#bottom-pattern-name").prop("readonly", false); // Make pattern name editable again
+            $("#bottomPatternFormPopupupdate").hide(); // Hide the update form popup
+        });
+
+        // Prevent the form from submitting normally
+        $("#update-bottom-pattern-form").submit(function (e) {
+            e.preventDefault();
+            
+            // Add your AJAX code for submitting the form here
+            const patternId = $("#bottom-pattern-id").val();
+            const price = $("#priceupdate").val();
+            const isActive = $("#is-active-update").prop("checked");
+            const imageInput = $("#bottomPatternImageupdate");
+            
+            // Validate price
+            if (parseFloat(price) <= 5) {
+                alert("Price must be greater than 5.");
+                return;
+            }
+            
+            // Validate image extension
+            const allowedExtensions = ["jpg", "jpeg", "png"];
+            const imageExtension = imageInput.val().split('.').pop().toLowerCase();
+            
+            if (allowedExtensions.indexOf(imageExtension) === -1) {
+                alert("Image must be in JPG or PNG format.");
+                return;
+            }
+            
+            $.ajax({
+                url: `/update-bottom-pattern/${patternId}/`,
+                method: "POST",
+                data: {
+                    priceupdate: price,
+                    'is-active-update': isActive ? 'on' : '', // Send 'on' when checked, empty string otherwise
+                    csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log("AJAX Success:", response);
+        
+                    if (response.success) {
+                        alert("Update Successful");
+                        $("#bottom-pattern-name").prop("readonly", false);
+                        $("#bottomPatternFormPopupupdate").hide();
+                        window.location.reload(); // Reload the page
+                    } else {
+                        alert("Update Failed");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    alert("Update Failed");
+                }
+            });
+        });
+        
+        
+
+        // Function to fetch bottom pattern data
+        function fetchBottomPatternData(patternId) {
+            $.ajax({
+                url: `/get-bottom-pattern-details/${patternId}/`, // Replace with your actual URL for fetching BottomPattern details
+                method: "GET",
+                dataType: "json", // Specify the expected data type as JSON
+                success: function (bottomPatternData) {
+                    // Populate the form fields with the retrieved data
+                    $("#bottom-pattern-name").val(bottomPatternData.name);
+                    $("#priceupdate").val(bottomPatternData.price);
+                    $("#is-active-update").prop("checked", bottomPatternData.is_active);
+                    
+                    var previewImage = $("#previewImageupdate");
+                    previewImage.attr("src", bottomPatternData.image_url);
+                    previewImage.css("display", "block"); // Show the image
+                },
+                error: function () {
+                    // Handle error if the AJAX request fails
+                    console.error("Failed to fetch bottom pattern data.");
+                },
+            });
+        }
+
+        // Rest of your JavaScript code here...
+    });
+</script>
+
+{% endblock %}

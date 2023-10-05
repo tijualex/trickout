@@ -2,6 +2,7 @@
 from django.urls import include, path
 from . import views
 from user.views import create_design
+from .views import myorders
 
 from django.contrib.auth import views as auth_views
 
@@ -42,13 +43,21 @@ urlpatterns = [
     
     #order
     path('order_confirmation_view/<int:design_id>', views.order_confirmation_view, name='order_confirmation_view'),
-    path('order_shipping/', views.order_shipping, name='order_shipping'),
+    path('create_order/', views.create_order, name='create_order'),
+    path('add_address/',views.add_address, name='add_address'),
+    
 
 
 
     # payment
     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
-    path('payment_confirm/<int:order_id>', views.payment_confirm, name='payment_confirm'),
+    path('payment_confirm/<int:order_id>',views.payment_confirm, name='payment_confirm'),
+    
+    
+    #myorders
+    path('myorders/', views.myorders, name='myorders'),
 
-
+    #mydesigns
+    path('my_designs/', views.my_designs, name='my_designs'),
+    
 ]

@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Your content for this page goes here -->
+
+<!-- CONTENT WRAPPER -->
+<div class="ec-content-wrapper">
+    <div class="content">
+        <div class="breadcrumb-wrapper d-flex align-items-center justify-content-between">
+            <div>
+                <h1>All Sleeves Patterns</h1>
+                <p class="breadcrumbs">
+                    <span><a href="{% url 'admin_index' %}">Home</a></span>
+                    <span><i class="mdi mdi-chevron-right"></i></span>All Sleeves Patterns
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'add_sleeves_pattern' %}" class="btn btn-primary">Add Sleeves Pattern</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Dress Type</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pattern in sleeves_patterns %}
+                    <tr>
+                        <td>{{ pattern.custom_id }}</td>
+                        <td>{{ pattern.name }}</td>
+                        <td>
+                            <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="100" height="100">
+                        </td>
+                        <td>{{ pattern.dress_type.dress_type }}</td>
+                        <td>${{ pattern.price }}</td>
+                        <td>
+                            <!-- Update Neck Pattern Button -->
+                            <a class="btn btn-primary btn-sm update-sleeves-pattern" href="#" data-sleeves-pattern-id="{{ pattern.custom_id }}">Update</a>
+
+                         </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No sleeves patterns available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Update Sleeves Pattern Popup -->
+<div id="sleevesPatternFormPopupupdate" class="popup" style="display: none;">
+    <h2 class="mb-4">Update Sleeves Pattern</h2>
+    <form method="post" enctype="multipart/form-data" id="update-sleeves-pattern-form">
+        {% csrf_token %}
+        
+        <!-- Non-editable Pattern ID and Name -->
+        <div class="form-group">
+            <label for="sleeves-pattern-id">Pattern ID:</label>
+            <input type="text" id="sleeves-pattern-id" name="sleeves-pattern-id" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label for="sleeves-pattern-name">Pattern Name:</label>
+            <input type="text" id="sleeves-pattern-name" name="sleeves-pattern-name" readonly>
+        </div>
+        
+        <!-- Sleeves Pattern Image -->
+        <div class="form-group">
+            <div id="imagePreviewupdate" class="mt-3 text-center">
+                <img id="previewImageupdate" src="" alt="Image Preview" class="rounded-circle" style="max-width: 150px; max-height: 150px;">
+            </div>
+            <label for="sleevesPatternImageupdate">Update Sleeves Pattern Image:</label>
+            <input type="file" id="sleevesPatternImageupdate" name="sleevesPatternImageupdate" class="form-control-file">
+        </div>
+        
+        <!-- Editable Price -->
+        <div class="form-group">
+            <label for="priceupdate">Price:</label>
+            <input type="number" id="priceupdate" name="priceupdate" class="form-control">
+        </div>
+        
+        <!-- Editable Is Active Checkbox -->
+        <div class="form-check">
+            <input type="checkbox" name="is-active-update" id="is-active-update" class="form-check-input">
+            <label for="is-active-update" class="form-check-label">Is Active</label>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="form-group">
+            <input type="submit" value="Update" class="btn btn-primary">
+            <button type="button" id="cancelUpdateButton" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+<!-- Add JavaScript for selection and highlighting -->
+<script>
+    $(document).ready(function () {
+        // Add an event listener for the update buttons
+        $(".update-sleeves-pattern").click(function () {
+            const patternId = $(this).data("sleeves-pattern-id");
+            const patternName = $(this).data("sleeves-pattern-name");
+            $("#sleeves-pattern-id").val(patternId);
+            $("#sleeves-pattern-name").val(patternName);
+            fetchSleevesPatternData(patternId);
+            $("#sleeves-pattern-name").prop("readonly", true);
+            $("#sleevesPatternFormPopupupdate").show();
+        });
+    
+        // Add an event listener for the cancel button
+        $("#cancelUpdateButton").click(function () {
+            $("#sleeves-pattern-name").prop("readonly", false);
+            $("#sleevesPatternFormPopupupdate").hide();
+        });
+    
+        // Prevent the form from submitting normally
+        $("#update-sleeves-pattern-form").submit(function (e) {
+            e.preventDefault();
+    
+            const patternId = $("#sleeves-pattern-id").val();
+            const price = $("#priceupdate").val();
+            const isActive = $("#is-active-update").prop("checked");
+            const imageInput = $("#sleevesPatternImageupdate");
+    
+            // Validate price
+            if (parseFloat(price) <= 5) {
+                alert("Price must be greater than 5.");
+                return;
+            }
+    
+            // Validate image extension
+            const allowedExtensions = ["jpg", "jpeg", "png"];
+            const imageExtension = imageInput.val().split('.').pop().toLowerCase();
+    
+            if (allowedExtensions.indexOf(imageExtension) === -1) {
+                alert("Image must be in JPG or PNG format.");
+                return;
+            }
+    
+            $.ajax({
+                url: `/update-sleeves-pattern/${patternId}/`,
+                method: "POST",
+                data: {
+                    priceupdate: price,
+                    'is-active-update': isActive ? 'on' : '',
+                    csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log("AJAX Success:", response);
+    
+                    if (response.success) {
+                        alert("Update Successful");
+                        $("#sleeves-pattern-name").prop("readonly", false);
+                        $("#sleevesPatternFormPopupupdate").hide();
+                        window.location.reload();
+                    } else {
+                        alert("Update Failed");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    alert("Update Failed");
+                }
+            });
+        });
+    
+        // Function to fetch sleeves pattern data
+        function fetchSleevesPatternData(patternId) {
+            $.ajax({
+                url: `/get-sleeves-pattern-details/${patternId}/`,
+                method: "GET",
+                dataType: "json",
+                success: function (sleevesPatternData) {
+                    $("#sleeves-pattern-name").val(sleevesPatternData.name);
+                    console.error(sleevesPatternData.name);
+                    $("#priceupdate").val(sleevesPatternData.price);
+                    $("#is-active-update").prop("checked", sleevesPatternData.is_active);
+                    var previewImage = $("#previewImageupdate");
+                    previewImage.attr("src", sleevesPatternData.image_url);
+                    previewImage.css("display", "block");
+                },
+                error: function () {
+                    console.error("Failed to fetch sleeves pattern data.");
+                },
+            });
+        }
+    
+        // Rest of your JavaScript code here...
+    });
+</script>
+
+
+</div> <!-- End Content -->
+</div>
+{% endblock %}

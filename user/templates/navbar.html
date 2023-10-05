@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <title>mesurement</title>
+    
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+        <!-- Additional CSS Files -->
+        <link rel="stylesheet" href="{% static 'core/assets/css/fontawesome.css' %}">
+        <link rel="stylesheet" href="{% static 'core/assets/css/templatemo-sixteen.css' %}">
+        <link rel="stylesheet" href="{% static 'core/assets/css/owl.css' %}">
+    
+    <style>
+            /* Custom styles for the shipping address form */
+            body {
+                background-color: #f8f9fa;
+                font-family: Arial, sans-serif;
+            }
+    
+            .container {
+                background-color: #ffffff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-top: 20px;
+            }
+    
+            h2 {
+                text-align: center;
+            }
+    
+            .form-group {
+                margin-bottom: 20px;
+            }
+    
+            label {
+                font-weight: bold;
+            }
+    
+            .btn-primary {
+                width: 100%;
+            }
+    
+            /* Custom styles for inline form fields */
+            .inline-form {
+                display: flex;
+                justify-content: space-between;
+            }
+    
+            .inline-form .form-group {
+                flex: 1;
+                margin-right: 10px;
+            }
+
+        .content {
+            text-align: center;
+            padding: 20px;
+        }
+    
+        .left-panel {
+            background-color: #EAEAEA;
+            min-height: 100vh;
+            padding: 20px;
+        }
+    
+        .right-panel {
+            background-color: #F4F4F4;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .options i {
+            margin-right: 10px;
+        }
+    
+        .sub-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    
+        .sub-options.active {
+            display: block;
+        }
+    
+        .continue-button {
+            text-align: center;
+            margin-top: auto;
+        }
+    
+        .continue-button button {
+            font-size: 20px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        .continue-button button:hover {
+            background-color: #0056b3;
+        }
+    
+        .image-container {
+            max-width: 80px; /* Adjust the width as needed */
+            margin: 5px; /* Add some spacing between sub-options */
+        }
+    
+        .image-container img {
+            max-width: 100%;
+        }
+    
+        .price-label {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px;
+            text-align: center;
+            margin: auto;
+            width: 50%;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    
+        /* Add a blue border to the selected pattern */
+        .selected {
+            border: 2px solid blue;
+        } /* Style for the dropdown menu */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu {
+            background-color: #fff; /* Background color of the dropdown menu */
+            border: 1px solid #ccc; /* Border around the dropdown menu */
+            border-radius: 5px; /* Rounded corners for the dropdown menu */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Box shadow for the dropdown menu */
+            padding: 10px; /* Padding inside the dropdown menu */
+        }
+        
+        .dropdown-header {
+            font-weight: bold; /* Bold font for the header in the dropdown menu */
+        }
+        
+        /* Style for the links in the dropdown menu */
+        .dropdown-menu a {
+            color: #333; /* Text color of dropdown menu links */
+            text-decoration: none; /* Remove underline from links */
+        }
+        
+        .dropdown-menu a:hover {
+            color: #007bff; /* Text color of links on hover */
+        }
+        
+        /* Style for the footer link in the dropdown menu */
+        .dropdown-footer a {
+            color: #d9534f; /* Text color for logout link */
+        }
+        
+        /* Style for the user image */
+        .user-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        /* Custom styles for the banner */
+        .banner-container {
+            position: relative;
+        }
+        
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+        }
+        
+        .banner-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .banner-text {
+            font-size: 18px;
+        }
+        
+        .banner-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        .navbar-logo {
+          width: 100px; /* Adjust the width as needed */
+          height: auto; /* Maintain the aspect ratio */
+          margin-right: 15px; /* Add margin for spacing */
+      }
+      /* Style for the dress-type buttons */
+      .dress-type-btn {
+          color: #fff; /* White color for text */
+          background-color: #FFA500; /* Orange background color */
+          border-color: #FFA500; /* Border color */
+          border: 2px solid #FFA500; /* Border style */
+          border-radius: 5px; /* Rounded corners */
+          padding: 10px 20px; /* Padding for the buttons */
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      .dress-type-btn:hover {
+          background-color: #fff; /* Background color on hover */
+          color: #FFA500; /* Text color on hover */
+          border: 2px solid #FFA500;
+      }
+      .content-container {
+        margin-top: 50px; /* Adjust the value as needed */
+    }
+    </style>
+</head>
+<body>
+      <header class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="{%url 'index'%}">
+              <img src="{% static 'images/8.png' %}" alt="Logo"alt="Logo" class="navbar-logo">
+           </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+    
+              <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto">
+            <a href="{%url 'index'%}" class="nav-item nav-link active">Home</a>
+            
+            <!-- Check if the user is authenticated -->
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if user.userprofile.profile_pic %}
+                        <img src="{{ user.userprofile.profile_pic.url }}" class="user-image rounded-circle" alt="User Image" />
+                    {% else %}
+                        <!-- Provide a default image or placeholder if the user doesn't have a profile picture -->
+                        <img src="{% static 'path_to_default_image.png' %}" class="user-image rounded-circle" alt="User Image" />
+                    {% endif %}
+                </a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <!-- User image -->
+                        <li class="dropdown-header">
+                            <div class="d-inline-block">
+                                <h5>{{ user.get_name }}</h5>
+                                <p class="pt-2">{{ user.email }}</p>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="{% url 'myorders' %}">
+                                <i class="mdi mdi-account"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'my_designs' %}">
+                                <i class="mdi mdi-account"></i>My Designs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'profile' %}">
+                                <i class="mdi mdi-account"></i> My Profile
+                            </a>
+                        </li>
+                        <li class="dropdown-footer">
+                            <a href="{% url 'logout_view' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+                        </li>
+                    </ul>
+                </li>
+            {% else %}
+            <!-- Render a login button or other content for non-authenticated users -->
+            <li>
+                <a href="{% url 'login_view' %}" class="nav-item nav-link">Log In</a>
+            </li>
+            {% endif %}
+            
+            
+        </div>
+        <div class="border-start ps-4 d-none d-lg-block">
+            <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    </div>
+  </nav>
+</header>
+
+{%block content%}{%endblock%}
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static "core/vendor/jquery/jquery.min.js" %}"></script>
+    <script src="{% static "core/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+    <!-- Additional Scripts -->
+    <script src="{% static "core/assets/js/custom.js" %}"></script>
+    <script src="{% static "core/assets/js/owl.js" %}"></script>
+    <script src="{% static "core/assets/js/slick.js" %}"></script>
+    <script src="{% static "core/assets/js/isotope.js" %}"></script>
+    <script src="{% static "core/assets/js/accordions.js" %}"></script>
+
+
+</body>
+</html>
+

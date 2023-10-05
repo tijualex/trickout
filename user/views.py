@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.mail import send_mail
 from django.conf import settings
+from requests import request
 from .models import Order, PersonMeasurement, ShippingAddress, UserProfile 
 from customadmin.models import BottomPattern, Designs, DressType, NeckPattern, SleevesPattern
 from customadmin.models import Fabric, TopPattern  # Import your Fabric model
@@ -49,6 +50,9 @@ def login_view(request):
             if user.is_superuser:
                 # If the user is an admin, redirect to an admin page
                 return redirect('admin_index')
+            elif user.is_staff:
+                # If the user is not an admin, redirect to a regular user page (e.g., 'index')
+                return redirect('index_designer')
             else:
                 # If the user is not an admin, redirect to a regular user page (e.g., 'index')
                 return redirect('index')
@@ -58,6 +62,11 @@ def login_view(request):
             return render(request, 'login.html')
 
     return render(request, 'login.html')
+
+
+
+
+
 
 
 
@@ -125,6 +134,9 @@ def index(request):
         if request.user.is_superuser:
             # If the user is an admin, redirect to the admin dashboard or any other desired page
             return redirect('admin_index')  # Replace 'admin_dashboard' with the appropriate URL name
+        elif request.user.is_staff:
+            # For authenticated non-admin users, display the regular index page
+            return redirect( 'index_designer')
         else:
             # For authenticated non-admin users, display the regular index page
             return render(request, 'index.html')
@@ -303,21 +315,32 @@ def confirm_design(request):
         selected_patterns = []
 
         # Fetch the pattern names from the database and handle errors gracefully
-        def get_pattern_name(pattern_str, pattern_model):
-            try:
-                pattern_id = int(pattern_str)
-                selected_pattern = get_object_or_404(pattern_model, pk=pattern_id)
-                selected_pattern_id.append(selected_pattern.custom_id)
-                selected_patterns.append(selected_pattern.name)
-            except (ValueError, pattern_model.DoesNotExist):
-                selected_patterns.append('Pattern Not Found')
-                selected_pattern_id.append('Pattern Not Found')
+        
+        pattern_id = int(selected_fabric_pattern_str)
+        selected_pattern = get_object_or_404(Fabric, pk=pattern_id)
+        selected_pattern_id.append(selected_pattern.fabric_id)
+        selected_patterns.append(selected_pattern.name)
+        
+        pattern_id = int(selected_top_pattern_str)
+        selected_pattern = get_object_or_404(TopPattern, pk=pattern_id)
+        selected_pattern_id.append(selected_pattern.top_id)
+        selected_patterns.append(selected_pattern.name)
+        
+        pattern_id = int(selected_neck_pattern_str)
+        selected_pattern = get_object_or_404(NeckPattern, pk=pattern_id)
+        selected_pattern_id.append(selected_pattern.neck_id)
+        selected_patterns.append(selected_pattern.name)
+        
+        pattern_id = int(selected_sleeves_pattern_str)
+        selected_pattern = get_object_or_404(SleevesPattern, pk=pattern_id)
+        selected_pattern_id.append(selected_pattern.sleeve_id)
+        selected_patterns.append(selected_pattern.name)
 
-        get_pattern_name(selected_fabric_pattern_str, Fabric)
-        get_pattern_name(selected_top_pattern_str, TopPattern)
-        get_pattern_name(selected_neck_pattern_str, NeckPattern)
-        get_pattern_name(selected_sleeves_pattern_str, SleevesPattern)
-        get_pattern_name(selected_bottom_pattern_str, BottomPattern)
+        pattern_id = int(selected_bottom_pattern_str)
+        selected_pattern = get_object_or_404(BottomPattern, pk=pattern_id)
+        selected_pattern_id.append(selected_pattern.bottom_id)
+        selected_patterns.append(selected_pattern.name)
+       
 
         try:
             top_pattern_id = int(selected_top_pattern_str)
@@ -440,11 +463,11 @@ def create_design(request):
 
         # Get instances of the pattern models using the IDs
         try:
-            fabric_pattern = get_object_or_404(Fabric, pk=fabric_id)
-            neck_pattern = get_object_or_404(NeckPattern, pk=neck_id)
-            top_pattern = get_object_or_404(TopPattern, pk=top_id)
-            sleeves_pattern = get_object_or_404(SleevesPattern, pk=sleeves_id)
-            bottom_pattern = get_object_or_404(BottomPattern, pk=bottom_id)
+            fabric_id = get_object_or_404(Fabric, pk=fabric_id)
+            neck_id = get_object_or_404(NeckPattern, pk=neck_id)
+            top_id = get_object_or_404(TopPattern, pk=top_id)
+            sleeve_id = get_object_or_404(SleevesPattern, pk=sleeves_id)
+            bottom_id = get_object_or_404(BottomPattern, pk=bottom_id)
             dresstype = get_object_or_404(DressType, pk=dresstype_id)
             
             # Assuming you have the necessary data to create a Designs object
@@ -455,11 +478,11 @@ def create_design(request):
                 design = Designs.objects.create(
                     user=user,
                     dress_type=dresstype,
-                    neck_pattern=neck_pattern,
-                    sleeves_pattern=sleeves_pattern,
-                    bottom_pattern=bottom_pattern,
-                    top_pattern=top_pattern,
-                    fabric1=fabric_pattern,
+                    neck_id=neck_id,
+                    sleeve_id=sleeve_id,
+                    bottom_id=bottom_id,
+                    top_id=top_id,
+                    fabric_id=fabric_id,
                     price=total_price,  # corrected field name
                 )
                 design.save()
@@ -479,18 +502,25 @@ def create_design(request):
 
 
 
+from django.shortcuts import get_object_or_404
+from .models import ShippingAddress
+
 def order_confirmation_view(request, design_id):
     try:
         # Fetch the design based on the provided design_id
         design = Designs.objects.get(pk=design_id)
-        
+
+        # Fetch the current user's addresses
+        user_addresses = ShippingAddress.objects.filter(user=request.user)
+
         # Calculate the total price based on the design's price or any other relevant logic
         total_price = design.price  # You can adjust this based on your requirements
-        
-        # Pass the design and total_price to the template
+
+        # Pass the design, total_price, and user_addresses to the template
         context = {
             'design': design,
             'total_price': total_price,
+            'user_addresses': user_addresses,
         }
 
         return render(request, 'order_confirmation.html', context)
@@ -498,100 +528,124 @@ def order_confirmation_view(request, design_id):
     except Designs.DoesNotExist:
         return HttpResponse("Design not found")
 
-
-from .models import Designs, ShippingAddress, Order
-from django.shortcuts import render, redirect, HttpResponse
-from .models import Designs, Order, ShippingAddress
-
 # order_shipping
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Designs, ShippingAddress, Order
 
-def order_shipping(request):
+def add_address(request):
     if request.method == 'POST':
         # Extract data from the form
+        design_id=request.POST.get('design')
         recipient_name = request.POST.get('recipient_name')
-        address = request.POST.get('address')
+        address_line1 = request.POST.get('address')
         street_address = request.POST.get('street_address')
         city = request.POST.get('city')
         state = request.POST.get('state')
         postal_code = request.POST.get('postal_code')
         country = request.POST.get('country')
-        design_id = request.POST.get('design')
-        
-        # Get the design price from the Designs model
-        try:
-            design = Designs.objects.get(pk=design_id)
-        except Designs.DoesNotExist:
-            # Handle the case where the design with the given ID does not exist
-            # You might want to display an error message or redirect to an error page.
-            return HttpResponse("Design not found")
 
-        # Calculate the total price based on the design price
-        total_price = design.price  # You can perform additional calculations if needed
-        
         # Get the user ID
         user_id = request.user.id
 
         # Create ShippingAddress instance
-        shipping_address = ShippingAddress.objects.create(
+        ShippingAddress.objects.create(
             user_id=user_id,
             recipient_name=recipient_name,
-            address_line1=address,
+            address_line1=address_line1,
             street_address=street_address,
             city=city,
             state=state,
             postal_code=postal_code,
             country=country
         )
-        shipping_address.save()
 
-        # Create Order instance with the calculated total_price
-        order = Order.objects.create(
-            user_id=user_id,
-            design=design,
-            total_price=total_price  # Assign the calculated total_price to the order
-        )
-        
-        # Redirect to the 'payment_confirm' view with the order ID
-        return redirect('payment_confirm', order_id=order.order_id)
+        # Redirect to the same page or any other appropriate page
+        return redirect('order_confirmation_view',design_id)
 
-    else:
-        # Handle GET request or other cases
-        return render(request, 'error.html')
+    # Handle GET request or other cases
+    return render(request, 'error.html')
 
-# payment
 
-import razorpay
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render, get_object_or_404, redirect
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from .models import Order, Payment
-from django.contrib.auth.decorators import login_required
-
-# Initialize Razorpay client with API Keys
+from django.shortcuts import render, redirect
+from .models import Order
 import razorpay
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseBadRequest
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import Order, Payment
-from django.contrib.auth.decorators import login_required
+
+
+
+import razorpay
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Designs, Order
+from django.conf import settings
+
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+from django.db import transaction
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponseBadRequest
+import razorpay
+from django.conf import settings
+from .models import Order, Designs, ShippingAddress
+from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
 
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
 
-# Function to create and display the payment page
 @login_required
+@csrf_exempt
+@transaction.atomic
+def create_order(request):
+    if request.method == 'POST':
+        # Extract data from the request
+        design_id = request.POST.get('design')
+        design = get_object_or_404(Designs, pk=design_id)
+        delivery_address_id = request.POST.get('selected_address')
+        delivery_address = get_object_or_404(ShippingAddress, pk=delivery_address_id)
+        amount = int(design.price * 100)  # Razorpay accepts amount in paise, so multiply by 100
+
+        try:
+            # Create a Razorpay order
+            order = razorpay_client.order.create({
+                'amount': amount,
+                'currency': 'INR',
+                'payment_capture': 1
+            })
+
+            # Save the Razorpay order ID in your database
+            razorpay_order_id = order['id']
+
+            # Create an Order instance in your database
+            order_instance = Order.objects.create(
+                user=request.user,
+                design=design,
+                total_price=design.price,
+                address_id=delivery_address,
+                razorpay_order_id=razorpay_order_id
+            )
+
+            # Redirect to the payment confirmation page with the order_id
+            return redirect('payment_confirm', order_id=order_instance.order_id)
+
+        except Exception as e:
+            # Handle exceptions, log the error, and redirect the user to an error page
+            print("Error:", str(e))
+            return render(request, 'error.html', {'error_message': 'An error occurred while processing your order.'})
+
+    else:
+        # Handle invalid requests (GET requests, etc.)
+        return JsonResponse({'error': 'Invalid request method'})
+
+
+@login_required
+@csrf_exempt
 def payment_confirm(request, order_id):
     # Retrieve the order based on the order_id
     order = get_object_or_404(Order, order_id=order_id)
 
     # Check if the order is already paid
-    if order.payment_status:
-        return render(request, 'payment_already_paid.html')
+    # if order.payment_status:
+    #     return render(request, 'error.html', {'error_message': 'Already paid.'})
 
     # Get the total_price from the order
     total_price = order.total_price
@@ -606,7 +660,7 @@ def payment_confirm(request, order_id):
     )
 
     # Extract the order id of the newly created order
-    razorpay_order_id = razorpay_order['id']
+    razorpay_order_id = order.razorpay_order_id
 
     # Define the callback URL
     callback_url = '/paymenthandler/'  # Update this URL to your actual payment handler
@@ -622,57 +676,78 @@ def payment_confirm(request, order_id):
     }
 
     return render(request, 'payment.html', context)
-
-
-# Function to handle Razorpay payment response
+@login_required
 @csrf_exempt
 def paymenthandler(request):
-    # Only accept POST request.
     if request.method == "POST":
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        # Verify the payment signature
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+        }
+
         try:
-            # Get the required parameters from the POST request.
-            payment_id = request.POST.get('razorpay_payment_id', '')
-            razorpay_order_id = request.POST.get('razorpay_order_id', '')
-            signature = request.POST.get('razorpay_signature', '')
-            params_dict = {
-                'razorpay_order_id': razorpay_order_id,
-                'razorpay_payment_id': payment_id,
-                'razorpay_signature': signature
-            }
-
-            # Verify the payment signature.
-            result = razorpay_client.utility.verify_payment_signature(
-                params_dict)
-
-            if result is not None:
-                # If signature verification fails.
-                return render(request, 'paymentfail.html')
-
-            # Signature verification succeeded, proceed to capture payment.
-            order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
-            amount = int(order.total_price * 100)  # Convert total_price to paisa
-
-            try:
-                # Capture the payment
-                razorpay_client.payment.capture(payment_id, amount)
-
-                # Create a Payment record in your database
-                user = request.user
-                payment = Payment(user=user, order=order, payment_id=payment_id, amount=amount)
-                payment.save()
-
-                # Update the order's payment status
-                order.payment_status = True
-                order.save()
-
-                # Render a success page on successful capture of payment
-                return render(request, 'paymentsuccess.html')
-            except Exception as e:
-                # If there is an error while capturing payment.
-                return render(request, 'paymentfail.html')
+            razorpay_client.utility.verify_payment_signature(params_dict)
         except Exception as e:
-            # If we don't find the required parameters in POST data
-            return HttpResponseBadRequest()
-    else:
-        # If other than POST request is made.
-        return HttpResponseBadRequest()
+            # Signature verification failed
+            return render(request, 'payment_failure.html')
+
+        # Signature verification succeeded
+        # Retrieve the order from the database
+        order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+
+        if order.payment_status == Order.PaymentStatusChoices.SUCCESSFUL:
+            # Payment is already marked as successful, ignore this request
+            return HttpResponse("Payment is already successful")
+
+        if order.payment_status != Order.PaymentStatusChoices.PENDING:
+            # Order is not in a pending state, do not proceed with stock update
+            return HttpResponseBadRequest("Invalid order status")
+
+        # Capture the payment amount
+        amount = int(order.total_price * 100)  # Convert Decimal to paise
+        try:
+            razorpay_client.payment.capture(payment_id, amount)
+        except Exception as e:
+            # Payment capture failed
+            return render(request, 'payment_failure.html')
+
+        # Update the order with payment ID and change status to "Successful"
+        order.payment_id = payment_id
+        order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
+        order.save()
+
+        return redirect('my_orders')
+
+    return HttpResponseBadRequest("Invalid request method")
+# my_orders
+
+@login_required
+def myorders(request):
+    # Retrieve orders for the currently logged-in user
+    user_orders = Order.objects.filter(user=request.user)
+    
+    context = {
+        'orders': user_orders,
+    }
+    
+    return render(request, 'my_orders.html', context)
+
+
+# my designs
+def my_designs(request):
+    # Retrieve orders for the currently logged-in user
+    user_designs =Designs.objects.filter(user=request.user)
+    
+    context = {
+        'designs': user_designs,
+    }
+    
+    return render(request, 'my_designs.html', context)
+
+
+
+

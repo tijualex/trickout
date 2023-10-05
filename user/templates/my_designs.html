@@ -1,0 +1,23 @@
+{% extends "navbar.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="text-center">My Designs</h1>
+    <div class="row justify-content-center">
+      {% for design in designs %}
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Design #{{ design.design_id }}</h5>
+              <p class="card-text">Dress Type: {{ design.dress_type }}</p>
+              <p class="card-text">Price: ${{ design.price }}</p>
+              <!-- Add more details about the design as needed -->
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>No designs available.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

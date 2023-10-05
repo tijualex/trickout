@@ -1,0 +1,22 @@
+{% extends "navbar.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="text-center">My Orders</h1>
+    <div class="row justify-content-center">
+      {% for order in orders %}
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Order #{{ order.order_id }}</h5>
+              <p class="card-text">Design ID: {{ order.design_id }}</p>
+              <p class="card-text">Order Date: {{ order.order_date }}</p>
+              <p class="card-text">Total Price: ${{ order.total_price }}</p>
+              <p class="card-text">Status: {{ order.order_status }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

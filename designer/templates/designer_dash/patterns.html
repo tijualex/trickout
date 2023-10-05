@@ -1,0 +1,71 @@
+{% extends "designer_dash/base.html" %}
+
+{% load static %}
+
+{% block style %}
+    <style>
+        .pattern-card {
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #c0c0c0; /* Ash color */
+            border-radius: 20px; /* Add border-radius for curved shape */
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .pattern-card:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+        <img src="{% static 'images/01.jpg' %}" class="banner-image" alt="Banner Image" height="30%" >
+    </div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card pattern-card">
+                <div class="card-header bg-dark text-white">
+                    <h2>Neck Pattern</h2>
+                </div>
+                <div class="card-body">
+                    {% comment %} <a href="{% url 'neck_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card pattern-card">
+                <div class="card-header bg-dark text-white">
+                    <h2>Top Pattern</h2>
+                </div>
+                <div class="card-body">
+                    {% comment %} <a href="{% url 'top_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card pattern-card">
+                <div class="card-header bg-dark text-white">
+                    <h2>BottomPattern</h2>
+                </div>
+                <div class="card-body">
+                    {% comment %} <a href="{% url 'bottom_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card pattern-card">
+                <div class="card-header bg-dark text-white">
+                    <h2>SleevePattern</h2>
+                </div>
+                <div class="card-body">
+                    {% comment %} <a href="{% url 'sleeves_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

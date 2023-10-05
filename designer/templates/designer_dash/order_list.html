@@ -1,0 +1,153 @@
+{% extends "designer_dash/base.html" %}
+
+{% block content %}
+
+<select id="statusFilter">
+    <option value="">All</option>
+    <option value="processing">Processing</option>
+    <option value="shipped">Shipped</option>
+    <option value="delivered">Delivered</option>
+</select>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Design ID</th>
+            <th>Shipping Address ID</th>
+            <th>Order Date</th>
+            <th>Total Price</th>
+            <th>Order Status</th>
+            <th>Payment Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td><a href="{% url 'design_details' order.design.design_id %}">{{ order.design.design_id }}</a></td>
+            <td><a href="{% url 'shipping_address_details' order.order_id %}">{{ order.address_id.address_id }}</a></td>
+            <td>{{ order.order_date }}</td>
+            <td>${{ order.total_price }}</td>
+            <td id="order-status-{{ order.order_id }}">{{ order.get_order_status_display }}</td>
+            <td>
+                {% if order.payment_status %}
+                <span class="text-success">Paid</span>
+                {% else %}
+                <span class="text-danger">Unpaid</span>
+                {% endif %}
+            </td>
+            <td>
+                <div class="btn-group" role="group">
+                    {% if order.order_status == 'processing' %}
+                    <button type="button" class="btn btn-warning btn-sm"
+                        onclick="changeOrderStatus('{{ order.order_id }}', 'shipped', '{{ order.order_status }}')">Mark as Shipped</button>
+                        
+                    {% elif order.order_status == 'shipped' %}
+                    <button type="button" class="btn btn-success btn-sm"
+                        onclick="changeOrderStatus('{{ order.order_id }}', 'delivered', '{{ order.order_status }}')" id="mark-delivered-btn-{{ order.order_id }}">Mark as Delivered</button>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<style>
+    .btn-group .btn {
+        margin-right: 10px;
+    }
+
+    .badge {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .table th, .table td {
+        text-align: center;
+    }
+
+    .table th {
+        font-weight: bold;
+    }
+</style>
+
+<script>
+
+    function changeOrderStatus(orderId, newStatus, currentStatus) {
+        // Check if the current status is 'shipped' before allowing 'delivered'
+        if (currentStatus === 'shipped' || (currentStatus === 'processing' && newStatus === 'shipped')) {
+            // Send an AJAX request to update the order status
+            // You'll need to implement this AJAX request using Django's views and URLs
+            // Example using jQuery:
+            $.ajax({
+                url: '/update_order_status/',
+                method: 'POST',
+                data: {
+                    'order_id': orderId,
+                    'new_status': newStatus,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}' // Include CSRF token
+                },
+                success: function (data) {
+                    // Handle success response
+                    if (data.success) {
+                        // Update the UI to reflect the new status
+                        var statusCell = $('#order-status-' + orderId);
+                        statusCell.text(data.new_status);
+
+                        // Disable the "Mark as Delivered" button if the status is not "Shipped"
+                        if (data.new_status !== 'shipped') {
+                            $('#mark-delivered-btn-' + orderId).prop('disabled', true);
+                        } else {
+                            $('#mark-delivered-btn-' + orderId).prop('disabled', false);
+                        }
+                    } else {
+                        // Handle any errors or display a message to the user
+                        console.error('Error updating order status.');
+                    }
+                },
+                error: function (error) {
+                    // Handle error response
+                    console.error('AJAX request failed.');
+                }
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        // Initial load of orders
+        loadOrders();
+    
+        // Event listener for filter and sort dropdowns
+        $('#statusFilter, #sortBy').change(function() {
+            loadOrders();
+        });
+    
+        function loadOrders() {
+            var statusFilter = $('#statusFilter').val();
+            var sortBy = $('#sortBy').val();
+    
+            // Send AJAX request to get filtered and sorted orders
+            $.ajax({
+                url: '/get_filtered_orders/',  // Replace with your Django view URL
+                method: 'GET',
+                data: {
+                    'status_filter': statusFilter,
+                    'sort_by': sortBy
+                },
+                success: function(data) {
+                    // Update the #ordersTable with filtered and sorted orders
+                    // Code to populate table headers and rows dynamically goes here
+                },
+                error: function(error) {
+                    console.error('Error loading orders:', error);
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

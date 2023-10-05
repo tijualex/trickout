@@ -53,19 +53,28 @@ class ShippingAddress(models.Model):
 
 
 class Order(models.Model):
+    class PaymentStatusChoices(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        SUCCESSFUL = 'successful', 'Successful'
+        FAILED = 'failed', 'Failed'
+        
     order_id= models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    design = models.ForeignKey(Designs, on_delete=models.CASCADE)
+    design = models.ForeignKey(Designs, on_delete=models.CASCADE)    
     order_date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    delivery_address=models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, default= 1)
+    address_id=models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, default= 1)
+    razorpay_order_id=models.CharField(max_length=255,null=True)
+    payment_id=models.CharField(max_length=255,null=True)
     ORDER_STATUS_CHOICES = (
         ('processing', 'Processing'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
     )
     order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='processing')
-    payment_status = models.BooleanField(default=False)  # Payment status field
+    payment_status = models.CharField(
+        max_length=20, choices=PaymentStatusChoices.choices, default=PaymentStatusChoices.PENDING)
+  # Payment status field
 
     # Add this method to activate the order
     def activate_order(self):
@@ -86,18 +95,37 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment_id = models.AutoField(primary_key=True)
-    payment_date = models.DateTimeField(default=timezone.now)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    order_status = models.CharField(max_length=20, choices=Order.ORDER_STATUS_CHOICES, default='processing')
+    id=models.AutoField(primary_key=True,default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)  # ForeignKey to the User model
+    order_id = models.ForeignKey(Order,on_delete=models.CASCADE,default=1)  # Razorpay Order ID
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount in INR
+    currency = models.CharField(max_length=3, default='INR')  # Currency code
+    payment_status = models.BooleanField(max_length=20, default=False)  # Payment status (e.g., 'success', 'pending', 'failed')
+    payment_date = models.DateTimeField(auto_now_add=True)  # Date and time of payment
+    # Add more fields as needed, such as product, etc.
 
     def __str__(self):
-        return f"Payment for Order #{self.order.order_id} by {self.user.username}"
+        return f"Payment ID: {self.id}, Order ID: {self.order_id}"
 
-@receiver(post_save, sender=Payment)
-def update_order_status(sender, instance, **kwargs):
-    # Update the order's status when a payment is saved
-    instance.order.order_status = instance.order_status
-    instance.order.save()
+
+    
+    
+# billing
+class BillingDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)  # If you want to associate the billing details with a user
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    street_address = models.CharField(max_length=255)
+    apartment_suite_unit = models.CharField(max_length=255, blank=True, null=True)  # Optional field
+    town_city = models.CharField(max_length=255)
+    postcode_zip = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}'s Billing Details"
+    
+    
+    
+    

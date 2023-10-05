@@ -1,0 +1,24 @@
+{% extends "designer_dash/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">Shipping Address Details</h1>
+                    <p><strong>Recipient Name:</strong> {{ shipping_address.recipient_name }}</p>
+                    <p><strong>Address Line 1:</strong> {{ shipping_address.address_line1 }}</p>
+                    <p><strong>Street Address:</strong> {{ shipping_address.street_address }}</p>
+                    <p><strong>City:</strong> {{ shipping_address.city }}</p>
+                    <p><strong>State:</strong> {{ shipping_address.state }}</p>
+                    <p><strong>Postal Code:</strong> {{ shipping_address.postal_code }}</p>
+                    <p><strong>Country:</strong> {{ shipping_address.country }}</p>
+
+                    <a href="#" class="btn btn-primary" onclick="history.back()">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

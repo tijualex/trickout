@@ -21,6 +21,18 @@
         </div>
 
         <div class="table-responsive">
+            <div class="table-responsive">
+                <!-- Add a search form -->
+                <form id="fabricSearchForm" class="mb-3">
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <input type="text" id="searchKeyword" name="searchKeyword" class="form-control form-control-sm" placeholder="Search by fabric name...">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-warning btn-block btn-sm">Search</button>
+                        </div>
+                    </div>
+                </form>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -216,6 +228,75 @@
             });
         }
     
+        // search
+        
+    });
+    $(document).ready(function () {
+        // Handle form submission
+        $("#fabricSearchForm").submit(function (e) {
+            e.preventDefault();
+            
+            const searchKeyword = $("#searchKeyword").val().trim();
+
+            // Perform a search based on the entered keyword
+            // You can use AJAX to fetch search results and update the table
+            // Example: Perform an AJAX search and update the table with the search results
+            $.ajax({
+                url: `/search-fabrics/`,  // Replace with your search endpoint URL
+                method: "GET",
+                data: {
+                    keyword: searchKeyword,
+                },
+                dataType: "json",
+                success: function (response) {
+                    // Update the table with the search results
+                    // You may need to modify this part to match your data structure
+                    const tableBody = $(".table tbody");
+                    tableBody.empty();  // Clear existing table rows
+
+                    if (response.length > 0) {
+                        // Display search results
+                        response.forEach(function (fabric) {
+                            const row = `
+                                <tr>
+                                    <td>${fabric.custom_id}</td>
+                                    <td>${fabric.name}</td>
+                                    <td>
+                                        <img src="${fabric.fabric_image_url}" alt="${fabric.name}" width="100" height="100">
+                                    </td>
+                                    <td>${fabric.details}</td>
+                                    <td>$${fabric.price}</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm update-fabric"
+                                           href="#"
+                                           data-fabric-id="${fabric.custom_id}"
+                                           data-fabric-name="${fabric.name}"
+                                           data-fabric-details="${fabric.details}"
+                                           data-fabric-price="${fabric.price}"
+                                           data-fabric-is-active="${fabric.is_active}">
+                                            Update
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                            tableBody.append(row);
+                        });
+                    } else {
+                        // No results found
+                        const noResultsRow = `
+                            <tr>
+                                <td colspan="6">No fabrics found for '${searchKeyword}'.</td>
+                            </tr>
+                        `;
+                        tableBody.append(noResultsRow);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        });
+
         // Rest of your JavaScript code here...
     });
 </script>

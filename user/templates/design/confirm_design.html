@@ -242,8 +242,7 @@
 
           <div class="collapse navbar-collapse" id="navbarCollapse">
     <div class="navbar-nav ms-auto">
-        <a href="#" class="nav-item nav-link active">Home</a>
-        <a href="#" class="nav-item nav-link">About</a>
+        <a href="{% url 'index'%}" class="nav-item nav-link active">Home</a>
 
         <!-- Check if the user is authenticated -->
         {% if user.is_authenticated %}
@@ -265,6 +264,11 @@
                         </div>
                     </li>
                     <li>
+                        <a href="{% url 'myorders' %}">
+                            <i class="mdi mdi-account"></i> My Orders
+                        </a>
+                    </li>
+                    <li>
                         <a href="{% url 'profile' %}">
                             <i class="mdi mdi-account"></i> My Profile
                         </a>
@@ -281,7 +285,6 @@
         </li>
         {% endif %}
         
-        <a href="contact.html" class="nav-item nav-link">Contact</a>
     </div>
   </div>
             <div class="border-start ps-4 d-none d-lg-block">
@@ -337,7 +340,7 @@
             <!-- Display the selected Sleeves Pattern -->
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{% static 'sleeves_patterns/' %}{{ selected_patterns_id.sleeves_id }}.jpg" class="card-img-top" alt="Sleeves Pattern">
+                    <img src="{% static 'media/sleeves_patterns/' %}{{ selected_patterns_id.sleeves_id }}.jpg" class="card-img-top" alt="Sleeves Pattern">
                     <div class="card-body">
                         <p class="card-text">Sleevespattern: {{ selected_patterns.sleeves }}</p>
                     </div>
@@ -347,7 +350,8 @@
             <!-- Display the selected Bottom Pattern -->
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{% static 'bottom_patterns/' %}{{ selected_patterns_id.bottom_id.image.uri }}.jpg" class="card-img-top" alt="Bottom Pattern">
+                    <img src="{{ bottom_pattern.image.url }}" alt="{{ bottom_pattern.name }}">
+
                     <div class="card-body">
                         <p class="card-text">Bottompattern: {{ selected_patterns.bottom }}</p>
                     </div>

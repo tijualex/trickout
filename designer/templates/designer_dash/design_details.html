@@ -1,0 +1,17 @@
+{% extends "designer_dash/base.html" %}
+
+{% block content %}
+    <h1>Design Details</h1>
+    <p><strong>Design ID:</strong> {{ design.design_id }}</p>
+    <p><strong>Design Name:</strong> {{ design.name }}</p>
+    <!-- Display other design fields as needed -->
+
+    <h2>Measurements:</h2>
+    <ul>
+        {% for measurement in measurements %}
+            <li>{{ measurement.name }}: {{ measurement.value }}</li>
+        {% empty %}
+            <li>No measurements available for this design.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
