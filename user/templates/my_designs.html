@@ -12,6 +12,7 @@
               <p class="card-text">Dress Type: {{ design.dress_type }}</p>
               <p class="card-text">Price: ${{ design.price }}</p>
               <!-- Add more details about the design as needed -->
+              <a href="{% url 'view_design' design.design_id %}" class="btn btn-primary">View Design</a>
             </div>
           </div>
         </div>

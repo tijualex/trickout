@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <h1>Create Designer Account</h1>
+
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-7">
+            <h3>sign up to continue</h3>
+            <p class="mb-4"></p>
+            <p class="err_mes">{{ error_message }}</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group first">
+                    <input type="text" class="form-control" placeholder="full name" id="full_name" name="full_name" >
+                    <span id="fnspan"></span><br>
+                  </div>
+                  
+                
+              <div class="form-group first">
+                <input type="text" class="form-control" placeholder="email@gmail.com" id="email" name="email">
+                <span id="emspan"></span><br>
+              </div>
+              
+
+              <div class="form-group first">
+                <input type="text" class="form-control" placeholder="username" id="username" name="username">
+                <span id="unspan"></span><br>
+              </div>
+              
+
+              <div class="form-group last mb-3">
+                <input type="password" class="form-control" placeholder="Password" id="pass" name="pass">
+                <span id="pspan"></span><br>
+              </div>
+              
+
+              <div class="form-group last mb-3">
+                <input type="password" class="form-control" placeholder="confirm Password" id="cpass" name="cpass">
+                <span id="cpspan"></span><br>
+              </div>
+              
+              
+            
+
+              <input type="submit" value="ADD DESIGNER" class="btn btn-block btn-primary">
+              <br>
+               
+
+            </form>
+          </div>
+        </div>
+
+
+
+
+<!--===============================================================================================-->
+<script>
+    $(document).ready(function () {
+        $("#full_name").keyup(function () {
+            validateName("#full_name");
+        });
+    
+        $("#email").keyup(function () {
+            validateEmail("#email");
+        });
+    
+        $("#pass").keyup(function () {
+            validatePassword("#pass");
+        });
+    
+        $("#cpass").keyup(function () {
+            validateConfirmPassword("#cpass");
+        });
+    
+        // Valid name
+        function validateName(fieldId) {
+            var name = $(fieldId).val();
+            var lettersWithSpaces = /^[A-Za-z\s]+$/;
+            if (name.trim() === "") {
+                $("#fnspan").html("Enter the Name").css("color", "red");
+            } else if (!lettersWithSpaces.test(name)) {
+                $("#fnspan").html("Name field required only alphabet characters with spaces").css("color", "red");
+            } else {
+                $("#fnspan").html("");
+            }
+        }
+        
+        function validateEmail(fieldId) {
+            var email = $(fieldId).val(); // Corrected selector
+            var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (email === "") {
+                $("#emspan").html("Enter the Email Id").css("color", "red");
+            } else if (!filter.test(email)) {
+                $("#emspan").html("Use correct Email Id--******@gmail.com").css("color", "red");
+            } else {
+                $("#emspan").html("");
+            }
+        }
+        
+        function validatePassword(fieldId) {
+            var password = $(fieldId).val(); // Corrected selector
+            var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/;
+            if (password === "") {
+                $("#pspan").html("Enter the Password").css("color", "red");
+            } else if (!pwd_expression.test(password)) {
+                $("#pspan").html("Use correct Password Format- password should contain a capital letter,small letter,integer and special character").css("color", "red");
+            } else {
+                $("#pspan").html("");
+            }
+        }
+        
+        function validateConfirmPassword(fieldId) {
+            var password = $("#pass").val();
+            var confirmPassword = $(fieldId).val(); // Corrected selector
+            if (confirmPassword === "") {
+                // $("#cpspan").html("Enter the Confirm Password").css("color", "red");
+                alert("Please fill the confirm Password");
+            } else if (confirmPassword !== password) {
+                $("#cpspan").html("Password do not match").css("color", "red");
+            } else {
+                $("#cpspan").html("");
+            }
+        }
+        $("form").submit(function (event) {
+            // Perform your validation checks here
+            var isValid = true; // Assume the form is valid initially
+            
+            // Validate name
+            var name = $("#full_name").val();
+            if (name.trim() === "" || !lettersWithSpaces.test(name)) {
+                isValid = false;
+                $("#fnspan").html("Invalid name").css("color", "red");
+            }
+    
+            // Validate email
+            var email = $("#email").val();
+            if (email === "" || !filter.test(email)) {
+                isValid = false;
+                $("#emspan").html("Invalid email").css("color", "red");
+            }
+            var username = $("#username").val();
+            if (username === "" ) {
+                isValid = false;
+                $("#unspan").html("username field should not be null").css("color", "red");
+            }
+            // Validate password
+            var password = $("#pass").val();
+            if (password === "" || !pwd_expression.test(password)) {
+                isValid = false;
+                $("#pspan").html("Invalid password").css("color", "red");
+            }
+    
+            // Validate confirm password
+            var confirmPassword = $("#cpass").val();
+            if (confirmPassword === "" || confirmPassword !== password) {
+                isValid = false;
+                $("#cpspan").html("Passwords do not match").css("color", "red");
+            }
+    
+            // Prevent form submission if not valid
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+    
+</script>
+{%endblock%}

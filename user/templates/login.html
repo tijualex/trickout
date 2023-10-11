@@ -75,7 +75,7 @@
 				  <div class="d-flex mb-5 align-items-center">
 					<span class="ml-auto">Don't have an account <a href="{% url 'signup' %}">signup?</a></span> 
 					</label>
-					<span class="ml-auto"><a href='password_reset' class="forgot-pass">forgot password?</a></span>
+					<span class="ml-auto"><a href='{% url "password_reset" %}' class="forgot-pass">forgot password?</a></span>
 					<span class="ml-auto"><a href="{% provider_login_url 'google'%}">google</a></span>
 				  </div>
 	

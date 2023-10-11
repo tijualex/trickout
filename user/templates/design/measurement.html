@@ -292,7 +292,7 @@
                     <label for="shoulder">Shoulder:</label>
                     <div class="input-group">
                         <input type="number" step="0.1" class="form-control" id="shoulder" name="shoulder" required
-                               min="16" max="20"> <!-- Set minimum and maximum values -->
+                               > <!-- Set minimum and maximum values -->
                         <div class="input-group-append">
                             <select class="form-control" id="shoulderUnit" name="shoulderUnit">
                                 <option value="inches">Inches</option>
@@ -305,7 +305,7 @@
                     <label for="waist">Waist:</label>
                     <div class="input-group">
                         <input type="number" step="0.1" class="form-control" id="waist" name="waist" required
-                               min="16" max="20"> <!-- Set minimum and maximum values -->
+                               > <!-- Set minimum and maximum values -->
                         <div class="input-group-append">
                             <select class="form-control" id="waistUnit" name="waistUnit">
                                 <option value="inches">Inches</option>
@@ -318,7 +318,7 @@
                     <label for="chest">Chest:</label>
                     <div class="input-group">
                         <input type="number" step="0.1" class="form-control" id="chest" name="chest" required
-                               min="16" max="20"> <!-- Set minimum and maximum values -->
+                               > <!-- Set minimum and maximum values -->
                         <div class="input-group-append">
                             <select class="form-control" id="chestUnit" name="chestUnit">
                                 <option value="inches">Inches</option>
@@ -332,7 +332,7 @@
                     <label for="hip">Hip:</label>
                     <div class="input-group">
                         <input type="number" step="0.1" class="form-control" id="hip" name="hip" required
-                               min="16" max="20"> <!-- Set minimum and maximum values -->
+                               > <!-- Set minimum and maximum values -->
                         <div class="input-group-append">
                             <select class="form-control" id="hipUnit" name="hipUnit">
                                 <option value="inches">Inches</option>
@@ -344,8 +344,7 @@
                 <div class="form-group">
                     <label for="Inseam">Inseam length:</label>
                     <div class="input-group">
-                        <input type="number" step="0.1" class="form-control" id="Inseam" name="Inseam" required
-                               min="15" max="20"> <!-- Set minimum and maximum values -->
+                        <input type="number" step="0.1" class="form-control" id="Inseam" name="Inseam" required> <!-- Set minimum and maximum values -->
                         <div class="input-group-append">
                             <select class="form-control" id="InseamUnit" name="InseamUnit">
                                 <option value="inches">Inches</option>
@@ -398,7 +397,7 @@
 
             // Define the valid measurement ranges
             const minShoulder = 15;
-            const maxShoulder = 25;
+            const maxShoulder = 35;
             const minWaist = 10;
             const maxWaist = 50;
             const minChest = 10;
@@ -406,7 +405,7 @@
             const minHip = 10;
             const maxHip = 50;
             const minInseam = 15;
-            const maxInseam = 115; // Updated the upper limit to 115 inches
+            const maxInseam = 100; // Updated the upper limit to 115 inches
 
             // Validate each measurement
             if (shoulder < minShoulder || shoulder > maxShoulder) {

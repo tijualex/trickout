@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'designer_dash/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -35,7 +35,7 @@
                 <tbody>
                     {% for top_pattern in top_patterns %}
                     <tr>
-                        <td>{{ top_pattern.custom_id }}</td>
+                        <td>{{ top_pattern.top_id }}</td>
                         <td>{{ top_pattern.name }}</td>
                         <td>
                             <img src="{{ top_pattern.image.url }}" alt="{{ top_pattern.name }}" width="100" height="100">
@@ -46,7 +46,7 @@
                             <!-- Update Top Pattern Button -->
                             <a class="btn btn-primary btn-sm update-top-pattern"
                                 href="#"
-                                data-top-pattern-id="{{ top_pattern.custom_id }}"
+                                data-top-pattern-id="{{ top_pattern.top_id }}"
                                 data-top-pattern-name="{{ top_pattern.name }}">Update</a>
                         </td>
                     </tr>

@@ -139,6 +139,9 @@
         background-color: #EAEAEA;
         min-height: 100vh;
         padding: 20px;
+        position: fixed;
+        left: 0;
+        top: 0;
     }
 
     .right-panel {
@@ -218,6 +221,14 @@
     .selected {
         border: 2px solid blue;
     }
+    #pattern-image {
+        max-width: 200px;
+        max-height: 200px;
+        
+    }
+    .custom-margin-top {
+        margin-top: 80px; /* You can adjust the value (in pixels or any other unit) based on your preference */
+    }
 </style>
 
 <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
@@ -226,7 +237,7 @@
 <body>
     <!-- Header -->
     <header class="">
-      <nav class="navbar navbar-expand-lg">
+      <nav class="navbar navbar-expand-lg mb-5">
         <a class="navbar-brand" href="{%url 'index'%}">
           <img src="{% static 'images/8.png' %}" alt="Logo"alt="Logo" class="navbar-logo">
        </a>
@@ -285,6 +296,8 @@
         </div>
       </nav>
     </header>
+
+    
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 right-panel">
@@ -298,7 +311,7 @@
                     <div id="fabricPatternOptions" class="collapse sub-options">
                         {% for fabric in fabric %}
                         <div class="image-container fabric-option" data-pattern-id="{{ fabric.fabric_id }}">
-                            <img src="{{ fabric.fabric_image.url }}" alt="{{ fabric.name }}">
+                            <img src="{{ fabric.image.url }}" alt="{{ fabric.name }}">
                         </div>
                         {% endfor %}
                     </div>
@@ -357,10 +370,31 @@
                     <input type="hidden" id="selectedBottom" name="selectedBottom" value="">
                 </div>
             </div>
+            <div class="col-md-8 custom-top-margin right-panel">
+                <div class="card text-center mx-auto  custom-margin-top" style="max-width: 400px; max-height: 200px;">
+                <div class="card-body d-flex flex-column justify-content-center mt-2">
+                    <h2 id="pattern-name" class="card-title mt-2"></h2>
+                    <div class="card mb-3" style="width: 300px; height: 300px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img id="pattern-image" class="card-img" src="" alt="Pattern Image">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text" id="pattern-description"></p>
+                </div>
+            </div>
             
-            <div class="col-md-8">
-                <!-- Dress styling area -->
-    {%block content%}{% endblock %}
+            <div class="row">
+                <div class="col-md-12">
+                <div class="content">
+                    {% block content %}
+                        <!-- Content for the specific page goes here -->
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+   
 
     <form id="patternForm" method="POST" action="{% url 'confirm_design' %}">
         {% csrf_token %}
@@ -377,8 +411,6 @@
     </form>
    
 </div>
-            
-
 </div>
 </div>
 
@@ -397,84 +429,100 @@
 
   <script src="{% static "core/vendor/jquery/jquery.min.js" %}"></script>
   <script>
-      function initializePatternSelection(patternClass, hiddenInputId) {
-          const patternOptions = document.querySelectorAll(`.${patternClass}`);
-          const nextButton = document.getElementById('next-button');
+    function initializePatternSelection(patternClass, hiddenInputId, patternType) {
+        const patternOptions = document.querySelectorAll(`.${patternClass}`);
+        const nextButton = document.getElementById('next-button');
 
-          patternOptions.forEach(option => {
-              option.addEventListener('click', () => {
-                  console.log('Pattern option clicked');
-                  // Remove the 'selected' class from all options
-                  patternOptions.forEach(opt => {
-                      opt.classList.remove('selected');
-                  });
+        patternOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                console.log('Pattern option clicked');
+                // Remove the 'selected' class from all options
+                patternOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                });
 
-                  // Add the 'selected' class to the clicked option
-                  option.classList.add('selected');
+                // Add the 'selected' class to the clicked option
+                option.classList.add('selected');
 
-                  // Get the selected pattern's ID (custom_id)
-                  const patternId = option.getAttribute('data-pattern-id');
+                // Get the selected pattern's ID (data-pattern-id)
+                const patternId = option.getAttribute('data-pattern-id');
 
-                  // Store the selected pattern ID in the hidden input field
-                  document.getElementById(hiddenInputId).value = patternId;
+                // Store the selected pattern ID in the hidden input field
+                document.getElementById(hiddenInputId).value = patternId;
 
-                  // Check if all patterns are selected
-                  checkAllPatternsSelected();
-              });
-          });
+                // Check if all patterns are selected
+                checkAllPatternsSelected();
 
-          // Function to check if all patterns are selected
-          function checkAllPatternsSelected() {
-              const selectedFabric = document.getElementById('selectedFabric').value;
-              const selectedNeck = document.getElementById('selectedNeck').value;
-              const selectedTop = document.getElementById('selectedTop').value;
-              const selectedSleeves = document.getElementById('selectedSleeves').value;
-              const selectedBottom = document.getElementById('selectedBottom').value;
-              console.log('Selected Fabric ID:', selectedFabric);
-              console.log('Selected Neck ID:', selectedNeck);
-              console.log('Selected Top ID:', selectedTop);
-              console.log('Selected Sleeves ID:', selectedSleeves);
-              console.log('Selected Bottom ID:', selectedBottom);
-              // Enable the "Next" button if all patterns are selected, otherwise, disable it
-              nextButton.disabled = !(selectedFabric && selectedNeck && selectedTop && selectedSleeves && selectedBottom);
-          }
-      }
+                // Make an AJAX request to fetch pattern details
+                $.ajax({
+                    url: `/pattern_details/${patternId}/${patternType}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        // Update the pattern details container with the fetched data
+                        $('#pattern-name').text(data.name);
+                        $('#pattern-image').attr('src', data.image_url);
+                    },
+                    error: function(error) {
+                        console.error('Error fetching pattern details:', error);
+                    }
+                });
+            });
+        });
 
-      // Initialize pattern selections individually
-      initializePatternSelection('fabric-option', 'selectedFabric');
-      initializePatternSelection('neck-pattern-option', 'selectedNeck');
-      initializePatternSelection('top-pattern-option', 'selectedTop');
-      initializePatternSelection('sleeves-pattern-option', 'selectedSleeves');
-      initializePatternSelection('bottom-pattern-option', 'selectedBottom');
+        // Function to check if all patterns are selected
+        function checkAllPatternsSelected() {
+            const selectedFabric = document.getElementById('selectedFabric').value;
+            const selectedNeck = document.getElementById('selectedNeck').value;
+            const selectedTop = document.getElementById('selectedTop').value;
+            const selectedSleeves = document.getElementById('selectedSleeves').value;
+            const selectedBottom = document.getElementById('selectedBottom').value;
 
-      // Initially, disable the "Next" button since no patterns are selected
-      document.getElementById('next-button').disabled = true;
+            
 
-      document.getElementById('next-button').addEventListener('click', () => {
-          // Collect selected pattern IDs
-          const selectedFabricPattern = document.getElementById('selectedFabric').value;
-          const selectedNeckPattern = document.getElementById('selectedNeck').value;
-          const selectedTopPattern = document.getElementById('selectedTop').value;
-          const selectedSleevesPattern = document.getElementById('selectedSleeves').value;
-          const selectedBottomPattern = document.getElementById('selectedBottom').value;
+            // Enable the "Next" button if all patterns are selected, otherwise, disable it
+            nextButton.disabled = !(selectedFabric && selectedNeck && selectedTop && selectedSleeves && selectedBottom);
+        }
+    }
 
-          console.log(selectedFabricPattern);
-          console.log(selectedNeckPattern);
-          console.log(selectedTopPattern);
-          console.log(selectedBottomPattern);
-          console.log(selectedSleevesPattern);
+    // Initialize pattern selections individually
+    initializePatternSelection('fabric-option', 'selectedFabric', 'fabric');
+    initializePatternSelection('neck-pattern-option', 'selectedNeck', 'neckpattern');
+    initializePatternSelection('top-pattern-option', 'selectedTop', 'toppattern');
+    initializePatternSelection('sleeves-pattern-option', 'selectedSleeves', 'sleevespattern');
+    initializePatternSelection('bottom-pattern-option', 'selectedBottom', 'bottompattern');
 
-          // Set these values as form inputs
-          document.getElementById('selectedFabricPattern').value = selectedFabricPattern;
-          document.getElementById('selectedNeckPattern').value = selectedNeckPattern;
-          document.getElementById('selectedTopPattern').value = selectedTopPattern;
-          document.getElementById('selectedSleevesPattern').value = selectedSleevesPattern;
-          document.getElementById('selectedBottomPattern').value = selectedBottomPattern;
+    // Initially, disable the "Next" button since no patterns are selected
+    document.getElementById('next-button').disabled = true;
 
-          // Submit the form
-          document.getElementById('patternForm').submit();
-      });
-  </script>
+    document.getElementById('next-button').addEventListener('click', () => {
+        // Collect selected pattern IDs
+        const selectedFabricPattern = document.getElementById('selectedFabric').value;
+        const selectedNeckPattern = document.getElementById('selectedNeck').value;
+        const selectedTopPattern = document.getElementById('selectedTop').value;
+        const selectedSleevesPattern = document.getElementById('selectedSleeves').value;
+        const selectedBottomPattern = document.getElementById('selectedBottom').value;
+
+        console.log(selectedFabricPattern);
+        console.log(selectedNeckPattern);
+        console.log(selectedTopPattern);
+        console.log(selectedBottomPattern);
+        console.log(selectedSleevesPattern);
+
+        // Set these values as form inputs
+        document.getElementById('selectedFabricPattern').value = selectedFabricPattern;
+        document.getElementById('selectedNeckPattern').value = selectedNeckPattern;
+        document.getElementById('selectedTopPattern').value = selectedTopPattern;
+        document.getElementById('selectedSleevesPattern').value = selectedSleevesPattern;
+        document.getElementById('selectedBottomPattern').value = selectedBottomPattern;
+
+        // Submit the form
+        document.getElementById('patternForm').submit();
+    });
+</script>
+</body>
+</html>
+
 
 </body>
 

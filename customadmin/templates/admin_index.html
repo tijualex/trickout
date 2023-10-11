@@ -1,61 +1,105 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
     <!-- CONTENT WRAPPER -->
     <div class="ec-content-wrapper">
         <div class="content">
             <!-- Orders and Users Grid -->
             <div class="row">
+                <!-- ... Existing code for orders and users cards ... -->
                 <div class="col-xl-6 col-md-12 p-b-15">
                     <div class="card" style="background-color: white;">
                         <div class="card-header bg-orange">
-                            <h2 class="text-white">Orders</h2>
+                            <h2 class="text-black">Orders in the Past 7 Days</h2>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>User</th>
-                                            <!-- Add more order-related columns here -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Loop through orders and display them here -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <a href="{% url 'order_list' %}" class="btn btn-success mt-3">View All Orders</a>
+                            <canvas id="orders-chart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-6 col-md-12 p-b-15">
-                    <div class="card" style="background-color: white;">
-                        <div class="card-header bg-orange">
-                            <h2 class="text-white">Users</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>User ID</th>
-                                            <th>Name</th>
-                                            <!-- Add more user-related columns here -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Loop through users and display them here -->
-                                    </tbody>
-                                </table>
-                            </div>
-							<a href="{% url 'list_users' %}" class="btn btn-success mt-3">View All users</a>
-                        </div>
-					</div>
+            
+            <div class="col-xl-6 col-md-12 p-b-15">
+                <div class="card" style="background-color: white;">
+                    <div class="card-header bg-orange">
+                        <h2 class="text-black">Order Status</h2>
+                    </div>
+                    <div class="card-body">
+                        <<canvas id="orderStatusChart" width="400" height="185"></canvas>
+
                     </div>
                 </div>
             </div>
+        </div>
         </div> <!-- End Content -->
     </div> <!-- End Content Wrapper -->
+
+    <script>
+        function createOrdersChart() {
+            fetch('/get_orders_last_7_days/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const dates = data.dates;
+                    const orderCounts = data.order_counts;
+        
+                    const ctx = document.getElementById('orders-chart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Orders',
+                                data: orderCounts,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        }
+        
+        // Call the function to create the line chart
+        createOrdersChart();
+
+
+        function createOrderStatusChart() {
+            fetch('/get_order_status_counts/')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('orderStatusChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Delivered', 'Processing', 'Shipped'],
+                            datasets: [{
+                                data: [data.delivered, data.processing, data.shipped],
+                                backgroundColor: ['rgba(75, 192, 192, 0.8)', 'rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)'],
+                            }]
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        }
+        
+        // Call the function to create the pie chart
+        createOrderStatusChart();
+    </script>
 {% endblock %}

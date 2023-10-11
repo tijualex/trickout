@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'designer_dash/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -29,6 +29,7 @@
                         <th>Image</th>
                         <th>Dress Type</th>
                         <th>Price</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,10 +43,9 @@
                         <td>{{ pattern.dress_type.dress_type }}</td>
                         <td>${{ pattern.price }}</td>
                         <td>
-                            <!-- Update Neck Pattern Button -->
-                            <a class="btn btn-primary btn-sm update-sleeves-pattern" href="#" data-sleeves-pattern-id="{{ pattern.custom_id }}">Update</a>
-
-                         </td>
+                            <!-- Update Sleeves Pattern Button -->
+                            <a class="btn btn-primary btn-sm update-sleeves-pattern" href="#" data-sleeves-pattern-id="{{ pattern.sleeve_id }}">Update</a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -62,6 +62,9 @@
     <h2 class="mb-4">Update Sleeves Pattern</h2>
     <form method="post" enctype="multipart/form-data" id="update-sleeves-pattern-form">
         {% csrf_token %}
+        
+        <!-- Hidden Action Field -->
+        <input type="hidden" id="action" name="action" value="update">
         
         <!-- Non-editable Pattern ID and Name -->
         <div class="form-group">
@@ -102,11 +105,13 @@
         </div>
     </form>
 </div>
+
 <!-- Add JavaScript for selection and highlighting -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         // Add an event listener for the update buttons
-        $(".update-sleeves-pattern").click(function () {
+        $(document).on('click', '.update-sleeves-pattern', function () {
             const patternId = $(this).data("sleeves-pattern-id");
             const patternName = $(this).data("sleeves-pattern-name");
             $("#sleeves-pattern-id").val(patternId);
@@ -182,7 +187,6 @@
                 dataType: "json",
                 success: function (sleevesPatternData) {
                     $("#sleeves-pattern-name").val(sleevesPatternData.name);
-                    console.error(sleevesPatternData.name);
                     $("#priceupdate").val(sleevesPatternData.price);
                     $("#is-active-update").prop("checked", sleevesPatternData.is_active);
                     var previewImage = $("#previewImageupdate");
@@ -194,12 +198,8 @@
                 },
             });
         }
-    
-        // Rest of your JavaScript code here...
     });
 </script>
-
-
 </div> <!-- End Content -->
 </div>
 {% endblock %}

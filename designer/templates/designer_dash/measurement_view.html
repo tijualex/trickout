@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'designer_dash/base.html' %}
 {% load static %}
+
 {% block content %}
 <!-- CONTENT WRAPPER -->
 <div class="ec-content-wrapper">
@@ -7,13 +8,6 @@
         <div class="breadcrumb-wrapper breadcrumb-contacts">
             <div>
                 <h1>Measurement Details</h1>
-                <p class="breadcrumbs">
-                    <span><a href="{% url 'admin_index' %}">Home</a></span>
-                    <span>/</span>
-                    <span><a href="{% url 'users_design' %}">Users Design</a></span>
-                    <span>/</span>
-                    <span>Measurement Details</span>
-                </p>
             </div>
         </div>
         <div class="row">
@@ -52,9 +46,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            
                         </div>
-                        <a href="{% url 'users_design' %}" class="btn btn-primary">Back to Designs</a>
                     </div>
                 </div>
             </div>

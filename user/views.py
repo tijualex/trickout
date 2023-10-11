@@ -16,7 +16,7 @@ from django.conf import settings
 from requests import request
 from .models import Order, PersonMeasurement, ShippingAddress, UserProfile 
 from customadmin.models import BottomPattern, Designs, DressType, NeckPattern, SleevesPattern
-from customadmin.models import Fabric, TopPattern  # Import your Fabric model
+from customadmin.models import Fabric, TopPattern,UserRole  # Import your Fabric model
  
 
 # Replace 'User' with your custom user model
@@ -26,14 +26,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-
 def login_view(request):
     if request.user.is_authenticated:
         # User is already authenticated, redirect to the desired page (e.g., 'index')
-        return redirect('index')
+        user_role = UserRole.objects.get(user=request.user)
+        if user_role.role == 'admin':
+            return redirect('admin_index')
+        elif user_role.role == 'designer':
+            return redirect('index_designer')
+        else:
+            return redirect('index')
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -47,14 +49,12 @@ def login_view(request):
             login(request, user)
 
             # Redirect to the appropriate page after login
-            if user.is_superuser:
-                # If the user is an admin, redirect to an admin page
+            user_role = UserRole.objects.get(user=user)
+            if user_role.role == 'admin':
                 return redirect('admin_index')
-            elif user.is_staff:
-                # If the user is not an admin, redirect to a regular user page (e.g., 'index')
+            elif user_role.role == 'designer':
                 return redirect('index_designer')
             else:
-                # If the user is not an admin, redirect to a regular user page (e.g., 'index')
                 return redirect('index')
         else:
             # Invalid login credentials, display an error message
@@ -77,6 +77,12 @@ def login_view(request):
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import render, redirect
 
 def signup(request):
     if request.method == 'POST':
@@ -103,13 +109,17 @@ def signup(request):
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.first_name = name
                 user.save()
+
+                # Assign default role to the new user
+                UserRole.objects.create(user=user, role='user')  # 'user' is the default role
+
                 subject = 'Your account has been created'
                 message = 'Your account has been created successfully.'
                 from_email = settings.EMAIL_HOST_USER  # Your sender email address
                 recipient_list = [user.email]
 
-                send_mail(subject, message, from_email,recipient_list)
-                
+                send_mail(subject, message, from_email, recipient_list)
+
                 return redirect('login_view')
         else:
             messages.error(request, "Passwords do not match")
@@ -124,25 +134,30 @@ def signup(request):
 
 
 
-
 from django.shortcuts import render, redirect
+
+
 
 def index(request):
     # Check if the user is authenticated
     if request.user.is_authenticated:
-        # If the user is authenticated, check if they are an admin
-        if request.user.is_superuser:
+        # Get the user's role (assuming the role is stored in the user profile or User model)
+        user_role = request.user.userrole.role  # Adjust this based on your user profile or User model setup
+        
+        # Redirect based on user roles
+        if user_role == 'admin':
             # If the user is an admin, redirect to the admin dashboard or any other desired page
-            return redirect('admin_index')  # Replace 'admin_dashboard' with the appropriate URL name
-        elif request.user.is_staff:
-            # For authenticated non-admin users, display the regular index page
-            return redirect( 'index_designer')
+            return redirect('admin_index')  # Replace 'admin_index' with the appropriate URL name for the admin dashboard
+        elif user_role == 'designer':
+            # If the user is a designer, redirect to the designer index page
+            return redirect('index_designer')  # Replace 'index_designer' with the appropriate URL name for the designer index page
         else:
-            # For authenticated non-admin users, display the regular index page
+            # For other roles or if the role is not specified, display the regular index page
             return render(request, 'index.html')
     else:
         # For unauthenticated users, display the regular index page
         return render(request, 'index.html')
+
 
 
 # @login_required()
@@ -283,12 +298,40 @@ def dress_detail(request, dress_type):
 
     return render(request, 'design/dress_detail.html', context)
 
-def pattern_details(request, pattern_id):
-    # Get the pattern option based on pattern_id
-    pattern_option = get_object_or_404(PatternOption, pk=pattern_id)
+from django.http import JsonResponse
+
+def pattern_details(request, pattern_id, pattern_type):
+    # Determine the model based on pattern_type
+    if pattern_type == 'fabric':
+        pattern_model = Fabric
+    elif pattern_type == 'neckpattern':
+        pattern_model = NeckPattern
+    elif pattern_type == 'toppattern':
+        pattern_model = TopPattern
+    elif pattern_type == 'sleevespattern':
+        pattern_model = SleevesPattern
+    elif pattern_type == 'bottompattern':
+        pattern_model = BottomPattern
+    else:
+        # Handle other pattern types or invalid pattern types as needed
+        return JsonResponse({'error': 'Invalid pattern type'}, status=400)
+
+    # Get the pattern option based on pattern_id and pattern_model
+    pattern_option = get_object_or_404(pattern_model, pk=pattern_id)
+
+    # Prepare pattern details to be sent as JSON response
+    pattern_details = {
+        'name': pattern_option.name,
+        'image_url': pattern_option.image.url,  # Assuming the image field is named 'image'
+        # Include other pattern details if necessary
+    }
+
+    # Return pattern details as JSON response
+    return JsonResponse(pattern_details)
 
     context = {
         'pattern_option': pattern_option,
+        'pattern_type': pattern_type,  # Add pattern_type to context for further use if needed
     }
 
     return render(request, 'design/pattern_details.html', context)
@@ -353,7 +396,7 @@ def confirm_design(request):
             selected_neck_pattern =get_object_or_404(NeckPattern, pk=neck_pattern_id)
             selected_sleeves_pattern = get_object_or_404(SleevesPattern, pk=top_sleeves_id)
             selected_bottom_pattern =get_object_or_404(BottomPattern, pk=bottom_pattern_id)
-            selected_fabric_pattern =get_object_or_404(BottomPattern, pk=top_fabric_id)
+            selected_fabric_pattern =get_object_or_404(Fabric, pk=top_fabric_id)
 
             # Retrieve the associated DressType
             selected_dress_type = selected_top_pattern.dress_type
@@ -592,6 +635,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
 
+from customadmin.models import Designs, UserRole
+from user.models import ShippingAddress, Order   # Import the UserRole model
+import random
 @login_required
 @csrf_exempt
 @transaction.atomic
@@ -605,6 +651,16 @@ def create_order(request):
         amount = int(design.price * 100)  # Razorpay accepts amount in paise, so multiply by 100
 
         try:
+            # Retrieve all users with the 'designer' role
+            designers = User.objects.filter(is_active=True, userprofile__is_designer=True)
+
+            # Randomly select a designer from the list
+            if designers.exists():
+                selected_designer = random.choice(designers).user
+            else:
+                # Handle the case where there are no designers available
+                return render(request, 'error.html', {'error_message': 'No designers available for assignment.'})
+
             # Create a Razorpay order
             order = razorpay_client.order.create({
                 'amount': amount,
@@ -615,13 +671,14 @@ def create_order(request):
             # Save the Razorpay order ID in your database
             razorpay_order_id = order['id']
 
-            # Create an Order instance in your database
+            # Create an Order instance in your database with the selected designer
             order_instance = Order.objects.create(
                 user=request.user,
                 design=design,
                 total_price=design.price,
                 address_id=delivery_address,
-                razorpay_order_id=razorpay_order_id
+                razorpay_order_id=razorpay_order_id,
+                designer_id=selected_designer  # Assign the selected designer to the order
             )
 
             # Redirect to the payment confirmation page with the order_id
@@ -634,7 +691,7 @@ def create_order(request):
 
     else:
         # Handle invalid requests (GET requests, etc.)
-        return JsonResponse({'error': 'Invalid request method'})
+        return render(request, 'error.html', {'error_message': 'Invalid request method'})
 
 
 @login_required
@@ -682,8 +739,8 @@ def paymenthandler(request):
     if request.method == "POST":
         payment_id = request.POST.get('razorpay_payment_id', '')
         signature = request.POST.get('razorpay_signature', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
 
-        # Verify the payment signature
         params_dict = {
             'razorpay_order_id': razorpay_order_id,
             'razorpay_payment_id': payment_id,
@@ -693,10 +750,8 @@ def paymenthandler(request):
             razorpay_client.utility.verify_payment_signature(params_dict)
         except Exception as e:
             # Signature verification failed
-            return render(request, 'payment_failure.html')
+            return redirect('myorders')
 
-        # Signature verification succeeded
-        # Retrieve the order from the database
         order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
 
         if order.payment_status == Order.PaymentStatusChoices.SUCCESSFUL:
@@ -707,28 +762,20 @@ def paymenthandler(request):
             # Order is not in a pending state, do not proceed with stock update
             return HttpResponseBadRequest("Invalid order status")
 
-        # Capture the payment amount
         amount = int(order.total_price * 100)  # Convert Decimal to paise
-        try:
-            razorpay_client.payment.capture(payment_id, amount)
-        except Exception as e:
-            # Payment capture failed
-            return render(request, 'payment_failure.html')
-
+        razorpay_client.payment.capture(payment_id, amount)
         # Update the order with payment ID and change status to "Successful"
         order.payment_id = payment_id
         order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
         order.save()
 
-        return redirect('my_orders')
+        return redirect('myorders')
 
     return HttpResponseBadRequest("Invalid request method")
-# my_orders
-
 @login_required
 def myorders(request):
-    # Retrieve orders for the currently logged-in user
-    user_orders = Order.objects.filter(user=request.user)
+    # Retrieve orders for the currently logged-in user and sort them in reverse order
+    user_orders = Order.objects.filter(user=request.user).order_by('-order_date')
     
     context = {
         'orders': user_orders,
@@ -748,6 +795,11 @@ def my_designs(request):
     
     return render(request, 'my_designs.html', context)
 
+
+def view_design(request, design_id):
+    design = Designs.objects.get(design_id=design_id)
+    
+    return render(request, 'view_design.html', {'design': design})
 
 
 

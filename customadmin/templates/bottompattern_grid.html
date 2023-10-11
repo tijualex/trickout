@@ -11,9 +11,6 @@
                     <span><i class="mdi mdi-chevron-right"></i></span>All Bottom Patterns
                 </p>
             </div>
-            <div>
-                <a href="{% url 'add_bottom_pattern' %}" class="btn btn-primary">Add Bottom Pattern</a>
-            </div>
         </div>
 
         <!-- Display Bottom Patterns in a table -->
@@ -24,7 +21,6 @@
                     <th>Dress Type</th>
                     <th>Price</th>
                     <th>Image</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,10 +33,7 @@
                         <!-- Display the pattern image -->
                         <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" style="max-width: 100px; max-height: 100px;">
                     </td>
-                    <td>
-                        <!-- Update Bottom Pattern Button -->
-                        <a class="btn btn-primary text-white update-product" href="#" data-pattern-id="{{ pattern.custom_id }}" data-pattern-name="{{ pattern.name }}">Update</a>
-                    </td>
+                   
                 </tr>
                 {% empty %}
                 <tr>

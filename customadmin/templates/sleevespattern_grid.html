@@ -15,9 +15,7 @@
                     <span><i class="mdi mdi-chevron-right"></i></span>All Sleeves Patterns
                 </p>
             </div>
-            <div>
-                <a href="{% url 'add_sleeves_pattern' %}" class="btn btn-primary">Add Sleeves Pattern</a>
-            </div>
+            
         </div>
 
         <div class="table-responsive">
@@ -34,18 +32,14 @@
                 <tbody>
                     {% for pattern in sleeves_patterns %}
                     <tr>
-                        <td>{{ pattern.custom_id }}</td>
+                        <td>{{ pattern.sleeve_id }}</td>
                         <td>{{ pattern.name }}</td>
                         <td>
                             <img src="{{ pattern.image.url }}" alt="{{ pattern.name }}" width="100" height="100">
                         </td>
                         <td>{{ pattern.dress_type.dress_type }}</td>
                         <td>${{ pattern.price }}</td>
-                        <td>
-                            <!-- Update Neck Pattern Button -->
-                            <a class="btn btn-primary btn-sm update-sleeves-pattern" href="#" data-sleeves-pattern-id="{{ pattern.custom_id }}">Update</a>
-
-                         </td>
+                        
                     </tr>
                     {% empty %}
                     <tr>

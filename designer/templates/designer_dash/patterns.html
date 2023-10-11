@@ -1,71 +1,159 @@
-{% extends "designer_dash/base.html" %}
-
+{% extends 'designer_dash/base.html' %}
 {% load static %}
 
 {% block style %}
-    <style>
-        .pattern-card {
-            padding: 30px;
-            margin: 30px 0;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #c0c0c0; /* Ash color */
-            border-radius: 20px; /* Add border-radius for curved shape */
-            transition: box-shadow 0.3s, transform 0.3s;
-        }
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-        .pattern-card:hover {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            transform: scale(1.05);
-        }
-    </style>
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .custom-btn-primary, .custom-btn-secondary {
+        font-size: 14px;
+        border: 2px solid #117a8b; /* Set border for the buttons */
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 12px 20px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-btn-primary {
+        background-color: #117a8b; /* Set background color */
+        color: white;
+    }
+
+    .custom-btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .custom-btn-primary:hover, .custom-btn-secondary:hover {
+        background-color: #005b66; /* Darken the color slightly on hover */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card {
+        margin: 20px 10px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        padding: 15px;
+        text-align: center;
+        border-radius: 20px 20px 0 0;
+        font-size: 1.5rem;
+        color: #117a8b; /* Set the text color for card headings */
+    }
+
+    .card-body {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid p-0">
-        <img src="{% static 'images/01.jpg' %}" class="banner-image" alt="Banner Image" height="30%" >
-    </div>
-<div class="container mt-5">
+<div class="container mt-4">
     <div class="row">
-        <div class="col-md-3">
-            <div class="card pattern-card">
-                <div class="card-header bg-dark text-white">
-                    <h2>Neck Pattern</h2>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    New Fabric Collection
                 </div>
                 <div class="card-body">
-                    {% comment %} <a href="{% url 'neck_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                    <div class="btn-container">
+                        <a href="{% url 'add_fabric' %}" class="btn btn-primary mb-2">Add New Fabric</a>
+                        <a href="{% url 'fabric_list' %}" class="btn btn-primary">View All Fabrics</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card pattern-card">
-                <div class="card-header bg-dark text-white">
-                    <h2>Top Pattern</h2>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Dress Styles
                 </div>
                 <div class="card-body">
-                    {% comment %} <a href="{% url 'top_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                    <div class="btn-container">
+                        <a href="{% url 'add_dress_type' %}" class="btn btn-primary mb-2">Add New Dress Style</a>
+                        <a href="{% url 'list_dress_type' %}" class="btn btn-primary">View All Dress Styles</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card pattern-card">
-                <div class="card-header bg-dark text-white">
-                    <h2>BottomPattern</h2>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Neck Patterns
                 </div>
                 <div class="card-body">
-                    {% comment %} <a href="{% url 'bottom_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                    <div class="btn-container">
+                        <a href="{% url 'add_neck_pattern' %}" class="btn btn-primary mb-2">Add New Neck Pattern</a>
+                        <a href="{% url 'list_neckpattern' %}" class="btn btn-primary">View All Neck Patterns</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card pattern-card">
-                <div class="card-header bg-dark text-white">
-                    <h2>SleevePattern</h2>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Sleeve Patterns
                 </div>
                 <div class="card-body">
-                    {% comment %} <a href="{% url 'sleeves_patterns' %}" class="btn btn-primary btn-block">View All</a> {% endcomment %}
+                    <div class="btn-container">
+                        <a href="{% url 'add_sleeves_pattern' %}" class="btn btn-primary mb-2">Add New Sleeve Pattern</a>
+                        <a href="{% url 'list_sleevespattern' %}" class="btn btn-primary">View All Sleeve Patterns</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Top Patterns
+                </div>
+                <div class="card-body">
+                    <div class="btn-container">
+                        <a href="{% url 'add_top_pattern' %}" class="btn btn-primary mb-2">Add New Top Pattern</a>
+                        <a href="{% url 'list_toppattern' %}" class="btn btn-primary">View All Top Patterns</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Bottom Patterns
+                </div>
+                <div class="card-body">
+                    <div class="btn-container">
+                        <a href="{% url 'add_bottom_pattern' %}" class="btn btn-primary mb-2">Add New Bottom Pattern</a>
+                        <a href="{% url 'list_bottompattern' %}" class="btn btn-primary">View All Bottom Patterns</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+

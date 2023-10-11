@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="{% static 'core/assets/css/fontawesome.css' %}">
         <link rel="stylesheet" href="{% static 'core/assets/css/templatemo-sixteen.css' %}">
         <link rel="stylesheet" href="{% static 'core/assets/css/owl.css' %}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <style>
             /* Custom styles for the shipping address form */
@@ -259,6 +260,43 @@
       .content-container {
         margin-top: 50px; /* Adjust the value as needed */
     }
+    /* Define the card grid layout */
+		.fabric-grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		}
+
+		/* Style each fabric card */
+		.fabric-card {
+		width: calc(33.33% - 20px); /* Set the width for three cards in a row */
+		margin-right: 20px; /* Add margin to create space between cards */
+		margin-bottom: 20px;
+		padding: 10px;
+		border: 1px solid #ccc;
+		text-align: center;
+		}
+
+		/* Clear the margin for every fourth card to create a new row */
+		.fabric-card:nth-child(3n + 1) {
+		margin-right: 0;
+		}
+
+
+        /* Add your CSS styling here */
+        /* This is just a basic example */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+			z-index: 9999;
+        }
+
     </style>
 </head>
 <body>

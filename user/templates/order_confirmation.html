@@ -56,8 +56,13 @@
             }
     
             .btn-primary {
-                width: 100%;
-            }
+                width: 20%;
+                margin-left:40%;           
+             }
+             .btn-secondary {
+                width: 20%;
+                margin-left:40%;           
+             }
     
             /* Custom styles for inline form fields */
             .inline-form {
@@ -375,37 +380,39 @@
 
     <!-- Your Addresses as Cards -->
     <div class="mb-4">
-        <h4>Your Addresses:</h4>
-        <div class="row">
+        <h4 class="row justify-content-center"> select Address</h4>
+        
             {% for address in user_addresses %}
+            <div class="row justify-content-center">
             <div class="col-lg-4 mb-3">
-                <div class="card">
+                <div class="card ">
                     <div class="card-body">
-                        <input type="radio" name="selected_address" value="{{ address.address_id }}" class="form-check-input">
+                        <input type="radio" name="selected_address" value="{{ address.address_id }}" class="form-check-input" required>
                         <h5 class="card-title">{{ address.recipient_name }}</h5>
                         <p class="card-text">{{ address.address_line1 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</p>
                     </div>
                 </div>
             </div>
+        </div>
             {% empty %}
-            <div class="col">
+            <div class="col text-center">
                 <p>No addresses found.</p>
             </div>
             {% endfor %}
-        </div>
+        
     
-        <button type="button" class="btn btn-secondary mb-3" id="add-new-address-btn">Add New Address</button>
+        <button type="button" class="btn btn-secondary mb-3 " id="add-new-address-btn">Add New Address</button>
     </div>
 
     <!-- Order Section (hidden fields) -->
-    <input type="" name="design" value="{{ design.design_id }}">
-    <input type="" name="total_price" value="{{ design.price }}">
-    <input type="" name="order_status" value="processing">
-    <input type="" name="payment_status" value="False">
+    <input type="hidden" name="design" value="{{ design.design_id }}">
+    <input type="hidden" name="total_price" value="{{ design.price }}">
+    <input type="hidden" name="order_status" value="processing">
+    <input type="hidden" name="payment_status" value="False">
 
 
     <!-- Continue to Payment Button -->
-    <button type="submit" class="btn btn-primary mt-3">Continue to Payment</button>
+    <button type="submit" class="btn btn-primary mt-1">Continue to Payment</button>
 </form>
 
 
@@ -462,21 +469,6 @@
     <button type="submit" class="btn btn-primary">add address</button>
     </form>
 </div>
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="inner-content">
-                        <p>
-                            Copyright &copy; 2020 Sixteen Clothing Co., Ltd. - Design:
-                            <a rel="nofollow noopener" href="https://templatemo.com" target="_blank">TemplateMo</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Bootstrap core JavaScript -->
     <script src="{% static "core/vendor/jquery/jquery.min.js" %}"></script>

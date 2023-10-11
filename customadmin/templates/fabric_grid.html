@@ -15,9 +15,6 @@
                     <span><i class="mdi mdi-chevron-right"></i></span>All Fabrics
                 </p>
             </div>
-            <div>
-                <a href="{% url 'add_fabric' %}" class="btn btn-primary">Add Fabric</a>
-            </div>
         </div>
 
         <div class="table-responsive">
@@ -41,7 +38,7 @@
                         <th>Image</th>
                         <th>Details</th>
                         <th>Price</th>
-                        <th>Action</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -54,10 +51,7 @@
                         </td>
                         <td>{{ fabric.details }}</td>
                         <td>${{ fabric.price }}</td>
-                        <td>
-                            <!-- Update Fabric Button -->
-                            <a class="btn btn-primary btn-sm update-fabric" href="#" data-fabric-id="{{ fabric.custom_id }}">Update</a>
-                        </td>
+                        
                     </tr>
                     {% empty %}
                     <tr>

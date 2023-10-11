@@ -17,6 +17,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
 	<link href="assets/css/materialdesignicons.min.css" rel="stylesheet" />
 	<!-- Include Bootstrap CSS -->
+	
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 <!-- Include Bootstrap JavaScript and jQuery -->
@@ -115,11 +116,6 @@
 							<div class="collapse">
 								<ul class="sub-menu" id="fabric" data-parent="#sidebar-menu">
 									<li class="">
-										<a class="sidenav-item-link" href="{% url 'add_fabric' %}">
-											<span class="nav-text">Add fabric</span>
-										</a>
-									</li>
-									<li class="">
 										<a class="sidenav-item-link" href="{% url 'fabric_grid' %}">
 											<span class="nav-text">List fabric</span>
 										</a>
@@ -136,11 +132,7 @@
 							</a>
 							<div class="collapse">
 								<ul class="sub-menu" id="top-pattern" data-parent="#sidebar-menu">
-									<li class="">
-										<a class="sidenav-item-link" href="{% url 'add_top_pattern' %}">
-											<span class="nav-text">Add Top Pattern</span>
-										</a>
-									</li>
+									
 									<li class="">
 										<a class="sidenav-item-link" href="{% url 'list_top_pattern' %}">
 											<span class="nav-text">List Top Patterns</span>
@@ -159,11 +151,7 @@
 							</a>
 							<div class="collapse">
 								<ul class="sub-menu" id="bottom-pattern" data-parent="#sidebar-menu">
-									<li class="">
-										<a class="sidenav-item-link" href="{% url 'add_bottom_pattern' %}">
-											<span class="nav-text">Add Bottom Pattern</span>
-										</a>
-									</li>
+									
 									<li class="">
 										<a class="sidenav-item-link" href="{% url 'list_bottom_pattern' %}">
 											<span class="nav-text">List Bottom Patterns</span>
@@ -184,11 +172,6 @@
 							<div class="collapse">
 								<ul class="sub-menu" id="neck pattern" data-parent="#sidebar-menu">
 									<li class="">
-										<a class="sidenav-item-link" href={% url 'add_neck_pattern' %}>
-											<span class="nav-text">Add Neck Pattern</span>
-										</a>
-									</li>
-									<li class="">
 										<a class="sidenav-item-link" href={% url 'list_neck_pattern' %}>
 											<span class="nav-text">List Neck pattern</span>
 										</a>
@@ -205,11 +188,7 @@
 							</a>
 							<div class="collapse">
 								<ul class="sub-menu" id="neck pattern" data-parent="#sidebar-menu">
-									<li class="">
-										<a class="sidenav-item-link" href={% url 'add_sleeves_pattern' %}>
-											<span class="nav-text">Add sleeves Pattern</span>
-										</a>
-									</li>
+									
 									<li class="">
 										<a class="sidenav-item-link" href={% url 'list_sleeves_pattern' %}>
 											<span class="nav-text">List Sleeves pattern</span>
@@ -227,11 +206,7 @@
 							</a>
 							<div class="collapse">
 								<ul class="sub-menu" id="dress-type" data-parent="#sidebar-menu">
-									<li class="">
-										<a class="sidenav-item-link" href="{% url 'add_dress_type' %}">
-											<span class="nav-text">Add Dress Type</span>
-										</a>
-									</li>
+									
 									<li class="">
 										<a class="sidenav-item-link" href="{% url 'list_dress_type' %}">
 											<span class="nav-text">List Dress Types</span>
@@ -271,6 +246,20 @@
 									<li class="">
 										<a class="sidenav-item-link" href="{% url 'list_users' %}">
 											<span class="nav-text">view Users</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="collapse">
+								<ul class="sub-menu" id="dress-type" data-parent="#sidebar-menu">
+									<li class="">
+										<a class="sidenav-item-link" href="{% url 'create_designer' %}">
+											<span class="nav-text">Add Designers</span>
+										</a>
+									</li>
+									<li class="">
+										<a class="sidenav-item-link" href="{% url 'list_designers' %}">
+											<span class="nav-text">view Designers</span>
 										</a>
 									</li>
 								</ul>
@@ -395,6 +384,7 @@
 	<script src="{% static 'assets/plugins/slick/slick.min.js' %}"></script>
 
 	<!-- Chart -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="{% static 'assets/plugins/charts/Chart.min.js' %}"></script>
 	<script src="{% static 'assets/js/chart.js' %}"></script>
 

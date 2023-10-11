@@ -1,0 +1,60 @@
+<!-- designers_list.html -->
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="ec-content-wrapper">
+    <div class="content">
+        <h1>All Designers</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Profile Pic</th>
+                    <th>Phone Number</th>
+                    <th>Total Orders</th>
+                    <th>Completed Orders</th>
+                    <th>Actions</th> {# New column for Activate/Deactivate button #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for designer in designers %}
+                <tr>
+                    <td>{{ designer.user.id }}</td>
+                    <td>{{ designer.user.username }}</td>
+                    <td>{{ designer.user.email }}</td>
+                    <td>
+                        {% if designer.user.userprofile.profile_pic %}
+                            <img src="{{ designer.user.userprofile.profile_pic.url }}" alt="Profile Pic" width="50">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>{{ designer.user.userprofile.phone_number }}</td>
+                    <td>{{ designer.total_orders }}</td>
+                    <td>{{ designer.completed_orders }}</td>
+                    <td>
+                        {% if designer.user.is_active %}
+                            <form method="post" action="{% url 'deactivate_designer' designer.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'activate_designer' designer.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Activate</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No designers available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

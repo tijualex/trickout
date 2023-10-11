@@ -52,33 +52,35 @@ class ShippingAddress(models.Model):
 
 
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Order(models.Model):
     class PaymentStatusChoices(models.TextChoices):
         PENDING = 'pending', 'Pending'
         SUCCESSFUL = 'successful', 'Successful'
         FAILED = 'failed', 'Failed'
-        
-    order_id= models.AutoField(primary_key=True)
+
+    class OrderStatusChoices(models.TextChoices):
+        PROCESSING = 'processing', 'Processing'
+        SHIPPED = 'shipped', 'Shipped'
+        DELIVERED = 'delivered', 'Delivered'
+
+    order_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    design = models.ForeignKey(Designs, on_delete=models.CASCADE)    
+    design = models.ForeignKey(Designs, on_delete=models.CASCADE)
+    designer_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='designer_orders',default=2)
     order_date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    address_id=models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, default= 1)
-    razorpay_order_id=models.CharField(max_length=255,null=True)
-    payment_id=models.CharField(max_length=255,null=True)
-    ORDER_STATUS_CHOICES = (
-        ('processing', 'Processing'),
-        ('shipped', 'Shipped'),
-        ('delivered', 'Delivered'),
-    )
-    order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='processing')
-    payment_status = models.CharField(
-        max_length=20, choices=PaymentStatusChoices.choices, default=PaymentStatusChoices.PENDING)
-  # Payment status field
+    address_id = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, default=1)
+    razorpay_order_id = models.CharField(max_length=255, null=True)
+    payment_id = models.CharField(max_length=255, null=True)
+    order_status = models.CharField(max_length=20, choices=OrderStatusChoices.choices, default=OrderStatusChoices.PROCESSING)
+    payment_status = models.CharField(max_length=20, choices=PaymentStatusChoices.choices, default=PaymentStatusChoices.PENDING)
 
     # Add this method to activate the order
     def activate_order(self):
-        self.payment_status = True
+        self.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
         self.save()
 
     def __str__(self):

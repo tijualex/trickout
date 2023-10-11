@@ -1,0 +1,70 @@
+{% extends "navbar.html" %}
+
+{% block Style %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style>
+    .card {
+        width: 120px; /* Set a fixed width for the card */
+        height: 160px; /* Set a fixed height for the card */
+        margin: 10px; /* Add margin between cards */
+    }
+
+    .card-img-top {
+        width: 100px;
+        height: 100px; /* Set a fixed height for the image within the card */
+        object-fit: cover; /* Ensure the image covers the entire box */
+    }
+
+    .card-body {
+        text-align: center;
+        padding: 10px; /* Add padding inside the card body */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Design Details</h1>
+    <p><strong>Design ID:</strong> {{ design.design_id }}</p>
+    <p><strong>Fabric:</strong> {{ design.fabric.name }}</p> <!-- Display fabric name -->
+    <p><strong>Design Name:</strong> {{ design.dress_type }}</p>
+
+    <ul>
+        <li><a href="{% url 'measurement_details' design.design_id %}">Measurements</a></li>
+    </ul>
+
+    <h2>Design Patterns:</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <img src="{{ design.top_id.image.url }}" class="card-img-top" alt="Top Pattern">
+                <div class="card-body">
+                    <h6 class="card-title">Top Pattern</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <img src="{{ design.bottom_id.image.url }}" class="card-img-top" alt="Bottom Pattern">
+                <div class="card-body">
+                    <h6 class="card-title">Bottom Pattern</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <img src="{{ design.sleeve_id.image.url }}" class="card-img-top" alt="Sleeves Pattern">
+                <div class="card-body">
+                    <h6 class="card-title">Sleeves Pattern</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <img src="{{ design.neck_id.image.url }}" class="card-img-top" alt="Neck Pattern">
+                <div class="card-body">
+                    <h6 class="card-title">Neck Pattern</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

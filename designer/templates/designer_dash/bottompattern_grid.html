@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'designer_dash/base.html' %}
 {% load static %}
 .
 {% block content %}
@@ -39,7 +39,7 @@
                     </td>
                     <td>
                         <!-- Update Bottom Pattern Button -->
-                        <a class="btn btn-primary text-white update-product" href="#" data-pattern-id="{{ pattern.custom_id }}" data-pattern-name="{{ pattern.name }}">Update</a>
+                        <a class="btn btn-primary text-white update-product" href="#" data-pattern-id="{{ pattern.bottom_id }}" data-pattern-name="{{ pattern.name }}">Update</a>
                     </td>
                 </tr>
                 {% empty %}

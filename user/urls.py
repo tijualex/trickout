@@ -1,6 +1,6 @@
 # user/urls.py
 from django.urls import include, path
-from . import views
+from user import views
 from user.views import create_design
 from .views import myorders
 
@@ -34,6 +34,7 @@ urlpatterns = [
     # design
     
     path('dress_detail/<str:dress_type>/', views.dress_detail, name='dress_detail'),
+    path('pattern_details/<int:pattern_id>/<str:pattern_type>/', views.pattern_details, name='pattern_details'),
     path('confirm_design', views.confirm_design, name='confirm_design'),
     path('display_selected_patterns/<str:selected_patterns>/<str:selected_pattern_id>/<str:total_price>/', views.display_selected_patterns, name='display_selected_patterns'),
     path('create_design/', views.create_design, name='create_design'),    
@@ -59,5 +60,6 @@ urlpatterns = [
 
     #mydesigns
     path('my_designs/', views.my_designs, name='my_designs'),
+    path('design/<int:design_id>/', views.view_design, name='view_design'),
     
 ]
