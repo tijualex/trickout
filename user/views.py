@@ -329,12 +329,6 @@ def pattern_details(request, pattern_id, pattern_type):
     # Return pattern details as JSON response
     return JsonResponse(pattern_details)
 
-    context = {
-        'pattern_option': pattern_option,
-        'pattern_type': pattern_type,  # Add pattern_type to context for further use if needed
-    }
-
-    return render(request, 'design/pattern_details.html', context)
 
 
 # confirm design
@@ -439,41 +433,35 @@ def confirm_design(request):
 
 
 def display_selected_patterns(request, selected_patterns, selected_pattern_id, total_price):
-    # Replace these with your actual data
     selected_patterns_decoded = unquote(selected_patterns).split(',')
     selected_pattern_id_decoded = unquote(selected_pattern_id).split(',')
     total_price_decoded = unquote(total_price)
-    
-    selected_patterns_list = selected_patterns_decoded
-    selected_pattern_id_list = selected_pattern_id_decoded  # Correct variable name
-    
-    
 
-    # Create dictionaries for selected patterns and pattern IDs
-    selected_patterns_dict = {
-        'fabric': selected_patterns_list[0],
-        'neck': selected_patterns_list[2],
-        'top': selected_patterns_list[1],
-        'sleeves': selected_patterns_list[3],
-        'bottom': selected_patterns_list[4],
-        'dresstype':selected_patterns_list[5]
-    }
+    fabric_id = selected_pattern_id_decoded[0]
+    neck_id = selected_pattern_id_decoded[1]
+    top_id = selected_pattern_id_decoded[2]
+    sleeves_id = selected_pattern_id_decoded[3]
+    bottom_id = selected_pattern_id_decoded[4]
+    dresstype = selected_pattern_id_decoded[5]
 
-    selected_pattern_id_dict = {
-        'fabric_id': selected_pattern_id_list[0],
-        'neck_id': selected_pattern_id_list[1],
-        'top_id': selected_pattern_id_list[2],
-        'sleeves_id': selected_pattern_id_list[3],
-        'bottom_id': selected_pattern_id_list[4],
-        'dresstype':selected_patterns_list[5]
-    }
-
-    # Replace with your actual calculation logic
+    # Retrieve selected pattern objects from the database
+    fabric_pattern = Fabric.objects.get(fabric_id=fabric_id)
+    neck_pattern = NeckPattern.objects.get(neck_id=neck_id)
+    top_pattern = TopPattern.objects.get(top_id=top_id)
+    sleeve_pattern = SleevesPattern.objects.get(sleeve_id=sleeves_id)
+    bottom_pattern = BottomPattern.objects.get(bottom_id=bottom_id)
+    dress_type = DressType.objects.get(dress_type=dresstype)
 
     context = {
-        'selected_patterns': selected_patterns_dict,
-        'selected_patterns_id': selected_pattern_id_dict,
-        'total_price': total_price_decoded,  # Correct variable name
+        'selected_patterns': {
+            'fabric': fabric_pattern,
+            'neck': neck_pattern,
+            'top': top_pattern,
+            'sleeves': sleeve_pattern,
+            'bottom': bottom_pattern,
+            'dress_type': dress_type,
+        },
+        'total_price': total_price_decoded,
     }
 
     return render(request, 'design/confirm_design.html', context)
@@ -637,10 +625,14 @@ razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZO
 
 from customadmin.models import Designs, UserRole
 from user.models import ShippingAddress, Order   # Import the UserRole model
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Order, Designs, ShippingAddress
+from django.contrib.auth.decorators import login_required # Import your Razorpay client instance
 import random
 @login_required
 @csrf_exempt
 @transaction.atomic
+@login_required
 def create_order(request):
     if request.method == 'POST':
         # Extract data from the request
@@ -651,12 +643,12 @@ def create_order(request):
         amount = int(design.price * 100)  # Razorpay accepts amount in paise, so multiply by 100
 
         try:
-            # Retrieve all users with the 'designer' role
-            designers = User.objects.filter(is_active=True, userprofile__is_designer=True)
+            # Retrieve all active designers
+            designers = User.objects.filter(userrole__role='designer', is_active=True)
 
             # Randomly select a designer from the list
             if designers.exists():
-                selected_designer = random.choice(designers).user
+                selected_designer = random.choice(designers)
             else:
                 # Handle the case where there are no designers available
                 return render(request, 'error.html', {'error_message': 'No designers available for assignment.'})
@@ -678,7 +670,7 @@ def create_order(request):
                 total_price=design.price,
                 address_id=delivery_address,
                 razorpay_order_id=razorpay_order_id,
-                designer_id=selected_designer  # Assign the selected designer to the order
+                designer_id=selected_designer
             )
 
             # Redirect to the payment confirmation page with the order_id
@@ -718,6 +710,7 @@ def payment_confirm(request, order_id):
 
     # Extract the order id of the newly created order
     razorpay_order_id = order.razorpay_order_id
+    
 
     # Define the callback URL
     callback_url = '/paymenthandler/'  # Update this URL to your actual payment handler
@@ -737,41 +730,70 @@ def payment_confirm(request, order_id):
 @csrf_exempt
 def paymenthandler(request):
     if request.method == "POST":
-        payment_id = request.POST.get('razorpay_payment_id', '')
-        signature = request.POST.get('razorpay_signature', '')
+        razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
         razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        razorpay_signature = request.POST.get('razorpay_signature', '')
+        
+        print("Received parameters:")
+        print("Razorpay Order ID:", razorpay_order_id)
+        print("Razorpay Payment ID:", razorpay_payment_id)
+        print("Razorpay Signature:", razorpay_signature)
 
+
+        # Your Razorpay API key and secret
+        razorpay_key_id =  settings.RAZORPAY_API_KEY
+        
+        razorpay_key_secret = settings.RAZORPAY_API_SECRET
+
+        # Initialize Razorpay client
+        razorpay_client = razorpay.Client(auth=(razorpay_key_id, razorpay_key_secret))
+
+        # Verify the payment signature
         params_dict = {
             'razorpay_order_id': razorpay_order_id,
-            'razorpay_payment_id': payment_id,
+            'razorpay_payment_id': razorpay_payment_id,
         }
 
         try:
-            razorpay_client.utility.verify_payment_signature(params_dict)
+            razorpay_client.utility.verify_payment_signature(params_dict, razorpay_signature)
         except Exception as e:
             # Signature verification failed
+            order.payment_id = razorpay_payment_id
+            order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
+            order.save()
+
+            # Redirect to the user's orders page after successful payment
             return redirect('myorders')
 
+        # Fetch the order from your database based on razorpay_order_id
         order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
 
-        if order.payment_status == Order.PaymentStatusChoices.SUCCESSFUL:
-            # Payment is already marked as successful, ignore this request
-            return HttpResponse("Payment is already successful")
-
+        # Ensure the order is pending and payment is not already successful
         if order.payment_status != Order.PaymentStatusChoices.PENDING:
-            # Order is not in a pending state, do not proceed with stock update
             return HttpResponseBadRequest("Invalid order status")
 
-        amount = int(order.total_price * 100)  # Convert Decimal to paise
-        razorpay_client.payment.capture(payment_id, amount)
-        # Update the order with payment ID and change status to "Successful"
-        order.payment_id = payment_id
-        order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
-        order.save()
+        # Convert total price to paise
+        amount = int(order.total_price * 100)
 
-        return redirect('myorders')
+        try:
+            # Capture the payment amount
+            razorpay_client.payment.capture(razorpay_payment_id, amount)
+
+            # Update the order with payment ID and change status to "Successful"
+            order.payment_id = razorpay_payment_id
+            order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
+            order.save()
+
+            # Redirect to the user's orders page after successful payment
+            return redirect('myorders')
+
+        except Exception as e:
+            # Handle payment capture failure or other exceptions
+            return HttpResponseBadRequest("Payment capture failed")
 
     return HttpResponseBadRequest("Invalid request method")
+
+
 @login_required
 def myorders(request):
     # Retrieve orders for the currently logged-in user and sort them in reverse order
@@ -802,4 +824,67 @@ def view_design(request, design_id):
     return render(request, 'view_design.html', {'design': design})
 
 
+
+#invoice download 
+from django.http import FileResponse
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, KeepTogether
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from .models import Order  # Import your Order model here
+
+def export_order_details_pdf(request, order_id):
+    # Fetch the specific order from the database
+    try:
+        order = Order.objects.get(order_id=order_id)
+    except Order.DoesNotExist:
+        # Handle the case where the order with the given ID does not exist
+        # You can return an error response or redirect the user to an error page
+        # For simplicity, let's return a simple error response here
+        return HttpResponse("Order not found", status=404)
+
+    # Define table header and data for the specific order
+    data = [["Order ID", "User", "product",  "Order Date", "Total Price", "Order Status", "Payment Status"],
+            [
+                order.order_id,
+                order.user.username,
+                order.design.dress_type,  # Assuming 'Designs' model has a 'name' field
+                order.order_date.strftime("%Y-%m-%d %H:%M:%S"),  # Format order date as needed
+                order.total_price,
+                order.get_order_status_display(),
+                order.get_payment_status_display()
+            ]]
+
+    # Create a buffer and a PDF document
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    # Define column widths for the table
+    col_widths = [60, 80, 120, 80, 100, 80, 80, 80]  # Adjust widths as needed
+
+    # Define table style (same as before)
+    style = TableStyle([
+        # ... (same style configuration as before)
+    ])
+
+    # Create the table with specified column widths and apply the style
+    table = Table(data, colWidths=col_widths)
+    table.setStyle(style)
+
+    # Add a title to the PDF
+    styles = getSampleStyleSheet()
+    heading_style = styles['Heading1']
+    heading_style.alignment = 1  # 0=Left, 1=Center, 2=Right
+    heading = Paragraph(f"Order Details Report - Order #{order.order_id}", heading_style)
+
+    # Wrap the table in KeepTogether to ensure it doesn't break across pages
+    elements.append(KeepTogether([heading, table]))
+
+    # Build the PDF and prepare the response
+    doc.build(elements)
+    buffer.seek(0)
+    response = FileResponse(buffer, as_attachment=True, filename=f'order_{order.order_id}_details.pdf')
+    return response
 

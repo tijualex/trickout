@@ -96,8 +96,17 @@ def design_details(request, design_id):
 
 
 def measurement_details(request, design_id):
-    measurements = PersonMeasurement.objects.filter(design__design_id=design_id)
-    return render(request, 'designer_dash/measurement_view.html', {'measurements': measurements})
+    # Retrieve the design object based on the measurement ID
+    try:
+        measurement = PersonMeasurement.objects.get(design_id=design_id)
+    except PersonMeasurement.DoesNotExist:
+        # Handle the case when the measurement does not exist
+        measurement = None
+
+    context = {
+        'measurement': measurement,
+    }
+    return render(request, 'designer_dash/measurement_view.html', context)
 
 
 

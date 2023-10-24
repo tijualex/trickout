@@ -22,11 +22,11 @@
                     <td>{{ design.design_id }}</td>
                     <td>{{ design.user.username }}</td>
                     <td>{{ design.dress_type }}</td>
-                    <td>{{ design.neck_pattern }}</td>
+                    <td>{{ design.neck_id }}</td>
                     <td>{{ design.sleeves_pattern }}</td>
                     <td>{{ design.bottom_pattern }}</td>
                     <td>{{ design.top_pattern }}</td>
-                    <td>{{ design.fabric1 }}</td>
+                    <td>{{ design. }}</td>
                     <td>
                     {% if design.personmeasurement_set.exists %}
                         <a href="{% url 'measurement_display' design.personmeasurement_set.first.measurement_id %}" class="btn btn-primary btn-sm">View Measurement</a>

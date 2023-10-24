@@ -13,6 +13,9 @@
               <p class="card-text">Order Date: {{ order.order_date }}</p>
               <p class="card-text">Total Price: ${{ order.total_price }}</p>
               <p class="card-text">Status: {{ order.order_status }}</p>
+              
+              <!-- Custom download button -->
+              <a href="{% url 'export_order_details_pdf' order.order_id %}" class="btn btn-primary">Download Invoice</a>
             </div>
           </div>
         </div>

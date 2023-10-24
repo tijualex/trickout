@@ -8,11 +8,15 @@
         height: 160px; /* Set a fixed height for the card */
         margin: 10px; /* Add margin between cards */
     }
-
+    img{
+        width: 60px;
+        min-height: 60px;
+    }
     .card-img-top {
         width: 100px;
-        height: 100px; /* Set a fixed height for the image within the card */
-        object-fit: cover; /* Ensure the image covers the entire box */
+        min-height: 100px; /* Set minimum height for the image within the card */
+        max-height: 100px; /* Set maximum height for the image within the card */
+       /* Ensure the image covers the entire box */
     }
 
     .card-body {

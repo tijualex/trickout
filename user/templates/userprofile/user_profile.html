@@ -125,14 +125,15 @@
 
 </div>
 <!-- Add this script inside your HTML body or in an external JavaScript file -->
+
 <script>
     // Function to validate the user profile update form
     function validateProfileForm() {
-        const name = document.getElementById("cardelement").value.trim();
-        const email = document.getElementById("cardelement").value.trim();
-        const phone_number = document.getElementById("cardelement").value.trim();
-        const address = document.getElementById("cardelement").value.trim();
-        const profile_pic = document.getElementById("cardelement").value.trim();
+        const name = document.getElementsByName("name")[0].value.trim();
+        const email = document.getElementsByName("email")[0].value.trim();
+        const phone_number = document.getElementsByName("phone_number")[0].value.trim();
+        const address = document.getElementsByName("address")[0].value.trim();
+        const profile_pic = document.getElementsByName("profile_pic")[0].value.trim();
 
         // Validate the Full Name field (not empty)
         if (name === "") {
@@ -140,15 +141,24 @@
             return false;
         }
 
-        // Validate the Email field (not empty and a valid email format)
-        if (email === "") {
-            alert("Please enter your Email.");
+        // Validate the Full Name field (only alphabets and spaces allowed)
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!nameRegex.test(name)) {
+            alert("Name can only contain alphabets and spaces.");
             return false;
         }
 
-        // Validate the Phone Number field (not empty)
-        if (phone_number === "") {
-            alert("Please enter your Phone Number.");
+        // Validate the Email field (not empty, a valid email format, and ends with @gmail.com)
+        const emailRegex = /^[^\s@]+@gmail\.com$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid Gmail address.");
+            return false;
+        }
+
+        // Validate the Phone Number field (not empty and exactly 10 digits)
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone_number)) {
+            alert("Please enter a valid 10-digit Phone Number.");
             return false;
         }
 
@@ -158,10 +168,13 @@
             return false;
         }
 
-        // Validate the Profile Picture field (optional, if required)
-        if (profile_pic === "") {
-            alert("Please upload a Profile Picture.");
-            return false;
+        // Validate the Profile Picture field (optional, if required, and file format should be PNG or JPG)
+        if (profile_pic !== "") {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            if (!allowedExtensions.exec(profile_pic)) {
+                alert("Please upload a valid PNG or JPG profile picture.");
+                return false;
+            }
         }
 
         // All fields are valid, allow form submission
@@ -169,9 +182,10 @@
     }
 
     // Add the 'onsubmit' attribute to your form to trigger validation
-    document.getElementById("your-form-id").onsubmit = function () {
+    document.getElementsByTagName("form")[0].onsubmit = function () {
         return validateProfileForm();
     };
 </script>
+
 
 </body>

@@ -23,7 +23,7 @@ urlpatterns = [
     
     #top pattern
     path('add_top_pattern/', views.add_top_pattern, name='add_top_pattern'),
-    path('list_bottompattern/', views.list_toppattern, name='list_bottompattern'),
+    path('list_toppattern/', views.list_toppattern, name='list_toppattern'),
     path('get-top-pattern-details/<int:pattern_id>/', views.get_top_pattern_details, name='get_top_pattern_details'),
     path('update-top-pattern/<int:pattern_id>/', views.update_top_pattern, name='update-top-pattern'),
     

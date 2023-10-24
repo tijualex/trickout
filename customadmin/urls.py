@@ -30,7 +30,7 @@ urlpatterns = [
     
     # designs view
     path('users_design/', views.users_design, name='users_design'),
-    path('measurement_display/<int:measurement_id>/', views.measurement_display, name='measurement_display'),
+    path('measurement_display/<int:design_id>/', views.measurement_display, name='measurement_display'),
     path('show_user_designs/<int:user_id>/', views.show_user_designs, name='show_user_designs'),
     
     
@@ -60,4 +60,5 @@ urlpatterns = [
     # charts
     path('get_orders_last_7_days/', views.get_orders_last_7_days, name='get_orders_last_7_days'),
     path('get_order_status_counts/', views.get_order_status_counts, name='get_order_status_counts'),
+    
 ]

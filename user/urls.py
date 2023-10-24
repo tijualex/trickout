@@ -57,6 +57,7 @@ urlpatterns = [
     
     #myorders
     path('myorders/', views.myorders, name='myorders'),
+    path('export_order_details_pdf/<int:order_id>/', views.export_order_details_pdf, name='export_order_details_pdf'),
 
     #mydesigns
     path('my_designs/', views.my_designs, name='my_designs'),

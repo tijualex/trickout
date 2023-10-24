@@ -74,10 +74,10 @@ def users_design(request):
 
     return render(request, 'users_design.html', context)
 
-def measurement_display(request, measurement_id):
+def measurement_display(request, design_id):
     # Retrieve the design object based on the measurement ID
     try:
-        measurement = PersonMeasurement.objects.get(pk=measurement_id)
+        measurement = PersonMeasurement.objects.get(design_id=design_id)
     except PersonMeasurement.DoesNotExist:
         # Handle the case when the measurement does not exist
         measurement = None
