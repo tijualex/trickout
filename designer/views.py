@@ -317,7 +317,7 @@ def add_top_pattern(request):
             top_pattern.save()
 
             # Redirect to the list_top_pattern URL upon successful addition
-            return redirect('list_top_pattern')
+            return redirect('list_toppattern')
         except Exception as e:
             # Handle exceptions or validation errors
             return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
@@ -400,7 +400,7 @@ def add_sleeves_pattern(request):
             sleeves_pattern.save()
 
              # Redirect to the sleeves_grid URL upon successful addition
-            return redirect('list_sleeves_pattern')
+            return redirect('list_sleevespattern')
         except Exception as e:
             # Handle exceptions or validation errors
             return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
@@ -560,7 +560,7 @@ def add_dress_type(request):
         return render(request, 'designer_dash/add_dresstype.html')
 
     
-def list_dress_type(request):
+def list_dress(request):
     dress_types = DressType.objects.all()
     return render(request, 'designer_dash/dresstype_grid.html', {'dress_types': dress_types})
 

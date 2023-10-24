@@ -71,6 +71,30 @@ class Hosttest(TestCase):
         design = driver.find_element(By.CSS_SELECTOR, 'button#next-button.btn.btn-primary.mb-5')
         design.click()
         time.sleep(2)
+        design = driver.find_element(By.CSS_SELECTOR, 'button.btn.btn-primary.mt-4')
+        design.click()
+        time.sleep(2)
+        login=driver.find_element(By.CSS_SELECTOR,'input#shoulder.form-control[type="number"][step="0.1"][required]')
+        login.send_keys('16')
+        time.sleep(2)
+        login=driver.find_element(By.CSS_SELECTOR,'input#waist.form-control[type="number"][step="0.1"][required]')
+        login.send_keys('16')
+        time.sleep(2)
+        login=driver.find_element(By.CSS_SELECTOR,'input#chest.form-control[type="number"][step="0.1"][required]')
+        login.send_keys('16')
+        time.sleep(2)
+        login=driver.find_element(By.CSS_SELECTOR,'input#hip.form-control[type="number"][step="0.1"][required]')
+        login.send_keys('16')
+        time.sleep(2)
+        login=driver.find_element(By.CSS_SELECTOR,'input#Inseam.form-control[type="number"][step="0.1"][required]')
+        login.send_keys('16')
+        time.sleep(2)
+        design = driver.find_element(By.CSS_SELECTOR, 'button.btn.btn-primary[type="submit"]')
+        design.click()
+        time.sleep(2)
+        
+        
+
         
 
         

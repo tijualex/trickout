@@ -38,7 +38,7 @@ urlpatterns = [
     
     #dress type
     path('add_dress_type/', views.add_dress_type, name='add_dress_type'),
-    path('list_dress_type/', views.list_dress_type, name='list_dress'),
+    path('list_dress/', views.list_dress, name='list_dress'),
     
     #neck pattern
     path('add_neck_pattern/', views.add_neck_pattern, name='add_neck_pattern'),

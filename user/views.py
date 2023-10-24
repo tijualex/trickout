@@ -436,10 +436,9 @@ def display_selected_patterns(request, selected_patterns, selected_pattern_id, t
     selected_patterns_decoded = unquote(selected_patterns).split(',')
     selected_pattern_id_decoded = unquote(selected_pattern_id).split(',')
     total_price_decoded = unquote(total_price)
-
     fabric_id = selected_pattern_id_decoded[0]
-    neck_id = selected_pattern_id_decoded[1]
-    top_id = selected_pattern_id_decoded[2]
+    neck_id = selected_pattern_id_decoded[2]
+    top_id = selected_pattern_id_decoded[1]
     sleeves_id = selected_pattern_id_decoded[3]
     bottom_id = selected_pattern_id_decoded[4]
     dresstype = selected_pattern_id_decoded[5]
@@ -758,6 +757,8 @@ def paymenthandler(request):
             razorpay_client.utility.verify_payment_signature(params_dict, razorpay_signature)
         except Exception as e:
             # Signature verification failed
+            order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+
             order.payment_id = razorpay_payment_id
             order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
             order.save()
@@ -826,65 +827,89 @@ def view_design(request, design_id):
 
 
 #invoice download 
-from django.http import FileResponse
-from io import BytesIO
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, KeepTogether
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
 from reportlab.lib import colors
-from .models import Order  # Import your Order model here
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from io import BytesIO
+from reportlab.platypus.doctemplate import Indenter
+from reportlab.platypus.flowables import KeepTogether
+from django.http import HttpResponse
+from django.http import FileResponse
+from .models import Order
 
 def export_order_details_pdf(request, order_id):
     # Fetch the specific order from the database
     try:
         order = Order.objects.get(order_id=order_id)
     except Order.DoesNotExist:
-        # Handle the case where the order with the given ID does not exist
-        # You can return an error response or redirect the user to an error page
-        # For simplicity, let's return a simple error response here
         return HttpResponse("Order not found", status=404)
 
     # Define table header and data for the specific order
-    data = [["Order ID", "User", "product",  "Order Date", "Total Price", "Order Status", "Payment Status"],
-            [
-                order.order_id,
-                order.user.username,
-                order.design.dress_type,  # Assuming 'Designs' model has a 'name' field
-                order.order_date.strftime("%Y-%m-%d %H:%M:%S"),  # Format order date as needed
-                order.total_price,
-                order.get_order_status_display(),
-                order.get_payment_status_display()
-            ]]
+    data = [
+        ["Order ID", "Order Date", "Order Time", "Amount Payable", "Order Status", "Payment Status"],
+        [
+            order.order_id,
+            order.order_date.strftime("%Y-%m-%d"),
+            order.order_date.strftime("%H:%M:%S"),
+            order.total_price,
+            order.get_order_status_display(),
+            order.get_payment_status_display(),
+    
+        ]
+    ]
 
     # Create a buffer and a PDF document
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
+    # Add the Trickout heading
+    styles = getSampleStyleSheet()
+    trickout_heading_style = ParagraphStyle(
+        "TrickoutHeading",
+        parent=styles["Heading1"],
+        alignment=1  # 0=Left, 1=Center, 2=Right
+    )
+    trickout_heading = Paragraph("Trickout", trickout_heading_style)
+    elements.append(trickout_heading)
+
+    # Add the 'Details of the Order' heading
+    details_heading_style = ParagraphStyle(
+        "DetailsHeading",
+        parent=styles["Heading2"],
+        alignment=1  # 0=Left, 1=Center, 2=Right
+    )
+    details_heading = Paragraph("Order Details", details_heading_style)
+    elements.append(details_heading)
+
+    # Add a line space for better separation
+    elements.append(Spacer(1, 12))
+
     # Define column widths for the table
-    col_widths = [60, 80, 120, 80, 100, 80, 80, 80]  # Adjust widths as needed
+    col_widths = [80, 80, 80, 80, 80, 80, 80]  # Adjust widths as needed
 
     # Define table style (same as before)
     style = TableStyle([
-        # ... (same style configuration as before)
+        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+        ("GRID", (0, 0), (-1, -1), 1, colors.black),
     ])
 
     # Create the table with specified column widths and apply the style
     table = Table(data, colWidths=col_widths)
     table.setStyle(style)
 
-    # Add a title to the PDF
-    styles = getSampleStyleSheet()
-    heading_style = styles['Heading1']
-    heading_style.alignment = 1  # 0=Left, 1=Center, 2=Right
-    heading = Paragraph(f"Order Details Report - Order #{order.order_id}", heading_style)
-
     # Wrap the table in KeepTogether to ensure it doesn't break across pages
-    elements.append(KeepTogether([heading, table]))
+    elements.append(KeepTogether([table]))
 
     # Build the PDF and prepare the response
     doc.build(elements)
     buffer.seek(0)
     response = FileResponse(buffer, as_attachment=True, filename=f'order_{order.order_id}_details.pdf')
     return response
-
